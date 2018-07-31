@@ -1,11 +1,8 @@
-#include <glm/glm.hpp>
-#include <glm/vec3.hpp> // glm::vec3
-#include <glm/vec4.hpp> // glm::vec4
+
+#include "globalStuff.h"
 #include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
-
-#include "globalOpenGLStuff.h"
 
 #include "cShaderManager.h"
 
@@ -16,21 +13,23 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+
 #include <fstream>		// for the ply model loader
 #include <vector>		// for the ply model loader
 #include <sstream>
 
 #include "cMeshObject.h"
-
-#include "commonEngineStuff.h"
 // A vector of POINTERS to mesh objects...
 //std::vector< cMeshObject* > g_vec_pMeshObjects;
 //cMeshObject* g_pTheLightMesh = 0;		// or NULL
+
+#include "sLight.h"
 
 #include "cLightHelper.h"
 
 
 void ShutErDown(void);
+
 
 GLFWwindow* g_window = 0;
 
@@ -49,46 +48,21 @@ cShaderManager* g_pTheShaderManager = 0;	// NULL, 0, nullptr
 cVAOManager* g_pTheVAOManager = 0;
 
 // When true, the DoPhysicsUpdate is called.
-bool g_bDoEulerPhysicsUpdate = false;		
+//bool g_bDoEulerPhysicsUpdate = false;		
 
 
-// This will get more involved
-struct sLight
-{
-	sLight()
-	{
-		this->position = glm::vec3(0.0f, 0.0f, 0.0f);
-		this->diffuseColour = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		this->attenConst = 0.0f;
-		this->attenLinear = 0.1f;
-		this->attenQuad = 0.1f;
-		this->UniLoc_Position = -1;
-		this->UniLoc_Diffuse = -1;
-		this->UniLoc_AttenAndLight = -1;
-		return;
-	}
-
-	glm::vec3 position;
-	glm::vec4 diffuseColour;
-	float attenConst;
-	float attenLinear;
-	float attenQuad;
-
-	GLint UniLoc_Position;
-	GLint UniLoc_Diffuse;
-	GLint UniLoc_AttenAndLight;
-
-	static const float MAX_ATTENUATION;// = 100.0f;
-};
-//static 
-const float sLight::MAX_ATTENUATION = 100.0f;
+// Moved
+//struct sLight
 
 
-const unsigned int NUMLIGHTS = 3;
-std::vector<sLight> g_vecLights;
+// moved
+//const unsigned int NUMLIGHTS = 3;
+//std::vector<sLight> g_vecLights;
 
 void SetUpTheLights(GLint shaderProgID);
 void CopyLightInfoToShader( unsigned int numberOfLightsToCopy );
+
+void DrawDebugLightSpheres(void);
 
 
 static void error_callback(int error, const char* description)
@@ -96,66 +70,14 @@ static void error_callback(int error, const char* description)
 	fprintf(stderr, "Error: %s\n", description);
 }
 
-// This one is connected to the regular "keyboard" handler in Winders.
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	{
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
-	}
-
-	// Is the shift key pressed at the same time?
-	if ( mods == GLFW_MOD_SHIFT )	// ONLY shift and nothing else
-	{
-		if ( ( key == GLFW_KEY_L) && (action == GLFW_PRESS) )
-		{
-			::g_bTurnOnDebugLightSpheres =  ! ::g_bTurnOnDebugLightSpheres;
-		}
-
-		// Select the next light:
-		if ( ( key == GLFW_KEY_9 ) && ( action == GLFW_PRESS ) )
-		{
-			::g_SelectedLightID--;
-		}
-		if ( ( key == GLFW_KEY_0 ) && ( action == GLFW_PRESS ) )
-		{
-			::g_SelectedLightID++;
-		}
-		//Check for wrap around...
-		if ( ::g_SelectedLightID >= NUMLIGHTS )
-		{
-			::g_SelectedLightID = NUMLIGHTS - 1;
-		}
+// Moved
+//static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 
-	}//if ( mods == GLFW_MOD_SHIFT )
-
-	if ( ( mods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT )
-	{
-		// Shift, and any other modifier, too.
-		//DestroyAllHumans();
-	}
-
-	// STARTOF: Turn the physics updater on or off
-	if ( ( mods & GLFW_MOD_CONTROL ) == GLFW_MOD_CONTROL )
-	{
-		if ( ( key == GLFW_KEY_P ) && ( action == GLFW_PRESS ) )
-		{
-			::g_bDoEulerPhysicsUpdate = true;
-		}
-		else if ( ( key == GLFW_KEY_O ) && ( action == GLFW_PRESS ) )
-		{
-			::g_bDoEulerPhysicsUpdate = false;
-		}
-	}// ENDOF: Turn the physics updater on or off
-
-	return;
-}
-
-// Processes input (defined below)
-void ProcessInput( glm::vec3 &cameraEye, 
-                   glm::vec3 &cameraTarget, 
-                   GLFWwindow* &window );
+//// Processes input (defined below)
+//void ProcessInput( glm::vec3 &cameraEye, 
+//                   glm::vec3 &cameraTarget, 
+//                   GLFWwindow* &window );
 
 int main(void)
 {
@@ -235,36 +157,33 @@ int main(void)
 	// The light values...
 	SetUpTheLights(shadProgID);
 
-	::g_vecLights[0].position = glm::vec3( 2.0f, 2.0f, 0.0f );
-	::g_vecLights[0].diffuseColour = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	::g_vecLights[0].attenConst = 0.0f;
-	::g_vecLights[0].attenLinear = 0.324f;		// Why this number? It looked nice!
-	::g_vecLights[0].attenQuad = 0.0115f;		// Same with this number!
 
-	::g_vecLights[1].position = glm::vec3( 2.0f, 2.0f, 0.0f );
-	::g_vecLights[1].diffuseColour = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-	::g_vecLights[1].attenConst = 0.0f;
-	::g_vecLights[1].attenLinear = 0.324f;		// Why this number? It looked nice!
-	::g_vecLights[1].attenQuad = 0.0115f;		// Same with this number!
 
-	::g_vecLights[2].position = glm::vec3( 2.0f, 2.0f, 0.0f );
-	::g_vecLights[2].diffuseColour = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
-	::g_vecLights[2].attenConst = 0.0f;
-	::g_vecLights[2].attenLinear = 0.324f;		// Why this number? It looked nice!
-	::g_vecLights[2].attenQuad = 0.0115f;		// Same with this number!
-
-	cLightHelper theLightHelper;
 
 
 	::g_pTheVAOManager = new cVAOManager();
 	
 	// Load objects into scene...
+
+	std::vector<std::string> vecModelFilesToLoad;
+	vecModelFilesToLoad.push_back("bun_zipper_res2_xyz_n_rgba_uv.ply");
+	vecModelFilesToLoad.push_back("cow_xyz_n_rgba_uv.ply");
+	vecModelFilesToLoad.push_back("ssj100_xyz_n_rgba_uv.ply");
+	vecModelFilesToLoad.push_back("free_arena_ASCII_xyz_n_rgba_uv.ply");
+	vecModelFilesToLoad.push_back("CrappyTerrain_xyz_n_rgba_uv.ply");
+	vecModelFilesToLoad.push_back("isosphere_smooth_xyz_n_rgba_uv.ply");
+	vecModelFilesToLoad.push_back("X-Wing_Attack_(33569 faces)_xyz_n_rgba_uv.ply");
+
+
 	std::string errors;
-	if ( ! LoadModelTypes(shadProgID, errors) )
+//	if ( ! LoadModelTypes(shadProgID, errors) )
+	if ( ! LoadModelTypes( shadProgID, vecModelFilesToLoad, errors ) )
 	{
 		std::cout << "There were errors loading the model files..." << std::endl;
 		std::cout << errors << std::endl;
 	}
+
+
 
 	LoadObjectsIntoScene();
 
@@ -375,7 +294,7 @@ int main(void)
 		matView = glm::mat4(1.0f);
 
 		// Deal with the keyboard, etc.
-		ProcessInput( cameraEye, cameraTarget, ::g_window );
+		ProcessInputAsync( cameraEye, cameraTarget, ::g_window );
 
 
 
@@ -394,68 +313,10 @@ int main(void)
 
 
 		// **************************************
-		if ( ::g_bTurnOnDebugLightSpheres )
-		{
-			::g_pTheLightAttenMesh[0]->bIsVisible  = 
-			::g_pTheLightAttenMesh[1]->bIsVisible = 
-			::g_pTheLightAttenMesh[2]->bIsVisible = true;
-
-			::g_pTheLightMesh->bIsVisible = true;
+		// MOVED: if ( ::g_bTurnOnDebugLightSpheres )
+		DrawDebugLightSpheres();
 
 
-			//// move that light mesh to where the light is at, yo
-			::g_pTheLightMesh->pos = ::g_vecLights[::g_SelectedLightID].position;
-			::g_pTheLightMesh->scale = 0.01f;
-
-
-			// Take the other 4 meshes and change the location to where the light is
-			::g_pTheLightAttenMesh[::g_SelectedLightID]->pos 
-				= ::g_pTheLightAttenMesh[1]->pos
-				= ::g_pTheLightAttenMesh[2]->pos
-				= ::g_pTheLightAttenMesh[3]->pos = ::g_pTheLightMesh->pos;
-
-			// Draw sphere 0 at 1% brightness
-			float distance = theLightHelper.calcApproxDistFromAtten
-				( 0.01f,   
-				  cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
-				  cLightHelper::DEFAULTINFINITEDISTANCE, 
-				  ::g_vecLights[::g_SelectedLightID].attenConst,
-				  ::g_vecLights[::g_SelectedLightID].attenLinear, 
-				  ::g_vecLights[::g_SelectedLightID].attenQuad );
-
-			::g_pTheLightAttenMesh[0]->scale = distance;
-
-			// Draw sphere 0 at 50% brightness
-			distance = theLightHelper.calcApproxDistFromAtten
-				( 0.50f,   
-				  cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
-				  cLightHelper::DEFAULTINFINITEDISTANCE, 
-				  ::g_vecLights[::g_SelectedLightID].attenConst,
-				  ::g_vecLights[::g_SelectedLightID].attenLinear, 
-				  ::g_vecLights[::g_SelectedLightID].attenQuad );
-
-			::g_pTheLightAttenMesh[1]->scale = distance;
-
-			// Draw sphere 0 at 90% brightness
-			distance = theLightHelper.calcApproxDistFromAtten
-				( 0.90f,   
-				  cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
-				  cLightHelper::DEFAULTINFINITEDISTANCE, 
-				  ::g_vecLights[::g_SelectedLightID].attenConst,
-				  ::g_vecLights[::g_SelectedLightID].attenLinear, 
-				  ::g_vecLights[::g_SelectedLightID].attenQuad );
-
-			::g_pTheLightAttenMesh[2]->scale = distance;
-
-		}//if ( ::g_bTurnOnDebugLightSpheres )
-		else
-		{
-			// Don't Draw the light spheres
-			::g_pTheLightAttenMesh[0]->bIsVisible  = 
-			::g_pTheLightAttenMesh[1]->bIsVisible = 
-			::g_pTheLightAttenMesh[2]->bIsVisible = false;
-			::g_pTheLightMesh->bIsVisible = false;
-		}//if ( ::g_bTurnOnDebugLightSpheres )
 
 
 		CopyLightInfoToShader(NUMLIGHTS);
@@ -529,25 +390,41 @@ int main(void)
 			matModel = matModel * matScale;
 
 
-			// Also set the colour...
-			glUniform4f( meshColourRGBA_UniLoc,			// 'meshColour' in shader
-						 pCurMesh->colour.x, 
-						 pCurMesh->colour.y,
-						 pCurMesh->colour.z,
-			             pCurMesh->colour.a );
-
-			// 
-			glUniform1f( bUse_vColourRGBA_AlphaValue_UniLoc, GL_FALSE );
-			glUniform1f( bUseVertexColour_UniLoc, GL_TRUE );
-
-			if ( pCurMesh->bDontLightObject )
+			// Are we taking colour from the model file (vertex values)
+			//	or as a single colour (the 'colour' value in the mesh object)
+			//	passed to the vertex shader
+			switch ( pCurMesh->colourSource )
 			{
-				glUniform1f( bDontLightObject_UniLoc, GL_TRUE );
-			}
-			else 
-			{
-				glUniform1f( bDontLightObject_UniLoc, GL_FALSE );
-			}
+			case cMeshObject::USE_VERTEX_COLOURS:
+				glUniform1f( bUseVertexColour_UniLoc, GL_TRUE );
+				break;
+
+		case cMeshObject::USE_OBJECT_COLOUR:
+				glUniform1f( bUseVertexColour_UniLoc, GL_FALSE );
+				glUniform4f( meshColourRGBA_UniLoc,			
+							 pCurMesh->colour.x, 
+							 pCurMesh->colour.y,
+							 pCurMesh->colour.z,
+							 pCurMesh->colour.a );
+				break;
+
+			default:	
+				// This shouldn't happen, so set it to "hot pink" to show error
+				glUniform1f( bUseVertexColour_UniLoc, GL_FALSE );
+				glUniform4f( meshColourRGBA_UniLoc,	255.0f, 105.0f/255.0f, 180.0f/255.0f, 1.0f );
+				break;
+
+			}//switch ( pCurMesh->colourSource )
+
+			// Alpha (transparency) taken from vertex values or mesh 'colour' value?
+			glUniform1f( bUse_vColourRGBA_AlphaValue_UniLoc,
+			             (pCurMesh->bUseColourAlphaValue ? (float)GL_TRUE : (float)GL_FALSE) );
+
+			// Use vertex (model) colours or overall (mesh 'colour') value for diffuse
+
+
+			glUniform1f( bDontLightObject_UniLoc,
+			             (pCurMesh->bDontLightObject ? (float)GL_TRUE : (float)GL_FALSE) );
 
 
 			// Is it wireframe? 
@@ -620,124 +497,8 @@ int main(void)
 	exit(EXIT_SUCCESS);
 }
 
-void ProcessInput( glm::vec3 &cameraEye, glm::vec3 &cameraTarget, GLFWwindow* &window )
-{
-	float cameraSpeed = 0.05f; 
-
-	int state = glfwGetKey(window, GLFW_KEY_D);
-	if (state == GLFW_PRESS) { cameraEye.x += cameraSpeed; }
-
-	state = glfwGetKey(window, GLFW_KEY_A);
-	if (state == GLFW_PRESS) { cameraEye.x -= cameraSpeed; }
-
-	state = glfwGetKey(window, GLFW_KEY_W);
-	if (state == GLFW_PRESS) { cameraEye.z += cameraSpeed; }
-
-	state = glfwGetKey(window, GLFW_KEY_S);
-	if (state == GLFW_PRESS) { cameraEye.z -= cameraSpeed; }
-
-	state = glfwGetKey(window, GLFW_KEY_Q);	// Up
-	if (state == GLFW_PRESS) { cameraEye.y += cameraSpeed; }
-
-	state = glfwGetKey(window, GLFW_KEY_E);	// Down
-	if (state == GLFW_PRESS) { cameraEye.y -= cameraSpeed; }
-
-
-
-	if ( glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS )
-	{	// Decrease linear atten by 1%
-		::g_vecLights[0].attenLinear *= 0.99f;
-	}
-
-	if ( glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS )
-	{	// Increase linear atten by 1%
-		if ( ::g_vecLights[::g_SelectedLightID].attenLinear <= 0.0f )	 
-		{ 
-			::g_vecLights[::g_SelectedLightID].attenLinear = 0.001f;		// Make it a tiny value
-		}
-		else
-		{
-			::g_vecLights[::g_SelectedLightID].attenLinear *= 1.01f;		// + 1%
-			if ( ::g_vecLights[::g_SelectedLightID].attenLinear >= sLight::MAX_ATTENUATION )
-			{
-				::g_vecLights[::g_SelectedLightID].attenLinear = sLight::MAX_ATTENUATION;		
-			}
-		}
-	}
-	if ( glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS )
-	{	// Decrease quadratic atten by 1%
-		::g_vecLights[::g_SelectedLightID].attenQuad *= 0.99f;			// +1%
-	}
-
-	if ( glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS )
-	{	// Increase quadratic atten by 1%
-		if ( ::g_vecLights[::g_SelectedLightID].attenQuad <= 0.0f )	 
-		{ 
-			::g_vecLights[::g_SelectedLightID].attenQuad = 0.0001f;		// Make it a tiny value
-		}
-		else
-		{
-			::g_vecLights[::g_SelectedLightID].attenQuad *= 1.01f;		// + 1%
-			if ( ::g_vecLights[::g_SelectedLightID].attenQuad >= sLight::MAX_ATTENUATION )
-			{
-				::g_vecLights[::g_SelectedLightID].attenQuad = sLight::MAX_ATTENUATION;		
-			}
-		}
-	}	
-
-	// Also move the light around
-	if ( glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS )
-	{
-		::g_vecLights[::g_SelectedLightID].position.z += cameraSpeed;		
-	}
-	if ( glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS )
-	{
-		::g_vecLights[::g_SelectedLightID].position.z -= cameraSpeed;		
-	}		
-	if ( glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS )
-	{
-		::g_vecLights[::g_SelectedLightID].position.x -= cameraSpeed;		
-	}	
-	if ( glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS )
-	{
-		::g_vecLights[::g_SelectedLightID].position.x += cameraSpeed;		
-	}		
-	if ( glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS )
-	{
-		::g_vecLights[::g_SelectedLightID].position.y += cameraSpeed;		
-	}		
-	if ( glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS )
-	{
-		::g_vecLights[::g_SelectedLightID].position.y -= cameraSpeed;		
-	}		
-
-	// 
-	//if ( glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS )
-	//{
-	//	std::cout << "Hey!@" << std::endl;
-	//	::g_bTurnOnDebugLightSpheres = false;
-	//}
-
-
-	std::stringstream ssTitle;
-	ssTitle << "Light[" << ::g_SelectedLightID << "]: xyz("
-		<< ::g_vecLights[::g_SelectedLightID].position.x << ", "
-		<< ::g_vecLights[::g_SelectedLightID].position.y << ", "
-		<< ::g_vecLights[::g_SelectedLightID].position.z << ") "
-		<< "Lin: " 
-		<< ::g_vecLights[::g_SelectedLightID].attenLinear << " "
-		<< "Quad: " 
-		<< ::g_vecLights[::g_SelectedLightID].attenQuad;
-
-	glfwSetWindowTitle( ::g_window, ssTitle.str().c_str() );
-
-	//std::cout << "Camera (xyz): "  
-	//		<<cameraEye.x << ", " 
-	//		<< cameraEye.y << ", "
-	//		<< cameraEye.z << std::endl;
-	return;
-}
-
+// Moved
+//void ProcessInput( glm::vec3 &cameraEye, glm::vec3 &cameraTarget, GLFWwindow* &window )
 
 
 
@@ -760,66 +521,7 @@ void ShutErDown(void)
 	return;
 }
 
-bool LoadModelTypes(GLint shadProgID, std::string &errors)
-{
-	std::stringstream ssError;
-
-	bool bAllGood = true;
-
-//	"bun_zipper_res2_xyz.ply", "ssj100_xyz.ply", "building_xyz.ply"
-	sModelDrawInfo bunny;
-	if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( "bun_zipper_res2_xyz_n_rgba_uv.ply", bunny, shadProgID ) )
-	{
-		ssError << "ERROR: bun_zipper_res2_xyz_n_rgba_uv.ply wasn't loaded" << std::endl;
-		bAllGood = false;
-	}
-
-	sModelDrawInfo cow;
-	if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( "cow_xyz_n_rgba_uv.ply", cow, shadProgID ) )
-	{
-		ssError << "ERROR: cow_xyz_n_rgba_uv.ply wasn't loaded" << std::endl;
-		bAllGood = false;
-	}	
-
-	sModelDrawInfo airplane;
-	if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( "ssj100_xyz_n_rgba_uv.ply", airplane, shadProgID ) )
-	{
-		ssError << "ERROR: ssj100_xyz_n_rgba_uv.ply wasn't loaded" << std::endl;
-		bAllGood = false;
-	}
-
-	sModelDrawInfo arena;
-	if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( "free_arena_ASCII_xyz_n_rgba_uv.ply", arena, shadProgID ) )
-	{
-		ssError << "ERROR: free_arena_ASCII_xyz_n_rgba_uv.ply wasn't loaded" << std::endl;
-		bAllGood = false;
-	}
-
-	sModelDrawInfo terrain;
-	if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( "CrappyTerrain_xyz_n_rgba_uv.ply", terrain, shadProgID ) )
-	{
-		ssError << "ERROR: CrappyTerrain_xyz_n_rgba_uv.ply wasn't loaded" << std::endl;
-		bAllGood = false;
-	}
-
-	sModelDrawInfo sphere;
-	if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( "isosphere_smooth_xyz_n_rgba_uv.ply", sphere, shadProgID ) )
-	{
-		ssError << "ERROR: isosphere_smooth_xyz_n_rgba_uv.ply wasn't loaded" << std::endl;
-		bAllGood = false;
-	}
-
-	sModelDrawInfo UseTheForceLuke;
-	if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( "X-Wing_Attack_(33569 faces)_xyz_n_rgba_uv.ply", UseTheForceLuke, shadProgID ) )
-	{
-		ssError << "ERROR: X-Wing_Attack_(33569 faces)_xyz_n_rgba_uv.ply wasn't loaded" << std::endl;
-		bAllGood = false;
-	}
-
-	errors = ssError.str();
-
-	return bAllGood;
-}
+// MOVED: bool LoadModelTypes(GLint shadProgID, std::string &errors)
 
 //struct sLight
 //{
@@ -847,7 +549,7 @@ void SetUpTheLights(GLint shaderProgID)
 	// Set the #0 light to white
 	::g_vecLights[0].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-
+	// Load all the uniform variables for these lights:
 	::g_vecLights[0].UniLoc_Position = glGetUniformLocation( shaderProgID, "theLights[0].Position" );
 	::g_vecLights[0].UniLoc_Diffuse = glGetUniformLocation( shaderProgID, "theLights[0].Diffuse" );
 	::g_vecLights[0].UniLoc_AttenAndLight = glGetUniformLocation( shaderProgID, "theLights[0].AttenAndType" );
@@ -859,6 +561,26 @@ void SetUpTheLights(GLint shaderProgID)
 	::g_vecLights[2].UniLoc_Position = glGetUniformLocation( shaderProgID, "theLights[2].Position" );
 	::g_vecLights[2].UniLoc_Diffuse = glGetUniformLocation( shaderProgID, "theLights[2].Diffuse" );
 	::g_vecLights[2].UniLoc_AttenAndLight = glGetUniformLocation( shaderProgID, "theLights[2].AttenAndType" );
+
+
+	// Set up the light values, too
+	::g_vecLights[0].position = glm::vec3( 2.0f, 2.0f, 0.0f );
+	::g_vecLights[0].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	::g_vecLights[0].attenConst = 0.0f;
+	::g_vecLights[0].attenLinear = 0.324f;		// Why this number? It looked nice!
+	::g_vecLights[0].attenQuad = 0.0115f;		// Same with this number!
+
+	::g_vecLights[1].position = glm::vec3( 2.0f, 2.0f, 0.0f );
+	::g_vecLights[1].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	::g_vecLights[1].attenConst = 0.0f;
+	::g_vecLights[1].attenLinear = 0.324f;		// Why this number? It looked nice!
+	::g_vecLights[1].attenQuad = 0.0115f;		// Same with this number!
+
+	::g_vecLights[2].position = glm::vec3( 2.0f, 2.0f, 0.0f );
+	::g_vecLights[2].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	::g_vecLights[2].attenConst = 0.0f;
+	::g_vecLights[2].attenLinear = 0.324f;		// Why this number? It looked nice!
+	::g_vecLights[2].attenQuad = 0.0115f;		// Same with this number!
 
 	return;
 }
@@ -919,6 +641,97 @@ void DoPhysicsIntegrationUpdate(double deltaTime)
 
 		pCurMesh = NULL;
 	}
+
+
+	return;
+}
+
+void DrawDebugLightSpheres(void)
+{
+	// Static so it's created one (not over and over again)
+	// (before main is called, not that it matters with this object)
+	static cLightHelper theLightHelper;
+
+
+	// **************************************
+	if ( ::g_bTurnOnDebugLightSpheres )
+	{
+
+		::g_pTheLightAttenMesh[0]->bIsVisible  = 
+		::g_pTheLightAttenMesh[1]->bIsVisible = 
+		::g_pTheLightAttenMesh[2]->bIsVisible = true;
+
+		::g_pTheLightMesh->bIsVisible = true;
+
+		// Take the other 4 meshes and change the location to where the light is
+		::g_pTheLightMesh->pos 
+			= ::g_pTheLightAttenMesh[1]->pos 
+			= ::g_pTheLightAttenMesh[2]->pos
+			= ::g_pTheLightAttenMesh[3]->pos = ::g_vecLights[::g_SelectedLightID].position;
+
+
+		//// move that light mesh to where the light is at, yo
+		::g_pTheLightMesh->pos = ::g_vecLights[::g_SelectedLightID].position;
+		::g_pTheLightMesh->scale = 0.01f;
+		::g_pTheLightMesh->colour = glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::WHITE ), 1.0f);
+
+
+		// Draw sphere 0 at 1% brightness
+		float distance = theLightHelper.calcApproxDistFromAtten
+			( 0.01f,   
+				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
+				cLightHelper::DEFAULTINFINITEDISTANCE, 
+				::g_vecLights[::g_SelectedLightID].attenConst,
+				::g_vecLights[::g_SelectedLightID].attenLinear, 
+				::g_vecLights[::g_SelectedLightID].attenQuad );
+		::g_pTheLightAttenMesh[0]->scale = distance;
+
+		::g_pTheLightAttenMesh[0]->bDontLightObject = true;
+		::g_pTheLightAttenMesh[0]->bUseColourAlphaValue = true;
+		::g_pTheLightAttenMesh[0]->colourSource = cMeshObject::USE_OBJECT_COLOUR;
+		::g_pTheLightAttenMesh[0]->colour = glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::DARK_GRAY ), 1.0f);
+
+		// Draw sphere 0 at 50% brightness
+		distance = theLightHelper.calcApproxDistFromAtten
+			( 0.50f,   
+				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
+				cLightHelper::DEFAULTINFINITEDISTANCE, 
+				::g_vecLights[::g_SelectedLightID].attenConst,
+				::g_vecLights[::g_SelectedLightID].attenLinear, 
+				::g_vecLights[::g_SelectedLightID].attenQuad );
+		::g_pTheLightAttenMesh[1]->scale = distance;
+
+		::g_pTheLightAttenMesh[1]->bDontLightObject = true;
+		::g_pTheLightAttenMesh[1]->bUseColourAlphaValue = true;
+		::g_pTheLightAttenMesh[1]->colourSource = cMeshObject::USE_OBJECT_COLOUR;
+		::g_pTheLightAttenMesh[1]->colour = glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::LIGHT_SALMON ), 1.0f);
+
+
+		// Draw sphere 0 at 90% brightness
+		distance = theLightHelper.calcApproxDistFromAtten
+			( 0.90f,   
+				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
+				cLightHelper::DEFAULTINFINITEDISTANCE, 
+				::g_vecLights[::g_SelectedLightID].attenConst,
+				::g_vecLights[::g_SelectedLightID].attenLinear, 
+				::g_vecLights[::g_SelectedLightID].attenQuad );
+
+		::g_pTheLightAttenMesh[2]->scale = distance;
+
+		::g_pTheLightAttenMesh[2]->bDontLightObject = true;
+		::g_pTheLightAttenMesh[2]->bUseColourAlphaValue = true;
+		::g_pTheLightAttenMesh[2]->colourSource = cMeshObject::USE_OBJECT_COLOUR;
+		::g_pTheLightAttenMesh[2]->colour = glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::CYAN ), 1.0f);
+
+	}//if ( ::g_bTurnOnDebugLightSpheres )
+	else
+	{
+		// Don't Draw the light spheres
+		::g_pTheLightAttenMesh[0]->bIsVisible  = 
+		::g_pTheLightAttenMesh[1]->bIsVisible = 
+		::g_pTheLightAttenMesh[2]->bIsVisible = false;
+		::g_pTheLightMesh->bIsVisible = false;
+	}//if ( ::g_bTurnOnDebugLightSpheres )
 
 
 	return;

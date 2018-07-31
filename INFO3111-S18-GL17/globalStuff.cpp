@@ -1,4 +1,4 @@
-#include "commonEngineStuff.h"
+#include "globalStuff.h"
 
 std::vector< cMeshObject* > g_vec_pMeshObjects;
 
@@ -32,3 +32,9 @@ cMeshObject* g_pFindObjectByFriendlyName(std::string name)
 
 	return NULL;
 }
+
+//const unsigned int NUMLIGHTS = 10;
+std::vector<sLight> g_vecLights;
+
+// When true, the DoPhysicsUpdate is called.
+bool g_bDoEulerPhysicsUpdate = false;	

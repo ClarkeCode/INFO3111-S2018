@@ -9,16 +9,21 @@
     <ClCompile Include="cVAOManager.cpp" />
     <ClCompile Include="cLightHelper.cpp" />
     <ClCompile Include="ObjectLoadingStuff.cpp" />
-    <ClCompile Include="commonEngineStuff.cpp" />
+    <ClCompile Include="ProcessInputAsync.cpp" />
+    <ClCompile Include="key_callback_GLFW.cpp" />
+    <ClCompile Include="sLight.cpp" />
+    <ClCompile Include="globalStuff.cpp" />
+    <ClCompile Include="CGLColourHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cMeshObject.h" />
     <ClInclude Include="cShaderManager.h" />
-    <ClInclude Include="globalOpenGLStuff.h" />
     <ClInclude Include="linmath.h" />
     <ClInclude Include="cVAOManager.h" />
     <ClInclude Include="cLightHelper.h" />
-    <ClInclude Include="commonEngineStuff.h" />
+    <ClInclude Include="sLight.h" />
+    <ClInclude Include="globalStuff.h" />
+    <ClInclude Include="CGLColourHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">

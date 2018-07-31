@@ -1,8 +1,8 @@
-//#include <vector>
-//#include "cMeshObject.h"
-#include <glm/glm.hpp>
+#include "globalStuff.h"
 
-#include "commonEngineStuff.h"
+#include <glm/glm.hpp>
+#include <sstream>
+
 //extern std::vector< cMeshObject* > g_vec_pMeshObjects;
 //
 //extern cMeshObject* g_pTheLightMesh = 0;		// or NULL
@@ -11,6 +11,7 @@
 #include "cVAOManager.h"	
 // Should be in a header somewhere... 
 extern cVAOManager* g_pTheVAOManager;// = 0;
+
 
 
 //std::vector< cMeshObject* > g_vec_pMeshObjects;
@@ -234,4 +235,89 @@ void LoadObjectsIntoScene(void)
 
 
 	return;
+}
+
+bool LoadModelTypes(GLint shadProgID, std::vector<std::string> vecModelNames, std::string &errors)
+{
+	bool bAllGood = true;
+
+	std::stringstream ssError;
+
+	for ( std::vector<std::string>::iterator itModelName = vecModelNames.begin(); 
+		  itModelName != vecModelNames.end(); itModelName++ )
+	{
+		sModelDrawInfo theModel;
+		if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( *itModelName, theModel, shadProgID ) )
+		{
+			ssError << "ERROR: " << *itModelName << " wasn't loaded" << std::endl;
+			bAllGood = false;
+		}
+	}// for ( ...iterator itModelName...
+
+	errors = ssError.str();
+
+	return bAllGood;
+}
+
+
+
+bool LoadModelTypes(GLint shadProgID, std::string &errors)
+{
+	std::stringstream ssError;
+
+	bool bAllGood = true;
+
+//	"bun_zipper_res2_xyz.ply", "ssj100_xyz.ply", "building_xyz.ply"
+	sModelDrawInfo bunny;
+	if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( "bun_zipper_res2_xyz_n_rgba_uv.ply", bunny, shadProgID ) )
+	{
+		ssError << "ERROR: bun_zipper_res2_xyz_n_rgba_uv.ply wasn't loaded" << std::endl;
+		bAllGood = false;
+	}
+
+	sModelDrawInfo cow;
+	if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( "cow_xyz_n_rgba_uv.ply", cow, shadProgID ) )
+	{
+		ssError << "ERROR: cow_xyz_n_rgba_uv.ply wasn't loaded" << std::endl;
+		bAllGood = false;
+	}	
+
+	sModelDrawInfo airplane;
+	if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( "ssj100_xyz_n_rgba_uv.ply", airplane, shadProgID ) )
+	{
+		ssError << "ERROR: ssj100_xyz_n_rgba_uv.ply wasn't loaded" << std::endl;
+		bAllGood = false;
+	}
+
+	sModelDrawInfo arena;
+	if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( "free_arena_ASCII_xyz_n_rgba_uv.ply", arena, shadProgID ) )
+	{
+		ssError << "ERROR: free_arena_ASCII_xyz_n_rgba_uv.ply wasn't loaded" << std::endl;
+		bAllGood = false;
+	}
+
+	sModelDrawInfo terrain;
+	if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( "CrappyTerrain_xyz_n_rgba_uv.ply", terrain, shadProgID ) )
+	{
+		ssError << "ERROR: CrappyTerrain_xyz_n_rgba_uv.ply wasn't loaded" << std::endl;
+		bAllGood = false;
+	}
+
+	sModelDrawInfo sphere;
+	if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( "isosphere_smooth_xyz_n_rgba_uv.ply", sphere, shadProgID ) )
+	{
+		ssError << "ERROR: isosphere_smooth_xyz_n_rgba_uv.ply wasn't loaded" << std::endl;
+		bAllGood = false;
+	}
+
+	sModelDrawInfo UseTheForceLuke;
+	if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( "X-Wing_Attack_(33569 faces)_xyz_n_rgba_uv.ply", UseTheForceLuke, shadProgID ) )
+	{
+		ssError << "ERROR: X-Wing_Attack_(33569 faces)_xyz_n_rgba_uv.ply wasn't loaded" << std::endl;
+		bAllGood = false;
+	}
+
+	errors = ssError.str();
+
+	return bAllGood;
 }
