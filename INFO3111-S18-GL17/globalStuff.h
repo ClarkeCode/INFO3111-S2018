@@ -13,6 +13,10 @@
 
 #include "CGLColourHelper.h"
 
+#include "cShaderManager.h"
+
+#include "cVAOManager.h"
+
 // Put common stuff in the header 
 // ALWAYS use header variables as extern
 // NEVER "regular" variables
@@ -54,7 +58,10 @@ extern std::vector<sLight> g_vecLights;
 // When true, the DoPhysicsUpdate is called.
 extern bool g_bDoEulerPhysicsUpdate;// = false;		
 
-
+void DrawObject( cMeshObject* pCurMesh, 
+				 cShaderManager::cShaderProgram* pShaderProg,	// To get at uniforms
+				 cVAOManager* pVAOManager,
+				 glm::mat4 matParentModel);
 
 
 #endif

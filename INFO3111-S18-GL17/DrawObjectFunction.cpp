@@ -4,9 +4,13 @@
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
 
 #include "cMeshObject.h"
+#include "cShaderManager.h"
+#include "cVAOManager.h"
 
-
-void DrawObject(cMeshObject* pCurMesh, glm::mat4 matParentModel)
+void DrawObject( cMeshObject* pCurMesh, 
+				 cShaderManager::cShaderProgram* pShaderProg,	// To get at uniforms
+				 cVAOManager* pVAOManager,
+				 glm::mat4 matParentModel )
 {
 	// Is this visible
 	if ( ! pCurMesh->bIsVisible )
@@ -76,35 +80,49 @@ void DrawObject(cMeshObject* pCurMesh, glm::mat4 matParentModel)
 	switch ( pCurMesh->colourSource )
 	{
 		case cMeshObject::USE_VERTEX_COLOURS:
-			glUniform1f( bUseVertexColour_UniLoc, GL_TRUE );
+			glUniform1f( pShaderProg->getUniformID_From_Name("bUseVertexColour"), 
+						 GL_TRUE );
+//			glUniform1f( bUseVertexColour_UniLoc, GL_TRUE );
 			break;
 
 		case cMeshObject::USE_OBJECT_COLOUR:
-			glUniform1f( bUseVertexColour_UniLoc, GL_FALSE );
-			glUniform4f( meshColourRGBA_UniLoc,			
+			glUniform1f( pShaderProg->getUniformID_From_Name("bUseVertexColour"), GL_FALSE );
+			//glUniform1f( bUseVertexColour_UniLoc, GL_FALSE );
+			glUniform4f( pShaderProg->getUniformID_From_Name("meshColourRGBA"),			
 							pCurMesh->colour.x, 
 							pCurMesh->colour.y,
 							pCurMesh->colour.z,
 							pCurMesh->colour.a );
+			//glUniform4f( meshColourRGBA_UniLoc,			
+			//				pCurMesh->colour.x, 
+			//				pCurMesh->colour.y,
+			//				pCurMesh->colour.z,
+			//				pCurMesh->colour.a );
 			break;
 
 		default:	
 			// This shouldn't happen, so set it to "hot pink" to show error
-			glUniform1f( bUseVertexColour_UniLoc, GL_FALSE );
-			glUniform4f( meshColourRGBA_UniLoc,	255.0f, 105.0f/255.0f, 180.0f/255.0f, 1.0f );
+			glUniform1f( pShaderProg->getUniformID_From_Name("bUseVertexColour"), GL_FALSE );
+			glUniform4f( pShaderProg->getUniformID_From_Name("meshColourRGBA"),	255.0f, 105.0f/255.0f, 180.0f/255.0f, 1.0f );
+			//glUniform1f( bUseVertexColour_UniLoc, GL_FALSE );
+			//glUniform4f( meshColourRGBA_UniLoc,	255.0f, 105.0f/255.0f, 180.0f/255.0f, 1.0f );
 			break;
 
 	}//switch ( pCurMesh->colourSource )
 
 	// Alpha (transparency) taken from vertex values or mesh 'colour' value?
-	glUniform1f( bUse_vColourRGBA_AlphaValue_UniLoc,
+	glUniform1f( pShaderProg->getUniformID_From_Name("bUse_vColourRGBA_AlphaValue"),
 					(pCurMesh->bUseColourAlphaValue ? (float)GL_TRUE : (float)GL_FALSE) );
+	//glUniform1f( bUse_vColourRGBA_AlphaValue_UniLoc,
+	//				(pCurMesh->bUseColourAlphaValue ? (float)GL_TRUE : (float)GL_FALSE) );
 
 	// Use vertex (model) colours or overall (mesh 'colour') value for diffuse
 
 
-	glUniform1f( bDontLightObject_UniLoc,
+	glUniform1f( pShaderProg->getUniformID_From_Name("bDontLightObject"),
 					(pCurMesh->bDontLightObject ? (float)GL_TRUE : (float)GL_FALSE) );
+	//glUniform1f( bDontLightObject_UniLoc,
+	//				(pCurMesh->bDontLightObject ? (float)GL_TRUE : (float)GL_FALSE) );
 
 
 	// Is it wireframe? 
@@ -122,20 +140,20 @@ void DrawObject(cMeshObject* pCurMesh, glm::mat4 matParentModel)
 	}
 
 
-	glUniformMatrix4fv( matModel_UniLoc, 
+	glUniformMatrix4fv( pShaderProg->getUniformID_From_Name("matModel"),	//matModel_UniLoc, 
 						1, 
 						GL_FALSE, 
 						glm::value_ptr(matModel));	
 
-	glUniformMatrix4fv( matView_Uniloc, 
-						1, 
-						GL_FALSE, 
-						glm::value_ptr(matView));	
+	//glUniformMatrix4fv( pShaderProg->getUniformID_From_Name("matView"),		//matView_Uniloc, 
+	//					1, 
+	//					GL_FALSE, 
+	//					glm::value_ptr(matView));	
 
-	glUniformMatrix4fv( matProj_Uniloc, 
-						1, 
-						GL_FALSE, 
-						glm::value_ptr(matProjection));	
+	//glUniformMatrix4fv( pShaderProg->getUniformID_From_Name("matProj"),		//matProj_Uniloc, 
+	//					1, 
+	//					GL_FALSE, 
+	//					glm::value_ptr(matProjection));	
 
 
 	//		glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -143,7 +161,7 @@ void DrawObject(cMeshObject* pCurMesh, glm::mat4 matParentModel)
 
 	// Figure out what model we are loading
 	sModelDrawInfo modelInfo;
-	if ( ::g_pTheVAOManager->FindDrawInfoByModelName( pCurMesh->meshName, modelInfo ) )
+	if ( pVAOManager->FindDrawInfoByModelName( pCurMesh->meshName, modelInfo ) )
 	{	// We found something
 
 		// Connect the buffers + vertex attribs to this particular model
@@ -159,3 +177,7 @@ void DrawObject(cMeshObject* pCurMesh, glm::mat4 matParentModel)
 		glBindVertexArray( 0 );
 	}
 	// Else we DON'T draw it
+
+
+	return;
+}

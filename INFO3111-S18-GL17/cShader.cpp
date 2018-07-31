@@ -39,7 +39,7 @@ std::string cShaderManager::cShader::getShaderTypeString(void)
 //						mapUniformName_to_UniformLocation;
 
 // Look up the uniform inside the shader, then save it, if it finds it
-bool cShaderManager::cShader::LoadUniformLocation(std::string variableName)
+bool cShaderManager::cShaderProgram::LoadUniformLocation(std::string variableName)
 {
 	// 
 	GLint uniLocation = glGetUniformLocation(this->ID, 
@@ -56,7 +56,7 @@ bool cShaderManager::cShader::LoadUniformLocation(std::string variableName)
 }
 
 // Look up the uniform location and save it.
-int cShaderManager::cShader::getUniformID_From_Name(std::string name)
+int cShaderManager::cShaderProgram::getUniformID_From_Name(std::string name)
 {
 	std::map< std::string /*name of uniform variable*/,
 			  int /* uniform location ID */ >::iterator 
