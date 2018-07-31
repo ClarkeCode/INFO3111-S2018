@@ -15,6 +15,9 @@
     <ClCompile Include="globalStuff.cpp" />
     <ClCompile Include="CGLColourHelper.cpp" />
     <ClCompile Include="DrawObjectFunction.cpp" />
+    <ClCompile Include="MyTestFile.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cMeshObject.h" />
