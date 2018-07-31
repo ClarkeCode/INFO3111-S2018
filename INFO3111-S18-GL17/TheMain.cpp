@@ -141,18 +141,29 @@ int main(void)
 
 	//mvp_location = glGetUniformLocation(shadProgID, "MVP");		// program
 
-	GLint matModel_UniLoc = glGetUniformLocation(shadProgID, "matModel");
-	GLint matView_Uniloc = glGetUniformLocation(shadProgID, "matView");
-	GLint matProj_Uniloc = glGetUniformLocation(shadProgID, "matProjection");
+//	GLint matModel_UniLoc = glGetUniformLocation(shadProgID, "matModel");
+//	GLint matView_Uniloc = glGetUniformLocation(shadProgID, "matView");
+//	GLint matProj_Uniloc = glGetUniformLocation(shadProgID, "matProjection");
 
 	// If it returns -1, then it didn't find it.
-	GLint meshColourRGBA_UniLoc = glGetUniformLocation(shadProgID, "meshColourRGBA");
-	GLint bUse_vColourRGBA_AlphaValue_UniLoc = glGetUniformLocation(shadProgID, "bUse_vColourRGBA_AlphaValue");
-	GLint bUseVertexColour_UniLoc = glGetUniformLocation(shadProgID, "bUseVertexColour");
+//	GLint meshColourRGBA_UniLoc = glGetUniformLocation(shadProgID, "meshColourRGBA");
+//	GLint bUse_vColourRGBA_AlphaValue_UniLoc = glGetUniformLocation(shadProgID, "bUse_vColourRGBA_AlphaValue");
+//	GLint bUseVertexColour_UniLoc = glGetUniformLocation(shadProgID, "bUseVertexColour");
 
-	GLint bDontLightObject_UniLoc = glGetUniformLocation(shadProgID, "bDontLightObject" );
+//	GLint bDontLightObject_UniLoc = glGetUniformLocation(shadProgID, "bDontLightObject" );
 	
 	// Shader uniform variables
+	// Get the shader by name (so we can load the unforms)
+	cShaderManager::cShaderProgram* pShader = 
+		::g_pTheShaderManager->pGetShaderProgramFromFriendlyName("simpleshader");
+
+	pShader->LoadUniformLocation( "bDontLightObject" );
+	pShader->LoadUniformLocation( "bUseVertexColour" );
+	pShader->LoadUniformLocation( "bUse_vColourRGBA_AlphaValue" );
+	pShader->LoadUniformLocation( "meshColourRGBA" );
+	pShader->LoadUniformLocation( "matProjection" );
+	pShader->LoadUniformLocation( "matView" );
+	pShader->LoadUniformLocation( "matModel" );
 
 	// The light values...
 	SetUpTheLights(shadProgID);
@@ -324,6 +335,20 @@ int main(void)
 
 		// Start of the objects in the scene... 
 
+		cShaderManager::cShaderProgram* pShaderProgram = 
+			::g_pTheShaderManager->pGetShaderProgramFromFriendlyName("simpleshader");
+
+		glUniformMatrix4fv( pShaderProgram->getUniformID_From_Name("matView"),		//matView_Uniloc, 
+				1, 
+				GL_FALSE, 
+				glm::value_ptr(matView));	
+
+		glUniformMatrix4fv( pShaderProgram->getUniformID_From_Name("matProjection"),		//matProj_Uniloc, 
+				1, 
+				GL_FALSE, 
+				glm::value_ptr(matProjection));	
+
+
 		unsigned int numberOfObjects = 
 			static_cast<unsigned int>(::g_vec_pMeshObjects.size() );
 
@@ -336,7 +361,11 @@ int main(void)
 
 			glm::mat4 matParentModel = glm::mat4(1.0f);		
 
-			DrawObject(pCurMesh, matParentModel);
+
+			DrawObject( pCurMesh, 
+						pShaderProgram,
+						::g_pTheVAOManager,
+						matParentModel);
 
 		}// for(...
 		// At this point, all the objects in the "main scene" 
