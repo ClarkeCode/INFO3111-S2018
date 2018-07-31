@@ -26,8 +26,9 @@ extern GLFWwindow* g_window;// = 0;
 
 extern std::vector< cMeshObject* > g_vec_pMeshObjects;
 
-extern cMeshObject* g_pTheLightMesh;		// or NULL
-extern cMeshObject* g_pTheLightAttenMesh[4];		// or NULL
+// These are no longer being used...
+//extern cMeshObject* g_pTheLightMesh;		// or NULL
+//extern cMeshObject* g_pTheLightAttenMesh[4];		// or NULL
 extern cMeshObject* g_pDebugSphere; 
 
 // And common functions that are called.

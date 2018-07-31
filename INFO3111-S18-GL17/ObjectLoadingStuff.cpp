@@ -17,52 +17,75 @@ extern cVAOManager* g_pTheVAOManager;// = 0;
 //std::vector< cMeshObject* > g_vec_pMeshObjects;
 void LoadObjectsIntoScene(void)
 {
-
-
+	// The "debug sphere" that replaces all of the other spheres for the lights, etc.
 	{// Add an object into the "scene"
-		::g_pTheLightMesh = new cMeshObject(); 
+		::g_pDebugSphere = new cMeshObject(); 
 
-		::g_pTheLightMesh->meshName = "isosphere_smooth_xyz_n_rgba_uv.ply";
+		::g_pDebugSphere->meshName = "isosphere_smooth_xyz_n_rgba_uv.ply";
 
-		::g_pTheLightMesh->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
-		::g_pTheLightMesh->colour = glm::vec4( 142.0f/255.0f, 
-								   205.0f/255.0f,
-									49.0f/255.0f,
-									 1.0f );		// Transparency 'alpha'
+		::g_pDebugSphere->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
+		::g_pDebugSphere->colour = glm::vec4( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		// Get the "unit" scale from the VAOManager
 		sModelDrawInfo modelInfo;
-		::g_pTheVAOManager->FindDrawInfoByModelName ( ::g_pTheLightMesh->meshName, 
-													  modelInfo );
+		::g_pTheVAOManager->FindDrawInfoByModelName ( ::g_pDebugSphere->meshName, 
+														modelInfo );
 		//::g_pTheLightMesh->scale = 0.1f;
-		::g_pTheLightMesh->scale = 1.0f / modelInfo.maxExtent;
+		::g_pDebugSphere->scale = 1.0f / modelInfo.maxExtent;
 
+		::g_pDebugSphere->isWireframe = false;
 
-		::g_pTheLightMesh->isWireframe = false;
+		::g_pDebugSphere->bDontLightObject = true;
 
-		::g_pTheLightMesh->bDontLightObject = true;
-
-		::g_vec_pMeshObjects.push_back( ::g_pTheLightMesh );
+		// DON'T put this into the "scene" object (the "vector of things to draw")
+		//::g_vec_pMeshObjects.push_back( ::g_pTheLightMesh );
 	}	
-	// Load the spheres to show the attenuation
-	for ( unsigned int index = 0; index != 4; index++ )
-	{
-		::g_pTheLightAttenMesh[index] = new cMeshObject(); 
 
-		::g_pTheLightAttenMesh[index]->meshName = "isosphere_smooth_xyz_n_rgba_uv.ply";
 
-		::g_pTheLightAttenMesh[index]->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
-		::g_pTheLightAttenMesh[index]->colour = glm::vec4( 142.0f/255.0f, 
-								   205.0f/255.0f,
-									49.0f/255.0f,
-									 1.0f );		// Transparency 'alpha'
-		::g_pTheLightAttenMesh[index]->scale = 0.1f;
-		::g_pTheLightAttenMesh[index]->isWireframe = true;
+	//{// Add an object into the "scene"
+	//	::g_pTheLightMesh = new cMeshObject(); 
 
-		::g_pTheLightAttenMesh[index]->bDontLightObject = true;
+	//	::g_pTheLightMesh->meshName = "isosphere_smooth_xyz_n_rgba_uv.ply";
 
-		::g_vec_pMeshObjects.push_back( ::g_pTheLightAttenMesh[index] );
-	}
+	//	::g_pTheLightMesh->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
+	//	::g_pTheLightMesh->colour = glm::vec4( 142.0f/255.0f, 
+	//							   205.0f/255.0f,
+	//								49.0f/255.0f,
+	//								 1.0f );		// Transparency 'alpha'
+
+	//	// Get the "unit" scale from the VAOManager
+	//	sModelDrawInfo modelInfo;
+	//	::g_pTheVAOManager->FindDrawInfoByModelName ( ::g_pTheLightMesh->meshName, 
+	//												  modelInfo );
+	//	//::g_pTheLightMesh->scale = 0.1f;
+	//	::g_pTheLightMesh->scale = 1.0f / modelInfo.maxExtent;
+
+
+	//	::g_pTheLightMesh->isWireframe = false;
+
+	//	::g_pTheLightMesh->bDontLightObject = true;
+
+	//	::g_vec_pMeshObjects.push_back( ::g_pTheLightMesh );
+	//}	
+	//// Load the spheres to show the attenuation
+	//for ( unsigned int index = 0; index != 4; index++ )
+	//{
+	//	::g_pTheLightAttenMesh[index] = new cMeshObject(); 
+
+	//	::g_pTheLightAttenMesh[index]->meshName = "isosphere_smooth_xyz_n_rgba_uv.ply";
+
+	//	::g_pTheLightAttenMesh[index]->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
+	//	::g_pTheLightAttenMesh[index]->colour = glm::vec4( 142.0f/255.0f, 
+	//							   205.0f/255.0f,
+	//								49.0f/255.0f,
+	//								 1.0f );		// Transparency 'alpha'
+	//	::g_pTheLightAttenMesh[index]->scale = 0.1f;
+	//	::g_pTheLightAttenMesh[index]->isWireframe = true;
+
+	//	::g_pTheLightAttenMesh[index]->bDontLightObject = true;
+
+	//	::g_vec_pMeshObjects.push_back( ::g_pTheLightAttenMesh[index] );
+	//}
 
 
 	{// Add an object into the "scene"
