@@ -24,6 +24,7 @@ extern std::vector< cMeshObject* > g_vec_pMeshObjects;
 
 extern cMeshObject* g_pTheLightMesh;		// or NULL
 extern cMeshObject* g_pTheLightAttenMesh[4];		// or NULL
+extern cMeshObject* g_pDebugSphere; 
 
 // And common functions that are called.
 // (signatures here)

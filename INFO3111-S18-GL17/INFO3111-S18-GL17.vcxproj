@@ -159,6 +159,7 @@
     <ClCompile Include="CGLColourHelper.cpp" />
     <ClCompile Include="cLightHelper.cpp" />
     <ClCompile Include="cMeshObject.cpp" />
+    <ClCompile Include="DrawObjectFunction.cpp" />
     <ClCompile Include="globalStuff.cpp" />
     <ClCompile Include="cShader.cpp" />
     <ClCompile Include="cShaderManager.cpp" />

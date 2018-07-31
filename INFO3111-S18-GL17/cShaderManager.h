@@ -25,6 +25,16 @@ public:
 		std::vector<std::string> vecSource;
 		bool bSourceIsMultiLine;
 		std::string fileName;
+
+		// TODO: For the students to do, because it's FUN, FUN, FUN
+		std::map< std::string /*name of uniform variable*/,
+		          int /* uniform location ID */ > 
+								mapUniformName_to_UniformLocation;
+		// Returns -1 (just like OpenGL) if NOT found
+		int getUniformID_From_Name(std::string name);
+		// Look up the uniform location and save it.
+		bool LoadUniformLocation(std::string variableName);
+			
 	};
 
 	class cShaderProgram {
