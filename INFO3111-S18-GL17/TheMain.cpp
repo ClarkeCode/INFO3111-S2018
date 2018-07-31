@@ -64,6 +64,10 @@ void CopyLightInfoToShader( unsigned int numberOfLightsToCopy );
 
 //void DrawDebugLightSpheres(void);
 void DrawDebugLightSpheres(cShaderManager::cShaderProgram* pShaderProgram);
+void DrawDebugLightSpheres2(cShaderManager::cShaderProgram* pShaderProgram);
+//// A more general draw sphere
+//void DrawDebugSphere( cShaderManager::cShaderProgram* pShaderProgram, 
+//					  glm::vec3 position, glm::vec4 colour, float scale);
 
 
 static void error_callback(int error, const char* description)
@@ -332,8 +336,8 @@ int main(void)
 
 		// **************************************
 		// MOVED: if ( ::g_bTurnOnDebugLightSpheres )
-		DrawDebugLightSpheres(pShaderProgram);
-
+		//DrawDebugLightSpheres(pShaderProgram);
+		DrawDebugLightSpheres2(pShaderProgram);
 
 
 
@@ -533,6 +537,97 @@ void DoPhysicsIntegrationUpdate(double deltaTime)
 
 		pCurMesh = NULL;
 	}
+
+
+	return;
+}
+
+void DrawDebugSphere( cShaderManager::cShaderProgram* pShaderProgram, 
+					  glm::vec3 position, glm::vec4 colour, float scale)
+{
+	bool bOldState = ::g_pDebugSphere->bIsVisible;
+
+	::g_pDebugSphere->pos = position;
+	::g_pDebugSphere->bIsVisible = true;
+	::g_pDebugSphere->bDontLightObject = true;
+	::g_pDebugSphere->bUseColourAlphaValue = true;
+	::g_pDebugSphere->isWireframe = true;
+	::g_pDebugSphere->colourSource = cMeshObject::USE_OBJECT_COLOUR;
+
+
+	// Draw centre of light (the position)
+	::g_pDebugSphere->scale = scale;
+	::g_pDebugSphere->colour = colour;
+	DrawObject( ::g_pDebugSphere, pShaderProgram, ::g_pTheVAOManager, glm::mat4(1.0f) );
+
+
+	// Restore it
+	::g_pDebugSphere->bIsVisible = bOldState;
+
+	return;
+}
+void DrawDebugLightSpheres2(cShaderManager::cShaderProgram* pShaderProgram)
+{
+	// Static so it's created one (not over and over again)
+	// (before main is called, not that it matters with this object)
+	static cLightHelper theLightHelper;
+
+
+	// **************************************
+	if ( ::g_bTurnOnDebugLightSpheres )
+	{
+		// Draw centre of light (the position)
+		DrawDebugSphere( pShaderProgram, 
+						  ::g_vecLights[::g_SelectedLightID].position, 
+						  glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::WHITE ), 1.0f),
+						  0.01f );
+
+
+
+		// Draw sphere 0 at 1% brightness
+		float distance = theLightHelper.calcApproxDistFromAtten
+			( 0.01f,   
+				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
+				cLightHelper::DEFAULTINFINITEDISTANCE, 
+				::g_vecLights[::g_SelectedLightID].attenConst,
+				::g_vecLights[::g_SelectedLightID].attenLinear, 
+				::g_vecLights[::g_SelectedLightID].attenQuad );
+		DrawDebugSphere( pShaderProgram, 
+						  ::g_vecLights[::g_SelectedLightID].position, 
+						  glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::DARK_GRAY ), 1.0f),
+						  distance );
+
+
+
+
+		// Draw sphere 0 at 50% brightness
+		distance = theLightHelper.calcApproxDistFromAtten
+			( 0.50f,   
+				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
+				cLightHelper::DEFAULTINFINITEDISTANCE, 
+				::g_vecLights[::g_SelectedLightID].attenConst,
+				::g_vecLights[::g_SelectedLightID].attenLinear, 
+				::g_vecLights[::g_SelectedLightID].attenQuad );
+		DrawDebugSphere( pShaderProgram, 
+						  ::g_vecLights[::g_SelectedLightID].position, 
+						  glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::LIGHT_SALMON ), 1.0f),
+						  distance );
+
+
+		// Draw sphere 0 at 90% brightness
+		distance = theLightHelper.calcApproxDistFromAtten
+			( 0.90f,   
+				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
+				cLightHelper::DEFAULTINFINITEDISTANCE, 
+				::g_vecLights[::g_SelectedLightID].attenConst,
+				::g_vecLights[::g_SelectedLightID].attenLinear, 
+				::g_vecLights[::g_SelectedLightID].attenQuad );
+		DrawDebugSphere( pShaderProgram, 
+						  ::g_vecLights[::g_SelectedLightID].position, 
+						  glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::CYAN ), 1.0f),
+						  distance );
+
+	}// if ( ::g_bTurnOnDebugLightSpheres )
 
 
 	return;

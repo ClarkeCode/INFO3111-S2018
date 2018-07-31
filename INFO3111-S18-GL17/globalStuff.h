@@ -64,5 +64,10 @@ void DrawObject( cMeshObject* pCurMesh,
 				 cVAOManager* pVAOManager,
 				 glm::mat4 matParentModel);
 
+// A more general draw sphere
+void DrawDebugSphere( cShaderManager::cShaderProgram* pShaderProgram, 
+					  glm::vec3 position, glm::vec4 colour, float scale);
+
+
 
 #endif
