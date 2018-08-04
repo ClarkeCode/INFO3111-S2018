@@ -23,7 +23,7 @@
 //std::vector< cMeshObject* > g_vec_pMeshObjects;
 //cMeshObject* g_pTheLightMesh = 0;		// or NULL
 
-#include "sLight.h"
+//#include "sLight.h"
 
 #include "cLightHelper.h"
 
@@ -59,8 +59,9 @@ cVAOManager* g_pTheVAOManager = 0;
 //const unsigned int NUMLIGHTS = 3;
 //std::vector<sLight> g_vecLights;
 
-void SetUpTheLights(GLint shaderProgID);
-void CopyLightInfoToShader( unsigned int numberOfLightsToCopy );
+// These functions happen in the cLightManager class, now
+//void SetUpTheLights(GLint shaderProgID);
+//void CopyLightInfoToShader( unsigned int numberOfLightsToCopy );
 
 //void DrawDebugLightSpheres(void);
 void DrawDebugLightSpheres(cShaderManager::cShaderProgram* pShaderProgram);
@@ -169,10 +170,55 @@ int main(void)
 	pShader->LoadUniformLocation( "matProjection" );
 	pShader->LoadUniformLocation( "matView" );
 	pShader->LoadUniformLocation( "matModel" );
+	// Added
+	pShader->LoadUniformLocation( "objectSpecularColour" );
+	pShader->LoadUniformLocation( "objectAmbientToDiffuseRatio" );
+	pShader->LoadUniformLocation( "eyeLocation" );
 
 	// The light values...
-	SetUpTheLights(shadProgID);
+	//SetUpTheLights(shadProgID);
+	::g_pLightManager = new cLightManager();
 
+	::g_pLightManager->GenerateLights( NUMLIGHTS, true );
+	std::string lightErrors;
+	if ( ! ::g_pLightManager->InitilizeUniformLocations( pShader->ID, "theLights", NUMLIGHTS, lightErrors ) )
+	{
+		std::cout << lightErrors << std::endl;
+	}
+	else
+	{
+		std::cout << "Light uniforms set up OK." << std::endl;
+	}
+
+	::g_pLightManager->pGetLightAtIndex(0)->SetAsPoint();
+	::g_pLightManager->pGetLightAtIndex(0)->position = glm::vec3(2.0f,2.0f,2.0f);
+	::g_pLightManager->pGetLightAtIndex(0)->diffuse = glm::vec3(1.0f,1.0f,1.0f);
+	::g_pLightManager->pGetLightAtIndex(0)->attenLinear = 0.324f;
+	::g_pLightManager->pGetLightAtIndex(0)->attenQuad = 0.0115f;
+	::g_pLightManager->pGetLightAtIndex(0)->specular = glm::vec3(1.0f,1.0f,1.0f);
+	::g_pLightManager->pGetLightAtIndex(0)->specularPower = 1.0f;
+	::g_pLightManager->pGetLightAtIndex(0)->setAmbientFromDiffuse(0.2f);
+	::g_pLightManager->pGetLightAtIndex(0)->TurnLightOn();
+
+	//::g_pLightManager->pGetLightAtIndex(1)->SetAsPoint();
+	//::g_pLightManager->pGetLightAtIndex(1)->position = glm::vec3(2.0f,2.0f,2.0f);
+	//::g_pLightManager->pGetLightAtIndex(1)->diffuse = glm::vec3(1.0f,1.0f,1.0f);
+	//::g_pLightManager->pGetLightAtIndex(1)->attenLinear = 0.324f;
+	//::g_pLightManager->pGetLightAtIndex(1)->attenQuad = 0.0115f;
+	//::g_pLightManager->pGetLightAtIndex(1)->specular = glm::vec3(1.0f,1.0f,1.0f);
+	//::g_pLightManager->pGetLightAtIndex(1)->specularPower = 1.0f;
+	//::g_pLightManager->pGetLightAtIndex(1)->setAmbientFromDiffuse(0.2f);
+	//::g_pLightManager->pGetLightAtIndex(1)->TurnLightOn();
+
+	//::g_pLightManager->pGetLightAtIndex(2)->SetAsPoint();
+	//::g_pLightManager->pGetLightAtIndex(2)->position = glm::vec3(2.0f,2.0f,2.0f);
+	//::g_pLightManager->pGetLightAtIndex(1)->diffuse = glm::vec3(1.0f,1.0f,1.0f);
+	//::g_pLightManager->pGetLightAtIndex(2)->attenLinear = 0.324f;
+	//::g_pLightManager->pGetLightAtIndex(2)->attenQuad = 0.0115f;
+	//::g_pLightManager->pGetLightAtIndex(2)->specular = glm::vec3(1.0f,1.0f,1.0f);
+	//::g_pLightManager->pGetLightAtIndex(2)->specularPower = 1.0f;
+	//::g_pLightManager->pGetLightAtIndex(2)->setAmbientFromDiffuse(0.2f);
+	//::g_pLightManager->pGetLightAtIndex(2)->TurnLightOn();
 
 
 
@@ -324,7 +370,7 @@ int main(void)
 		cMeshObject* pBugs = ::g_pFindObjectByFriendlyName("Bugs");
 
 		matView = glm::lookAt( cameraEye,		// position (3d space)
-							   pLuke->pos,		// looking at
+							   pBugs->pos,		// looking at
 							   upVector );		// Up vector
 
 
@@ -334,14 +380,23 @@ int main(void)
 			::g_pTheShaderManager->pGetShaderProgramFromFriendlyName("simpleshader");
 
 
+		//CopyLightInfoToShader(NUMLIGHTS);
+		::g_pLightManager->CopyLightInfoToShader();
+
 		// **************************************
 		// MOVED: if ( ::g_bTurnOnDebugLightSpheres )
 		//DrawDebugLightSpheres(pShaderProgram);
 		DrawDebugLightSpheres2(pShaderProgram);
 
+		//DrawDebugSphere( pShaderProgram, 
+		//				 glm::vec3(0.0f, 1.0f, 0.0f), 
+		//				 glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), 
+		//				 0.1f );
+		//DrawDebugSphere( pShaderProgram, 
+		//				 glm::vec3(0.0f, 1.0f, 0.0f), 
+		//				 glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), 
+		//				 0.3f );
 
-
-		CopyLightInfoToShader(NUMLIGHTS);
 
 
 
@@ -354,6 +409,9 @@ int main(void)
 				1, 
 				GL_FALSE, 
 				glm::value_ptr(matProjection));	
+
+		glUniform3f( pShaderProgram->getUniformID_From_Name("eyeLocation"), 
+					 cameraEye.x, cameraEye.y, cameraEye.z );
 
 
 		unsigned int numberOfObjects = 
@@ -401,10 +459,16 @@ int main(void)
 void ShutErDown(void)
 {
 	// 
-	delete ::g_pTheShaderManager;
+	if ( ::g_pTheShaderManager )
+	{
+		delete ::g_pTheShaderManager;
+	}
 
-	::g_pTheVAOManager->ShutDown();
-	delete ::g_pTheVAOManager;
+	if ( ::g_pTheVAOManager )
+	{
+		::g_pTheVAOManager->ShutDown();
+		delete ::g_pTheVAOManager;
+	}
 
 
 	unsigned int vectorSize = (unsigned int)::g_vec_pMeshObjects.size();
@@ -413,6 +477,10 @@ void ShutErDown(void)
 		delete ::g_vec_pMeshObjects[index];
 	}
 
+	if ( ::g_pLightManager )	
+	{ 
+		delete ::g_pLightManager; 
+	}
 
 	return;
 }
@@ -433,75 +501,75 @@ void ShutErDown(void)
 //const unsigned int NUMLIGHTS = 3;
 //std::vector<sLight> g_vecLights;
 
-void SetUpTheLights(GLint shaderProgID)
-{
-	for ( int count = 0; count != NUMLIGHTS; count++ )
-	{
-		sLight tempLight;
-		// Note that the constructor set a bunch of defaults
-		::g_vecLights.push_back( tempLight );
-	}
+//void SetUpTheLights(GLint shaderProgID)
+//{
+//	for ( int count = 0; count != NUMLIGHTS; count++ )
+//	{
+//		sLight tempLight;
+//		// Note that the constructor set a bunch of defaults
+//		::g_vecLights.push_back( tempLight );
+//	}
+//
+//	// Set the #0 light to white
+//	::g_vecLights[0].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+//
+//	// Load all the uniform variables for these lights:
+//	::g_vecLights[0].UniLoc_Position = glGetUniformLocation( shaderProgID, "theLights[0].Position" );
+//	::g_vecLights[0].UniLoc_Diffuse = glGetUniformLocation( shaderProgID, "theLights[0].Diffuse" );
+//	::g_vecLights[0].UniLoc_AttenAndLight = glGetUniformLocation( shaderProgID, "theLights[0].AttenAndType" );
+//
+//	::g_vecLights[1].UniLoc_Position = glGetUniformLocation( shaderProgID, "theLights[1].Position" );
+//	::g_vecLights[1].UniLoc_Diffuse = glGetUniformLocation( shaderProgID, "theLights[1].Diffuse" );
+//	::g_vecLights[1].UniLoc_AttenAndLight = glGetUniformLocation( shaderProgID, "theLights[1].AttenAndType" );
+//
+//	::g_vecLights[2].UniLoc_Position = glGetUniformLocation( shaderProgID, "theLights[2].Position" );
+//	::g_vecLights[2].UniLoc_Diffuse = glGetUniformLocation( shaderProgID, "theLights[2].Diffuse" );
+//	::g_vecLights[2].UniLoc_AttenAndLight = glGetUniformLocation( shaderProgID, "theLights[2].AttenAndType" );
+//
+//
+//	// Set up the light values, too
+//	::g_vecLights[0].position = glm::vec3( 2.0f, 2.0f, 0.0f );
+//	::g_vecLights[0].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+//	::g_vecLights[0].attenConst = 0.0f;
+//	::g_vecLights[0].attenLinear = 0.324f;		// Why this number? It looked nice!
+//	::g_vecLights[0].attenQuad = 0.0115f;		// Same with this number!
+//
+//	::g_vecLights[1].position = glm::vec3( 2.0f, 2.0f, 0.0f );
+//	::g_vecLights[1].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+//	::g_vecLights[1].attenConst = 0.0f;
+//	::g_vecLights[1].attenLinear = 0.324f;		// Why this number? It looked nice!
+//	::g_vecLights[1].attenQuad = 0.0115f;		// Same with this number!
+//
+//	::g_vecLights[2].position = glm::vec3( 2.0f, 2.0f, 0.0f );
+//	::g_vecLights[2].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+//	::g_vecLights[2].attenConst = 0.0f;
+//	::g_vecLights[2].attenLinear = 0.324f;		// Why this number? It looked nice!
+//	::g_vecLights[2].attenQuad = 0.0115f;		// Same with this number!
+//
+//	return;
+//}
 
-	// Set the #0 light to white
-	::g_vecLights[0].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-
-	// Load all the uniform variables for these lights:
-	::g_vecLights[0].UniLoc_Position = glGetUniformLocation( shaderProgID, "theLights[0].Position" );
-	::g_vecLights[0].UniLoc_Diffuse = glGetUniformLocation( shaderProgID, "theLights[0].Diffuse" );
-	::g_vecLights[0].UniLoc_AttenAndLight = glGetUniformLocation( shaderProgID, "theLights[0].AttenAndType" );
-
-	::g_vecLights[1].UniLoc_Position = glGetUniformLocation( shaderProgID, "theLights[1].Position" );
-	::g_vecLights[1].UniLoc_Diffuse = glGetUniformLocation( shaderProgID, "theLights[1].Diffuse" );
-	::g_vecLights[1].UniLoc_AttenAndLight = glGetUniformLocation( shaderProgID, "theLights[1].AttenAndType" );
-
-	::g_vecLights[2].UniLoc_Position = glGetUniformLocation( shaderProgID, "theLights[2].Position" );
-	::g_vecLights[2].UniLoc_Diffuse = glGetUniformLocation( shaderProgID, "theLights[2].Diffuse" );
-	::g_vecLights[2].UniLoc_AttenAndLight = glGetUniformLocation( shaderProgID, "theLights[2].AttenAndType" );
-
-
-	// Set up the light values, too
-	::g_vecLights[0].position = glm::vec3( 2.0f, 2.0f, 0.0f );
-	::g_vecLights[0].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	::g_vecLights[0].attenConst = 0.0f;
-	::g_vecLights[0].attenLinear = 0.324f;		// Why this number? It looked nice!
-	::g_vecLights[0].attenQuad = 0.0115f;		// Same with this number!
-
-	::g_vecLights[1].position = glm::vec3( 2.0f, 2.0f, 0.0f );
-	::g_vecLights[1].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	::g_vecLights[1].attenConst = 0.0f;
-	::g_vecLights[1].attenLinear = 0.324f;		// Why this number? It looked nice!
-	::g_vecLights[1].attenQuad = 0.0115f;		// Same with this number!
-
-	::g_vecLights[2].position = glm::vec3( 2.0f, 2.0f, 0.0f );
-	::g_vecLights[2].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	::g_vecLights[2].attenConst = 0.0f;
-	::g_vecLights[2].attenLinear = 0.324f;		// Why this number? It looked nice!
-	::g_vecLights[2].attenQuad = 0.0115f;		// Same with this number!
-
-	return;
-}
-
-void CopyLightInfoToShader( unsigned int numberOfLightsToCopy )
-{
-	for ( unsigned int index = 0; index != numberOfLightsToCopy; index++ )
-	{
-		sLight &curLight = ::g_vecLights[index];
-
-		glUniform3f( curLight.UniLoc_Position, curLight.position.x, curLight.position.y, curLight.position.z );
-
-		glUniform4f( curLight.UniLoc_Diffuse, 
-					 curLight.diffuseColour.r, curLight.diffuseColour.g, curLight.diffuseColour.b, 
-					 curLight.diffuseColour.a );
-
-		glUniform4f( curLight.UniLoc_AttenAndLight, 
-					 curLight.attenConst, 
-					 curLight.attenLinear, 
-					 curLight.attenQuad, 
-					 1.0f );
-	}//for ( unsigned int index = ...
-
-	return;
-}
+//void CopyLightInfoToShader( unsigned int numberOfLightsToCopy )
+//{
+//	for ( unsigned int index = 0; index != numberOfLightsToCopy; index++ )
+//	{
+//		sLight &curLight = ::g_vecLights[index];
+//
+//		glUniform3f( curLight.UniLoc_Position, curLight.position.x, curLight.position.y, curLight.position.z );
+//
+//		glUniform4f( curLight.UniLoc_Diffuse, 
+//					 curLight.diffuseColour.r, curLight.diffuseColour.g, curLight.diffuseColour.b, 
+//					 curLight.diffuseColour.a );
+//
+//		glUniform4f( curLight.UniLoc_AttenAndLight, 
+//					 curLight.attenConst, 
+//					 curLight.attenLinear, 
+//					 curLight.attenQuad, 
+//					 1.0f );
+//	}//for ( unsigned int index = ...
+//
+//	return;
+//}
 
 
 void DoPhysicsIntegrationUpdate(double deltaTime)
@@ -557,7 +625,7 @@ void DrawDebugSphere( cShaderManager::cShaderProgram* pShaderProgram,
 
 	// Draw centre of light (the position)
 	::g_pDebugSphere->scale = scale;
-	::g_pDebugSphere->colour = colour;
+	::g_pDebugSphere->diffuseColour = colour;
 	DrawObject( ::g_pDebugSphere, pShaderProgram, ::g_pTheVAOManager, glm::mat4(1.0f) );
 
 
@@ -576,24 +644,47 @@ void DrawDebugLightSpheres2(cShaderManager::cShaderProgram* pShaderProgram)
 	// **************************************
 	if ( ::g_bTurnOnDebugLightSpheres )
 	{
+		cLight* pCurLight = ::g_pLightManager->pGetLightAtIndex(::g_SelectedLightID);
+
+		if ( ! pCurLight )
+		{
+			// Light index is invalid
+			return;
+		}
+
 		// Draw centre of light (the position)
+		//DrawDebugSphere( pShaderProgram, 
+		//				  ::g_vecLights[::g_SelectedLightID].position, 
+		//				  glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::WHITE ), 1.0f),
+		//				  0.01f );
 		DrawDebugSphere( pShaderProgram, 
-						  ::g_vecLights[::g_SelectedLightID].position, 
+						  pCurLight->position, 
 						  glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::WHITE ), 1.0f),
 						  0.01f );
 
 
 
 		// Draw sphere 0 at 1% brightness
+		//float distance = theLightHelper.calcApproxDistFromAtten
+		//	( 0.01f,   
+		//		cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
+		//		cLightHelper::DEFAULTINFINITEDISTANCE, 
+		//		::g_vecLights[::g_SelectedLightID].attenConst,
+		//		::g_vecLights[::g_SelectedLightID].attenLinear, 
+		//		::g_vecLights[::g_SelectedLightID].attenQuad );
+		//DrawDebugSphere( pShaderProgram, 
+		//				  ::g_vecLights[::g_SelectedLightID].position, 
+		//				  glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::DARK_GRAY ), 1.0f),
+		//				  distance );
 		float distance = theLightHelper.calcApproxDistFromAtten
 			( 0.01f,   
 				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
 				cLightHelper::DEFAULTINFINITEDISTANCE, 
-				::g_vecLights[::g_SelectedLightID].attenConst,
-				::g_vecLights[::g_SelectedLightID].attenLinear, 
-				::g_vecLights[::g_SelectedLightID].attenQuad );
+				pCurLight->attenConst,
+				pCurLight->attenLinear, 
+				pCurLight->attenQuad );
 		DrawDebugSphere( pShaderProgram, 
-						  ::g_vecLights[::g_SelectedLightID].position, 
+						  pCurLight->position, 
 						  glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::DARK_GRAY ), 1.0f),
 						  distance );
 
@@ -601,29 +692,51 @@ void DrawDebugLightSpheres2(cShaderManager::cShaderProgram* pShaderProgram)
 
 
 		// Draw sphere 0 at 50% brightness
+		//distance = theLightHelper.calcApproxDistFromAtten
+		//	( 0.50f,   
+		//		cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
+		//		cLightHelper::DEFAULTINFINITEDISTANCE, 
+		//		::g_vecLights[::g_SelectedLightID].attenConst,
+		//		::g_vecLights[::g_SelectedLightID].attenLinear, 
+		//		::g_vecLights[::g_SelectedLightID].attenQuad );
+		//DrawDebugSphere( pShaderProgram, 
+		//				  ::g_vecLights[::g_SelectedLightID].position, 
+		//				  glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::LIGHT_SALMON ), 1.0f),
+		//				  distance );
 		distance = theLightHelper.calcApproxDistFromAtten
 			( 0.50f,   
 				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
 				cLightHelper::DEFAULTINFINITEDISTANCE, 
-				::g_vecLights[::g_SelectedLightID].attenConst,
-				::g_vecLights[::g_SelectedLightID].attenLinear, 
-				::g_vecLights[::g_SelectedLightID].attenQuad );
+				pCurLight->attenConst,
+				pCurLight->attenLinear, 
+				pCurLight->attenQuad );
 		DrawDebugSphere( pShaderProgram, 
-						  ::g_vecLights[::g_SelectedLightID].position, 
+						  pCurLight->position, 
 						  glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::LIGHT_SALMON ), 1.0f),
 						  distance );
 
 
 		// Draw sphere 0 at 90% brightness
+		//distance = theLightHelper.calcApproxDistFromAtten
+		//	( 0.90f,   
+		//		cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
+		//		cLightHelper::DEFAULTINFINITEDISTANCE, 
+		//		::g_vecLights[::g_SelectedLightID].attenConst,
+		//		::g_vecLights[::g_SelectedLightID].attenLinear, 
+		//		::g_vecLights[::g_SelectedLightID].attenQuad );
+		//DrawDebugSphere( pShaderProgram, 
+		//				  ::g_vecLights[::g_SelectedLightID].position, 
+		//				  glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::CYAN ), 1.0f),
+		//				  distance );
 		distance = theLightHelper.calcApproxDistFromAtten
 			( 0.90f,   
 				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
 				cLightHelper::DEFAULTINFINITEDISTANCE, 
-				::g_vecLights[::g_SelectedLightID].attenConst,
-				::g_vecLights[::g_SelectedLightID].attenLinear, 
-				::g_vecLights[::g_SelectedLightID].attenQuad );
+				pCurLight->attenConst,
+				pCurLight->attenLinear, 
+				pCurLight->attenQuad );
 		DrawDebugSphere( pShaderProgram, 
-						  ::g_vecLights[::g_SelectedLightID].position, 
+						  pCurLight->position, 
 						  glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::CYAN ), 1.0f),
 						  distance );
 
@@ -633,89 +746,89 @@ void DrawDebugLightSpheres2(cShaderManager::cShaderProgram* pShaderProgram)
 	return;
 }
 
-void DrawDebugLightSpheres(cShaderManager::cShaderProgram* pShaderProgram)
-{
-	// Static so it's created one (not over and over again)
-	// (before main is called, not that it matters with this object)
-	static cLightHelper theLightHelper;
-
-
-	// **************************************
-	if ( ::g_bTurnOnDebugLightSpheres )
-	{
-		::g_pDebugSphere->pos = ::g_vecLights[::g_SelectedLightID].position;
-		::g_pDebugSphere->bIsVisible = true;
-		::g_pDebugSphere->bDontLightObject = true;
-		::g_pDebugSphere->bUseColourAlphaValue = true;
-		::g_pDebugSphere->isWireframe = true;
-		::g_pDebugSphere->colourSource = cMeshObject::USE_OBJECT_COLOUR;
-
-
-
-		// Draw centre of light (the position)
-		::g_pDebugSphere->scale = 0.01f;
-		::g_pDebugSphere->colour = glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::WHITE ), 1.0f);
-		DrawObject( ::g_pDebugSphere, pShaderProgram, ::g_pTheVAOManager, glm::mat4(1.0f) );
-
-
-		// Draw sphere 0 at 1% brightness
-		float distance = theLightHelper.calcApproxDistFromAtten
-			( 0.01f,   
-				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
-				cLightHelper::DEFAULTINFINITEDISTANCE, 
-				::g_vecLights[::g_SelectedLightID].attenConst,
-				::g_vecLights[::g_SelectedLightID].attenLinear, 
-				::g_vecLights[::g_SelectedLightID].attenQuad );
-		::g_pDebugSphere->scale = distance;
-		::g_pDebugSphere->colour = glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::DARK_GRAY ), 1.0f);
-		DrawObject( ::g_pDebugSphere, pShaderProgram, ::g_pTheVAOManager, glm::mat4(1.0f) );
-
-
-
-
-		// Draw sphere 0 at 50% brightness
-		distance = theLightHelper.calcApproxDistFromAtten
-			( 0.50f,   
-				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
-				cLightHelper::DEFAULTINFINITEDISTANCE, 
-				::g_vecLights[::g_SelectedLightID].attenConst,
-				::g_vecLights[::g_SelectedLightID].attenLinear, 
-				::g_vecLights[::g_SelectedLightID].attenQuad );
-		::g_pDebugSphere->scale = distance;
-		::g_pDebugSphere->colour = glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::LIGHT_SALMON ), 1.0f);
-		DrawObject( ::g_pDebugSphere, pShaderProgram, ::g_pTheVAOManager, glm::mat4(1.0f) );
-
-
-
-		// Draw sphere 0 at 90% brightness
-		distance = theLightHelper.calcApproxDistFromAtten
-			( 0.90f,   
-				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
-				cLightHelper::DEFAULTINFINITEDISTANCE, 
-				::g_vecLights[::g_SelectedLightID].attenConst,
-				::g_vecLights[::g_SelectedLightID].attenLinear, 
-				::g_vecLights[::g_SelectedLightID].attenQuad );
-		::g_pDebugSphere->scale = distance;
-		::g_pDebugSphere->colour = glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::CYAN ), 1.0f);
-		DrawObject( ::g_pDebugSphere, pShaderProgram, ::g_pTheVAOManager, glm::mat4(1.0f) );
-
-
-	}//if ( ::g_bTurnOnDebugLightSpheres )
-	else
-	{
-		// Don't Draw the light spheres
-
-		// Now they aren't in the vector of objects, so if we don't draw it, then it won't appear
-
-		//::g_pTheLightAttenMesh[0]->bIsVisible  = 
-		//::g_pTheLightAttenMesh[1]->bIsVisible = 
-		//::g_pTheLightAttenMesh[2]->bIsVisible = false;
-		//::g_pTheLightMesh->bIsVisible = false;
-	}//if ( ::g_bTurnOnDebugLightSpheres )
-
-
-	return;
-}
+//void DrawDebugLightSpheres(cShaderManager::cShaderProgram* pShaderProgram)
+//{
+//	// Static so it's created one (not over and over again)
+//	// (before main is called, not that it matters with this object)
+//	static cLightHelper theLightHelper;
+//
+//
+//	// **************************************
+//	if ( ::g_bTurnOnDebugLightSpheres )
+//	{
+//		::g_pDebugSphere->pos = ::g_vecLights[::g_SelectedLightID].position;
+//		::g_pDebugSphere->bIsVisible = true;
+//		::g_pDebugSphere->bDontLightObject = true;
+//		::g_pDebugSphere->bUseColourAlphaValue = true;
+//		::g_pDebugSphere->isWireframe = true;
+//		::g_pDebugSphere->colourSource = cMeshObject::USE_OBJECT_COLOUR;
+//
+//
+//
+//		// Draw centre of light (the position)
+//		::g_pDebugSphere->scale = 0.01f;
+//		::g_pDebugSphere->colour = glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::WHITE ), 1.0f);
+//		DrawObject( ::g_pDebugSphere, pShaderProgram, ::g_pTheVAOManager, glm::mat4(1.0f) );
+//
+//
+//		// Draw sphere 0 at 1% brightness
+//		float distance = theLightHelper.calcApproxDistFromAtten
+//			( 0.01f,   
+//				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
+//				cLightHelper::DEFAULTINFINITEDISTANCE, 
+//				::g_vecLights[::g_SelectedLightID].attenConst,
+//				::g_vecLights[::g_SelectedLightID].attenLinear, 
+//				::g_vecLights[::g_SelectedLightID].attenQuad );
+//		::g_pDebugSphere->scale = distance;
+//		::g_pDebugSphere->colour = glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::DARK_GRAY ), 1.0f);
+//		DrawObject( ::g_pDebugSphere, pShaderProgram, ::g_pTheVAOManager, glm::mat4(1.0f) );
+//
+//
+//
+//
+//		// Draw sphere 0 at 50% brightness
+//		distance = theLightHelper.calcApproxDistFromAtten
+//			( 0.50f,   
+//				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
+//				cLightHelper::DEFAULTINFINITEDISTANCE, 
+//				::g_vecLights[::g_SelectedLightID].attenConst,
+//				::g_vecLights[::g_SelectedLightID].attenLinear, 
+//				::g_vecLights[::g_SelectedLightID].attenQuad );
+//		::g_pDebugSphere->scale = distance;
+//		::g_pDebugSphere->colour = glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::LIGHT_SALMON ), 1.0f);
+//		DrawObject( ::g_pDebugSphere, pShaderProgram, ::g_pTheVAOManager, glm::mat4(1.0f) );
+//
+//
+//
+//		// Draw sphere 0 at 90% brightness
+//		distance = theLightHelper.calcApproxDistFromAtten
+//			( 0.90f,   
+//				cLightHelper::DEFAULDIFFUSEACCURACYTHRESHOLD, 
+//				cLightHelper::DEFAULTINFINITEDISTANCE, 
+//				::g_vecLights[::g_SelectedLightID].attenConst,
+//				::g_vecLights[::g_SelectedLightID].attenLinear, 
+//				::g_vecLights[::g_SelectedLightID].attenQuad );
+//		::g_pDebugSphere->scale = distance;
+//		::g_pDebugSphere->colour = glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::CYAN ), 1.0f);
+//		DrawObject( ::g_pDebugSphere, pShaderProgram, ::g_pTheVAOManager, glm::mat4(1.0f) );
+//
+//
+//	}//if ( ::g_bTurnOnDebugLightSpheres )
+//	else
+//	{
+//		// Don't Draw the light spheres
+//
+//		// Now they aren't in the vector of objects, so if we don't draw it, then it won't appear
+//
+//		//::g_pTheLightAttenMesh[0]->bIsVisible  = 
+//		//::g_pTheLightAttenMesh[1]->bIsVisible = 
+//		//::g_pTheLightAttenMesh[2]->bIsVisible = false;
+//		//::g_pTheLightMesh->bIsVisible = false;
+//	}//if ( ::g_bTurnOnDebugLightSpheres )
+//
+//
+//	return;
+//}
 
 //// OLD draw debug light spheres...
 //void DrawDebugLightSpheres(void)

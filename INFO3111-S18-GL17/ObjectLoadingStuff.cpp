@@ -24,7 +24,7 @@ void LoadObjectsIntoScene(void)
 		::g_pDebugSphere->meshName = "isosphere_smooth_xyz_n_rgba_uv.ply";
 
 		::g_pDebugSphere->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
-		::g_pDebugSphere->colour = glm::vec4( 1.0f, 1.0f, 1.0f, 1.0f );
+		::g_pDebugSphere->diffuseColour = glm::vec4( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		// Get the "unit" scale from the VAOManager
 		sModelDrawInfo modelInfo;
@@ -94,12 +94,21 @@ void LoadObjectsIntoScene(void)
 		pTemp->meshName = "CrappyTerrain_xyz_n_rgba_uv.ply";
 
 		pTemp->pos = glm::vec3( 0.0f, -15.0f, 0.0f );
-		pTemp->colour = glm::vec4( 142.0f/255.0f, 
-								   205.0f/255.0f,
-									49.0f/255.0f,
-									 1.0f );		// Transparency 'alpha'
+		pTemp->diffuseColour = glm::vec4( 142.0f/255.0f, 
+								          205.0f/255.0f,
+									     49.0f/255.0f,
+									      1.0f );		// Transparency 'alpha'
+
+		pTemp->ambientToDiffuseRatio = 0.2f;
+
+		pTemp->specularHighlightColour = glm::vec3(1.0f,1.0f,1.0f);
+		pTemp->specularShininess = 10.0f;
+
 		pTemp->scale = 1.0f;
 		pTemp->isWireframe = false;
+		//pTemp->bDontLightObject = true;
+
+		pTemp->colourSource = cMeshObject::USE_VERTEX_COLOURS;
 
 		::g_vec_pMeshObjects.push_back( pTemp );
 	}	
@@ -110,7 +119,7 @@ void LoadObjectsIntoScene(void)
 		pTemp->meshName = "cow_xyz_n_rgba_uv.ply";
 
 		pTemp->pos = glm::vec3( 1.0f, 0.0f, 0.0f );
-		pTemp->colour = glm::vec4( 243.0f/255.0f,		
+		pTemp->diffuseColour = glm::vec4( 243.0f/255.0f,		
 								     9.0f/255.0f,
 								    25.0f/255.0f,
 									 1.0f );		// Transparency 'alpha'
@@ -131,7 +140,7 @@ void LoadObjectsIntoScene(void)
 		pTemp->meshName = "cow_xyz_n_rgba_uv.ply";
 
 		pTemp->pos = glm::vec3( 2.0f, 1.0f, 0.0f );
-		pTemp->colour = glm::vec4( 142.0f/255.0f,	
+		pTemp->diffuseColour = glm::vec4( 142.0f/255.0f,	
 								   205.0f/255.0f,
 								   248.0f/255.0f,
 									 1.0f );		// Transparency 'alpha'
@@ -156,10 +165,14 @@ void LoadObjectsIntoScene(void)
 		pTemp->velocity.y = 2.0f;
 
 		pTemp->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
-		pTemp->colour = glm::vec4( 1.0f,
+		pTemp->diffuseColour = glm::vec4( 1.0f,
 								   1.0f, 
 									1.0f,
 									 1.0f );		// Transparency 'alpha'
+		pTemp->ambientToDiffuseRatio = 0.2f;
+		pTemp->specularHighlightColour = glm::vec3(1.0f,1.0f,1.0f);
+		pTemp->specularShininess = 10.0f;
+
 		pTemp->scale = 2.0f;
 		sModelDrawInfo modelInfo;
 		::g_pTheVAOManager->FindDrawInfoByModelName ( pTemp->meshName, 
@@ -180,7 +193,7 @@ void LoadObjectsIntoScene(void)
 		pTemp->friendlyName = "Luke";		
 
 		pTemp->pos = glm::vec3( 0.0f, 2.0f, 0.0f );
-		pTemp->colour = glm::vec4( 1.0f,  1.0f, 1.0f, 1.0f );		// Transparency 'alpha'
+		pTemp->diffuseColour = glm::vec4( 1.0f,  1.0f, 1.0f, 1.0f );		// Transparency 'alpha'
 		pTemp->orientation = glm::vec3(0.0f, glm::radians(180.0f), 0.0f );
 
 		// 1.0 unit per second
@@ -214,7 +227,7 @@ void LoadObjectsIntoScene(void)
 		pTemp->orientation.y = 3.14159f * 0.5f;		// YOLO, right? 
 
 		pTemp->pos = glm::vec3( -1.0f, 0.0f, 0.0f );
-		pTemp->colour = glm::vec4( 142.0f/255.0f, 
+		pTemp->diffuseColour = glm::vec4( 142.0f/255.0f, 
 									49.0f/255.0f,
 								   205.0f/255.0f,
 									 1.0f );		// Transparency 'alpha'
@@ -235,7 +248,7 @@ void LoadObjectsIntoScene(void)
 		pTemp->meshName = "free_arena_ASCII_xyz_n_rgba_uv.ply";
 
 		pTemp->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
-		pTemp->colour = glm::vec4( 244.0f/255.0f,  
+		pTemp->diffuseColour = glm::vec4( 244.0f/255.0f,  
 									223.0f/255.0f,
 								    33.0f/255.0f,
 									 1.0f );		// Transparency 'alpha'

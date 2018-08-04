@@ -34,7 +34,10 @@ cMeshObject* g_pFindObjectByFriendlyName(std::string name)
 }
 
 //const unsigned int NUMLIGHTS = 10;
-std::vector<sLight> g_vecLights;
+//std::vector<sLight> g_vecLights;
+
+cLightManager* g_pLightManager = NULL;
+
 
 // When true, the DoPhysicsUpdate is called.
 bool g_bDoEulerPhysicsUpdate = false;	

@@ -9,22 +9,36 @@ in vec4 vertTexUV;
 
 uniform bool bDontLightObject;
 
+// rgb of the colour HIGHLIGHT
+// a (w, 4th value) is power or 'shininess' of object
+uniform vec4 objectSpecularColour;
+
+// Rather than set entire ambient, we will set 
+// 	a ratio. Ambient is typically 0.2-0.3x diffuse
+//  to simulate 'typical' environments. 
+uniform float objectAmbientToDiffuseRatio;
+
 const int NUMLIGHTS = 10;
 
 struct sLight
 {
 	vec3 Position;
-	vec4 Direction;
+	vec3 Direction;
 	vec4 Diffuse;		// If w value = 0.0, then light isn't 'on'
 	                    // (the 4th value doesn't have a use for RGB colour)
-	vec4 Ambient;
+	vec3 Ambient;
 	vec4 Specular; 		// rgb = colour, w = intensity
-	// x = constant, y = linear, z = quadratic, w = “type”
-	vec4 AttenAndType;	// 0 = point, 1 = spot, 2 = directional 
+	
+	vec4 AttenAndType;	// x = constant, y = linear, z = quadratic, w = “type”
+	                    // w = “type”: 0 = point, 1 = spot, 2 = directional
+	vec4 LightAttribs;	// x = spot outer cone, y = spot inner cone
+						// z, w = undefined
 };
 uniform sLight theLights[NUMLIGHTS];
 //uniform int numberOfLightsImReallyUsing;
 
+
+uniform vec3 eyeLocation;		// Camera location IN WORLD
 
 out vec4 outputColour;
 
@@ -38,10 +52,10 @@ void main()
 		return;	
 	}
 
-	// Take the colour of the thing, and set the output 
-	//	colour to that to start... 
-	//vec3 outDiffuse = color; 
-	vec4 outDiffuse = vec4(0.0f, 0.0f, 0.0f, 1.0f);	// Start with black 
+	// Assume object is black
+	outputColour.rgb = vec3(0.0f, 0.0f, 0.0f);	// Start with black 
+	
+	outputColour.a = vertColourRGBA.a;			// Set transparency ('alpha transparency')
 	
 	for ( int index = 0; index != NUMLIGHTS; index++ )
 	{
@@ -69,7 +83,7 @@ void main()
 		vec3 lightContrib = theLights[index].Diffuse.rgb;
 	
 		lightContrib *= dotProduct;
-	
+
 		// Calculate the distance between the light 
 		// and the vertex that this fragment is using
 		float lightDistance = distance( vertWorldPosXYZ.xyz, theLights[index].Position );
@@ -78,20 +92,96 @@ void main()
 		float attenuation = 1.0f / 
 			( theLights[index].AttenAndType.x 						// 0  
 			+ theLights[index].AttenAndType.y * lightDistance					// Linear
-			+ theLights[index].AttenAndType.z * lightDistance * lightDistance );	// Quad
+    		+ theLights[index].AttenAndType.z * lightDistance * lightDistance );	// Quad
 
 // Optional clamp of attenuation, so the light won't get 'too' dark			
 //		attenuation = clamp( attenuation, 0.0f, 1000.0f );
 
+
 		
 		lightContrib *= attenuation;
 		
-		outDiffuse.rgb += (vertColourRGBA.rgb * lightContrib);
-	}
+		
+		// Specular component
+		vec3 reflectVector = reflect( -lightVector, normalize(vertNormal.xyz) );
+
+		// Get eye or view vector
+		// The location of the vertex in the world to your eye
+		vec3 eyeVector = normalize(eyeLocation.xyz - vertWorldPosXYZ.xyz);
+		
+		vec3 specularColour = objectSpecularColour.rgb;
+		float specularShininess = objectSpecularColour.w;
+		
+		vec3 specularContrib = pow( max(0.0f, dot( eyeVector, reflectVector) ), 
+		                            specularShininess )
+						       * objectSpecularColour.rgb
+						       * theLights[index].Specular.rgb;
+							   
+		specularContrib *= attenuation;
+		//specularContrib *= 0.001f;
+		
+		vec3 ambientMaterial = (objectAmbientToDiffuseRatio * vertColourRGBA.rgb);
+		
+		outputColour.rgb += ( vertColourRGBA.rgb * lightContrib )
+		                    + specularContrib.rgb
+		                    + ambientMaterial * theLights[index].Ambient;
+
+							
+		// Point, Spot, or directional
+		switch( int(theLights[index].AttenAndType.w) )
+		{
+			case 0:	//  = point;	
+				break;
+			case 1: // = spot, 
+				// See if the direction of the light is 
+				// 	outside of the cone of the light.
+				// Calculate the line between the light and the vertex
+				// Which is the "lightVector" we calculated earlier
+				vec3 vertexToLight = -lightVector;
+				// Calculate the line between the "direction" and light.
+				// (but that's already the direction, because it's relative
+				//	to the light)
+		
+				float currentLightRayAngle
+						= dot( vertexToLight.xyz, theLights[index].Direction.xyz );
+				currentLightRayAngle = max(0.0f, currentLightRayAngle);
+				
+				// Is this inside the cone? 
+				float innerConeAngle = cos(radians(theLights[index].LightAttribs.x));
+				float outerConeAngle = cos(radians(theLights[index].LightAttribs.y));
+								
+				// Is it completely outside of the spot?
+				if ( currentLightRayAngle < outerConeAngle )
+				{
+					// Nope. so it's in the dark
+					lightContrib = vec3(0.0f, 0.0f, 0.0f);
+				}
+				else if ( currentLightRayAngle < innerConeAngle )
+				{
+					// Angle is between the inner and outer cone
+					// (this is called the penumbra of the spot light, by the way)
+					// 
+					// This blends the brightness from full brightness, near the inner cone
+					//	to black, near the outter cone
+					float penumbraRatio = (1.0f - (currentLightRayAngle - innerConeAngle)) / 
+					                      (innerConeAngle - outerConeAngle);
+										  
+					lightContrib *= penumbraRatio;
+					
+				}
+				// else it's 'in' the spotlight, so don't change
+				// reduce the amount of light hitting the object
+			
+				break;
+			case 2:	//  = directional  For later
+				break;
+				
+		}// select (AttenAndType.w)
+		
+		
+	}// for ( int index = 0
 	
-	outDiffuse.rgb = clamp( outDiffuse.rgb, vec3(0.0f,0.0f,0.0f), vec3(1.0f,1.0f,1.0f) );
-	
-	outputColour = vec4(outDiffuse.rgb, 1.0f);
+	outputColour.rgb = clamp( outputColour.rgb, vec3(0.0f,0.0f,0.0f), vec3(1.0f,1.0f,1.0f) );
 };
 
 

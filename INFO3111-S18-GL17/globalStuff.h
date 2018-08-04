@@ -9,7 +9,8 @@
 
 #include <vector>
 #include "cMeshObject.h"
-#include "sLight.h"
+
+#include "cLightManager.h"
 
 #include "CGLColourHelper.h"
 
@@ -54,7 +55,9 @@ void ProcessInputAsync( glm::vec3 &cameraEye, glm::vec3 &cameraTarget, GLFWwindo
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 const unsigned int NUMLIGHTS = 10;
-extern std::vector<sLight> g_vecLights;
+//extern std::vector<cLight> g_vecLights;
+
+extern cLightManager* g_pLightManager;// = NULL;
 
 // When true, the DoPhysicsUpdate is called.
 extern bool g_bDoEulerPhysicsUpdate;// = false;		

@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp> // glm::vec3
 #include <glm/vec4.hpp> // glm::vec4
+#include <vector>
 
 class cMeshObject
 {
@@ -13,8 +14,18 @@ public:
     ~cMeshObject();
     std::string meshName;
     glm::vec3 pos;			// 0,0,0 (origin)
-	// RGB + global 'alpha' colour, if chosen
-    glm::vec4 colour;		// 0,0,0,1 (black)
+
+	// RGB is colour, A is transparency (all from 0 to 1)
+    glm::vec4 diffuseColour;		// 0,0,0,1 (black)
+	// Typically 0.2 to 0.3	
+	float ambientToDiffuseRatio;
+	// RGB is specular HIGHLIGHT colour
+	glm::vec3 specularHighlightColour;
+	// Specular power or 'shininess', 
+	//  can go WAY beyond 1.0f
+	//  (unlike RGB colours, which are 0 to 1)
+	float specularShininess;	
+
 	glm::vec3 orientation;	// 
     float scale;			// 1.0f
     bool isWireframe;		// false
@@ -48,7 +59,10 @@ public:
 	// (NOT on mid-term, but handy)
 	glm::vec3 velocity;
 	glm::vec3 acceleration;
-
+	
+	// Objects connected to this object
+	// (they will move and rotate and scale with this object)
+	std::vector< cMeshObject* > vec_pChildObjects;
 
 private:
 	void m_AssignUniqueID(void);

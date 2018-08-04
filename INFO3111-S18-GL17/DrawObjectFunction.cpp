@@ -81,18 +81,18 @@ void DrawObject( cMeshObject* pCurMesh,
 	{
 		case cMeshObject::USE_VERTEX_COLOURS:
 			glUniform1f( pShaderProg->getUniformID_From_Name("bUseVertexColour"), 
-						 GL_TRUE );
+						 (float)GL_TRUE );
 //			glUniform1f( bUseVertexColour_UniLoc, GL_TRUE );
 			break;
 
 		case cMeshObject::USE_OBJECT_COLOUR:
-			glUniform1f( pShaderProg->getUniformID_From_Name("bUseVertexColour"), GL_FALSE );
+			glUniform1f( pShaderProg->getUniformID_From_Name("bUseVertexColour"), (float)GL_FALSE );
 			//glUniform1f( bUseVertexColour_UniLoc, GL_FALSE );
 			glUniform4f( pShaderProg->getUniformID_From_Name("meshColourRGBA"),			
-							pCurMesh->colour.x, 
-							pCurMesh->colour.y,
-							pCurMesh->colour.z,
-							pCurMesh->colour.a );
+							pCurMesh->diffuseColour.x, 
+							pCurMesh->diffuseColour.y,
+							pCurMesh->diffuseColour.z,
+							pCurMesh->diffuseColour.a );
 			//glUniform4f( meshColourRGBA_UniLoc,			
 			//				pCurMesh->colour.x, 
 			//				pCurMesh->colour.y,
@@ -102,7 +102,7 @@ void DrawObject( cMeshObject* pCurMesh,
 
 		default:	
 			// This shouldn't happen, so set it to "hot pink" to show error
-			glUniform1f( pShaderProg->getUniformID_From_Name("bUseVertexColour"), GL_FALSE );
+			glUniform1f( pShaderProg->getUniformID_From_Name("bUseVertexColour"), (float)GL_FALSE );
 			glUniform4f( pShaderProg->getUniformID_From_Name("meshColourRGBA"),	255.0f, 105.0f/255.0f, 180.0f/255.0f, 1.0f );
 			//glUniform1f( bUseVertexColour_UniLoc, GL_FALSE );
 			//glUniform4f( meshColourRGBA_UniLoc,	255.0f, 105.0f/255.0f, 180.0f/255.0f, 1.0f );
@@ -115,6 +115,14 @@ void DrawObject( cMeshObject* pCurMesh,
 					(pCurMesh->bUseColourAlphaValue ? (float)GL_TRUE : (float)GL_FALSE) );
 	//glUniform1f( bUse_vColourRGBA_AlphaValue_UniLoc,
 	//				(pCurMesh->bUseColourAlphaValue ? (float)GL_TRUE : (float)GL_FALSE) );
+
+	glUniform4f( pShaderProg->getUniformID_From_Name("objectSpecularColour"), 
+				 pCurMesh->specularHighlightColour.r, 
+				 pCurMesh->specularHighlightColour.g,
+				 pCurMesh->specularHighlightColour.b, 
+				 pCurMesh->specularShininess );
+	glUniform1f( pShaderProg->getUniformID_From_Name("objectAmbientToDiffuseRatio"), 
+				 pCurMesh->ambientToDiffuseRatio );
 
 	// Use vertex (model) colours or overall (mesh 'colour') value for diffuse
 
@@ -178,6 +186,21 @@ void DrawObject( cMeshObject* pCurMesh,
 	}
 	// Else we DON'T draw it
 
+
+	// Draw the children... 
+	// If only there was a way to call DrawObject...
+	if ( ! pCurMesh->vec_pChildObjects.empty() )
+	{
+		std::vector< cMeshObject* >::iterator itChildMesh = pCurMesh->vec_pChildObjects.begin();
+
+		for ( ; itChildMesh != pCurMesh->vec_pChildObjects.end(); itChildMesh++ )
+		{
+			cMeshObject* pChild = *itChildMesh;
+
+			DrawObject( pChild, pShaderProg, pVAOManager,
+						matModel );		// Key to this, starts where parent is.
+		}		
+	}//if ( ! pCurMesh->vec_pChildObjects.empty() )
 
 	return;
 }

@@ -7,28 +7,45 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="TheMain.cpp" />
     <ClCompile Include="cVAOManager.cpp" />
-    <ClCompile Include="cLightHelper.cpp" />
     <ClCompile Include="ObjectLoadingStuff.cpp" />
     <ClCompile Include="ProcessInputAsync.cpp" />
     <ClCompile Include="key_callback_GLFW.cpp" />
-    <ClCompile Include="sLight.cpp" />
     <ClCompile Include="globalStuff.cpp" />
     <ClCompile Include="CGLColourHelper.cpp" />
     <ClCompile Include="DrawObjectFunction.cpp" />
+    <ClCompile Include="cLightHelper.cpp">
+      <Filter>Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="cLightManager.cpp">
+      <Filter>Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="cLight.cpp">
+      <Filter>Lights</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cMeshObject.h" />
     <ClInclude Include="cShaderManager.h" />
     <ClInclude Include="linmath.h" />
     <ClInclude Include="cVAOManager.h" />
-    <ClInclude Include="cLightHelper.h" />
-    <ClInclude Include="sLight.h" />
     <ClInclude Include="globalStuff.h" />
     <ClInclude Include="CGLColourHelper.h" />
+    <ClInclude Include="cLightHelper.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="cLightManager.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="cLight.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
       <UniqueIdentifier>{a162d39b-6848-46c7-8daf-06dc7bf3fed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lights">
+      <UniqueIdentifier>{bcf82302-6c57-4b0d-9e81-001c2b70cdf5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
