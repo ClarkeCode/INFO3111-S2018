@@ -68,6 +68,36 @@ void ProcessInputAsync( glm::vec3 &cameraEye, glm::vec3 &cameraTarget, GLFWwindo
 		}
 	}	
 
+	// OUTER spot cone angle
+	if ( glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS )		// Make spot BIGGER
+	{	// 
+		if ( pSelectedLight->spotConeAngleOuter < 90.0f )	{ pSelectedLight->spotConeAngleOuter += 0.1f; } 
+	}	
+	if ( glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS )		// Make spot SMALLER
+	{	// 
+		if ( pSelectedLight->spotConeAngleOuter >= 0.0f )	{ pSelectedLight->spotConeAngleOuter -= 0.1f; } 
+		// If outer is LT inner, then adjust inner
+		if ( pSelectedLight->spotConeAngleOuter < pSelectedLight->spotConeAngleInner )
+		{
+			pSelectedLight->spotConeAngleInner = pSelectedLight->spotConeAngleOuter;
+		}
+	}	
+	// INNER spot cone angle
+	if ( glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS )		// Make spot BIGGER
+	{	// 
+		if ( pSelectedLight->spotConeAngleInner < 90.0f )	{ pSelectedLight->spotConeAngleInner += 0.1f; } 
+		// If inner is GT outer, then adjust outer
+		if ( pSelectedLight->spotConeAngleInner > pSelectedLight->spotConeAngleOuter )
+		{
+			pSelectedLight->spotConeAngleOuter = pSelectedLight->spotConeAngleInner;
+		}
+	}	
+	if ( glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS )		// Make spot SMALLER
+	{	// 
+		if ( pSelectedLight->spotConeAngleInner >= 0.0f )	{ pSelectedLight->spotConeAngleInner -= 0.1f; } 
+	}	
+
+
 	// Also move the light around
 	if ( glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS )
 	{

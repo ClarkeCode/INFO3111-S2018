@@ -66,6 +66,10 @@ cVAOManager* g_pTheVAOManager = 0;
 //void DrawDebugLightSpheres(void);
 void DrawDebugLightSpheres(cShaderManager::cShaderProgram* pShaderProgram);
 void DrawDebugLightSpheres2(cShaderManager::cShaderProgram* pShaderProgram);
+
+// This will draw a line of spheres, to indicate the direction and 'size' of the spot
+void DrawDebugSpotLightSpheres(cShaderManager::cShaderProgram* pShaderProgram);
+
 //// A more general draw sphere
 //void DrawDebugSphere( cShaderManager::cShaderProgram* pShaderProgram, 
 //					  glm::vec3 position, glm::vec4 colour, float scale);
@@ -172,7 +176,7 @@ int main(void)
 	pShader->LoadUniformLocation( "matModel" );
 	// Added
 	pShader->LoadUniformLocation( "objectSpecularColour" );
-	pShader->LoadUniformLocation( "objectAmbientToDiffuseRatio" );
+	pShader->LoadUniformLocation( "globalAmbientToDiffuseRatio" );
 	pShader->LoadUniformLocation( "eyeLocation" );
 
 	// The light values...
@@ -195,10 +199,12 @@ int main(void)
 	::g_pLightManager->pGetLightAtIndex(0)->diffuse = glm::vec3(1.0f,1.0f,1.0f);
 	::g_pLightManager->pGetLightAtIndex(0)->attenLinear = 0.324f;
 	::g_pLightManager->pGetLightAtIndex(0)->attenQuad = 0.0115f;
-	::g_pLightManager->pGetLightAtIndex(0)->specular = glm::vec3(1.0f,1.0f,1.0f);
-	::g_pLightManager->pGetLightAtIndex(0)->specularPower = 1.0f;
-	::g_pLightManager->pGetLightAtIndex(0)->setAmbientFromDiffuse(0.2f);
 	::g_pLightManager->pGetLightAtIndex(0)->TurnLightOn();
+
+//	::g_pLightManager->pGetLightAtIndex(0)->SetAsSpot();
+//	::g_pLightManager->pGetLightAtIndex(0)->direction = glm::vec3(0.0f, -1.0f, 0.0f);
+//	::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleOuter = 35.0f;
+//	::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleInner = 25.0f;
 
 	//::g_pLightManager->pGetLightAtIndex(1)->SetAsPoint();
 	//::g_pLightManager->pGetLightAtIndex(1)->position = glm::vec3(2.0f,2.0f,2.0f);
@@ -235,6 +241,8 @@ int main(void)
 	vecModelFilesToLoad.push_back("CrappyTerrain_xyz_n_rgba_uv.ply");
 	vecModelFilesToLoad.push_back("isosphere_smooth_xyz_n_rgba_uv.ply");
 	vecModelFilesToLoad.push_back("X-Wing_Attack_(33569 faces)_xyz_n_rgba_uv.ply");
+	vecModelFilesToLoad.push_back("DockingBay_allOne_xyz_n_rgba_uv_quarter_size.ply");
+	vecModelFilesToLoad.push_back("Isoshphere_Small_InvertedNormals_xyz_n_rgba_uv.ply");
 
 
 	std::string errors;
@@ -400,6 +408,9 @@ int main(void)
 
 
 
+
+
+
 		glUniformMatrix4fv( pShaderProgram->getUniformID_From_Name("matView"),		//matView_Uniloc, 
 				1, 
 				GL_FALSE, 
@@ -412,6 +423,9 @@ int main(void)
 
 		glUniform3f( pShaderProgram->getUniformID_From_Name("eyeLocation"), 
 					 cameraEye.x, cameraEye.y, cameraEye.z );
+
+		glUniform1f( pShaderProgram->getUniformID_From_Name("globalAmbientToDiffuseRatio"), 
+					 ::g_globalAmbientToDiffuseRatio );
 
 
 		unsigned int numberOfObjects = 
@@ -626,6 +640,7 @@ void DrawDebugSphere( cShaderManager::cShaderProgram* pShaderProgram,
 	// Draw centre of light (the position)
 	::g_pDebugSphere->scale = scale;
 	::g_pDebugSphere->diffuseColour = colour;
+
 	DrawObject( ::g_pDebugSphere, pShaderProgram, ::g_pTheVAOManager, glm::mat4(1.0f) );
 
 
@@ -660,7 +675,7 @@ void DrawDebugLightSpheres2(cShaderManager::cShaderProgram* pShaderProgram)
 		DrawDebugSphere( pShaderProgram, 
 						  pCurLight->position, 
 						  glm::vec4( CGLColourHelper::getInstance()->getColourRGB( CGLColourHelper::WHITE ), 1.0f),
-						  0.01f );
+						  0.05f );
 
 
 

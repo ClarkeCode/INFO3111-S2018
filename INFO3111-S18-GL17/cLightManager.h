@@ -59,8 +59,9 @@ public:
 		sNameLocationPair Position;
 		sNameLocationPair Direction;
 		sNameLocationPair Diffuse;
-		sNameLocationPair Ambient;
-		sNameLocationPair Specular;
+		// Ambient and Specular FOR THE LIGHT have been removed to simplify the lighting
+		//sNameLocationPair Ambient;
+		//sNameLocationPair Specular;
 		sNameLocationPair AttenAndLightType;
 		sNameLocationPair LightAttribs;
 	};

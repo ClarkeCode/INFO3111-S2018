@@ -10,6 +10,8 @@ std::vector< cMeshObject* > g_vec_pMeshObjects;
 // 90% brightness
 //cMeshObject* g_pTheLightAttenMesh[4] = {0};		// or NULL
 cMeshObject* g_pDebugSphere = NULL; 
+cMeshObject* g_pDebugSphereSmall = NULL;	// Same size, but fewer triangles
+cMeshObject* g_pDebugCone = NULL;
 
 // If true, the spheres around the lights are there
 bool g_bTurnOnDebugLightSpheres = true;
@@ -41,3 +43,5 @@ cLightManager* g_pLightManager = NULL;
 
 // When true, the DoPhysicsUpdate is called.
 bool g_bDoEulerPhysicsUpdate = false;	
+
+float g_globalAmbientToDiffuseRatio = 0.0f;	//0.2f;

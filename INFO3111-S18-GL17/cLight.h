@@ -22,19 +22,25 @@ public:
 private:
 	bool m_bIsOn;				// Passed to w param: w = 0 means ligth is off
 public:
-	glm::vec3 ambient;	
-	void setAmbientFromDiffuse( float ambientToDiffuseRation = 0.2f )
-	{
-		this->ambient = ambientToDiffuseRation * this->diffuse;
-		return;
-	};		
-	glm::vec3 specular;	// rgb = colour, 
-	float specularPower;        // w = shininess (or specular 'power')
-	                            // (this value outside of the 0-1 range, 
-	                            //  and can get quite high, like 10,000)
+	// *******************************************************************
+	// To simplify the lighting, we'll limit the specular and ambient 
+	//  to the object only, rather than the light+object interaction
+
+	//glm::vec3 ambient;	
+	//void setAmbientFromDiffuse( float ambientToDiffuseRation = 0.2f )
+	//{
+	//	this->ambient = ambientToDiffuseRation * this->diffuse;
+	//	return;
+	//};		
+	//glm::vec3 specular;	// rgb = colour, 
+	//float specularPower;        // w = shininess (or specular 'power')
+	//                            // (this value outside of the 0-1 range, 
+	//                            //  and can get quite high, like 10,000)
+	// *******************************************************************
 	float attenConst;
 	float attenLinear;
 	float attenQuad;
+	float distanceCutOff;
 
 	float spotConeAngleInner;
 	float spotConeAngleOuter;
@@ -70,20 +76,22 @@ public:
 	struct sLightColourDesc
 	{
 		sLightColourDesc() : 
-			diffuse( glm::vec3(0.0f) ), 
+			diffuse( glm::vec3(0.0f) )/*, 
 			ambient( glm::vec3(0.0f) ),
 			specular( glm::vec3(0.0) ),
-			shininess(0.0f) {};
+			shininess(0.0f)*/ {};
+		sLightColourDesc( glm::vec3 diffuseColour ) :
+			diffuse(diffuseColour) {};
 		glm::vec3 diffuse;
-		glm::vec3 ambient;
+		//glm::vec3 ambient;
 		// helper function	
-		void setAmbientFromDiffuse( float ambientToDiffuseRation = 0.2f )
-		{
-			this->ambient = ambientToDiffuseRation * this->diffuse;
-			return;
-		};	
-		glm::vec3 specular;	// highlight colour
-		float shininess;	// (or specular 'power')
+		//void setAmbientFromDiffuse( float ambientToDiffuseRation = 0.2f )
+		//{
+		//	this->ambient = ambientToDiffuseRation * this->diffuse;
+		//	return;
+		//};	
+		//glm::vec3 specular;	// highlight colour
+		//float shininess;	// (or specular 'power')
 	};
 
 	void setLightColour( const sLightColourDesc &lightColour );
@@ -93,6 +101,9 @@ public:
 	{
 		sLightAtten() : 
 			attenConst(0.0f), attenLinear(0.0f), attenQuad(0.0f), distanceCutOff(FLT_MAX) {};
+		sLightAtten( float constAtt, float linearAtt, float quadAtt ) : 
+			attenConst(constAtt), attenLinear(linearAtt), attenQuad(quadAtt),
+			distanceCutOff(FLT_MAX) {};
 		float attenConst;
 		float attenLinear;
 		float attenQuad;

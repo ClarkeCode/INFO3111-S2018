@@ -98,8 +98,8 @@ bool cLightManager::InitilizeUniformLocations(
 		curLightInShader.Position.name		= ssLightPrefix.str() + "Position";
 		curLightInShader.Direction.name		= ssLightPrefix.str() + "Direction";
 		curLightInShader.Diffuse.name		= ssLightPrefix.str() + "Diffuse";
-		curLightInShader.Ambient.name		= ssLightPrefix.str() + "Ambient";
-		curLightInShader.Specular.name		= ssLightPrefix.str() + "Specular";
+		//curLightInShader.Ambient.name		= ssLightPrefix.str() + "Ambient";
+		//curLightInShader.Specular.name		= ssLightPrefix.str() + "Specular";
 		curLightInShader.AttenAndLightType.name	= ssLightPrefix.str() + "AttenAndType";
 		curLightInShader.LightAttribs.name	= ssLightPrefix.str() + "LightAttribs";
 
@@ -122,17 +122,17 @@ bool cLightManager::InitilizeUniformLocations(
 			bNoErrors = false;
 		}
 
-		if ( ! this->m_LoadUniformVariableHelper( shaderID, curLightInShader.Ambient ) )
-		{
-			ssErrors << "Didn't find " << curLightInShader.Ambient.name << std::endl;
-			bNoErrors = false;
-		}
-
-		if ( ! this->m_LoadUniformVariableHelper( shaderID, curLightInShader.Specular ) )
-		{
-			ssErrors << "Didn't find " << curLightInShader.Specular.name << std::endl;
-			bNoErrors = false;
-		}
+//		if ( ! this->m_LoadUniformVariableHelper( shaderID, curLightInShader.Ambient ) )
+//		{
+//			ssErrors << "Didn't find " << curLightInShader.Ambient.name << std::endl;
+//			bNoErrors = false;
+//		}
+//	
+//		if ( ! this->m_LoadUniformVariableHelper( shaderID, curLightInShader.Specular ) )
+//		{
+//			ssErrors << "Didn't find " << curLightInShader.Specular.name << std::endl;
+//			bNoErrors = false;
+//		}
 
 		if ( ! this->m_LoadUniformVariableHelper( shaderID, curLightInShader.AttenAndLightType ) )
 		{
@@ -230,8 +230,8 @@ void cLightManager::CopyLightInfoToShader(void)
 		//		vec3 Direction;
 		//		vec4 Diffuse;		// If w value = 0.0, then light isn't 'on'
 		//		                    // (the 4th value doesn't have a use for RGB colour)
-		//		vec3 Ambient;
-		//		vec4 Specular; 		// rgb = colour, w = intensity
+		// REMOVED vec3 Ambient;
+		// REMOVED vec4 Specular; 		// rgb = colour, w = intensity
 		//		
 		//		vec4 AttenAndType;	// x = constant, y = linear, z = quadratic, w = “type”
 		//		                    // w = “type”: 0 = point, 1 = spot, 2 = directional
@@ -247,7 +247,7 @@ void cLightManager::CopyLightInfoToShader(void)
 
 			//		vec3 Direction;
 			glUniform3f( curUniDesc.Direction.location, 
-						 pCurLight->diffuse.x, pCurLight->diffuse.y, pCurLight->diffuse.z );
+						 pCurLight->direction.x, pCurLight->direction.y, pCurLight->direction.z );
 
 			//		vec4 Diffuse;		// If w value = 0.0, then light isn't 'on'
 			//		                    // (the 4th value doesn't have a use for RGB colour)
@@ -255,17 +255,17 @@ void cLightManager::CopyLightInfoToShader(void)
 						 pCurLight->diffuse.r, pCurLight->diffuse.g, pCurLight->diffuse.b, 
 						 1.0f );	// w value is non zero if "on"
 
-			//		vec4 Ambient;
-			glUniform3f( curUniDesc.Ambient.location, 
-						 pCurLight->ambient.r, pCurLight->ambient.g, pCurLight->ambient.b );
-
-			//		vec4 Specular; 		// rgb = colour, w = intensity
-			glUniform4f( curUniDesc.Specular.location, 
-						 pCurLight->specular.r, pCurLight->specular.g, pCurLight->specular.b, 
-						 pCurLight->specularPower );	// Spec "power" or shininess
-			//		
-			//		vec4 AttenAndType;	// x = constant, y = linear, z = quadratic, w = “type”
-			//		                    // w = “type”: 0 = point, 1 = spot, 2 = directional
+//			//		vec4 Ambient;
+//			glUniform3f( curUniDesc.Ambient.location, 
+//						 pCurLight->ambient.r, pCurLight->ambient.g, pCurLight->ambient.b );
+//
+//			//		vec4 Specular; 		// rgb = colour, w = intensity
+//			glUniform4f( curUniDesc.Specular.location, 
+//						 pCurLight->specular.r, pCurLight->specular.g, pCurLight->specular.b, 
+//						 pCurLight->specularPower );	// Spec "power" or shininess
+//			//		
+//			//		vec4 AttenAndType;	// x = constant, y = linear, z = quadratic, w = “type”
+//			//		                    // w = “type”: 0 = point, 1 = spot, 2 = directional
 
 			float lightTypeFloat = 0.0f;		// 0 = point
 			switch( pCurLight->getLightType() )

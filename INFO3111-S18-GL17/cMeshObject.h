@@ -28,7 +28,13 @@ public:
 
 	glm::vec3 orientation;	// 
     float scale;			// 1.0f
+	
     bool isWireframe;		// false
+
+	// This is used for the spot cone
+	// (Generally you want to scale all axes the same value)
+	bool bUseNonUniformScaling;
+	glm::vec3 nonUniformScale;
 
 	bool bDontLightObject;
 
