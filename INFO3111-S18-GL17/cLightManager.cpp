@@ -93,6 +93,8 @@ bool cLightManager::InitilizeUniformLocations(
 		// ...so the rest of the unform name can be added to the end
 		ssLightPrefix << lightArrayName << "[" << lightIndex << "].";
 
+//		"theLights[0]."
+
 		sUniformLocations curLightInShader;
 
 		curLightInShader.Position.name		= ssLightPrefix.str() + "Position";
@@ -285,7 +287,7 @@ void cLightManager::CopyLightInfoToShader(void)
 			//							// z, w = undefined
 			glUniform4f( curUniDesc.LightAttribs.location, 
 						 pCurLight->spotConeAngleOuter, pCurLight->spotConeAngleInner, 
-						 0.0f,		// Not used
+						 pCurLight->distanceCutOff,		
 						 0.0f );	// Not used
 
 		}

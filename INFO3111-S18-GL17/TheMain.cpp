@@ -89,6 +89,10 @@ static void error_callback(int error, const char* description)
 //                   glm::vec3 &cameraTarget, 
 //                   GLFWwindow* &window );
 
+
+void HACK_EXAMPLE_Update_Spot_Angle_OverTime(void);
+
+
 int main(void)
 {
 
@@ -201,10 +205,28 @@ int main(void)
 	::g_pLightManager->pGetLightAtIndex(0)->attenQuad = 0.0115f;
 	::g_pLightManager->pGetLightAtIndex(0)->TurnLightOn();
 
-//	::g_pLightManager->pGetLightAtIndex(0)->SetAsSpot();
-//	::g_pLightManager->pGetLightAtIndex(0)->direction = glm::vec3(0.0f, -1.0f, 0.0f);
-//	::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleOuter = 35.0f;
-//	::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleInner = 25.0f;
+	::g_pLightManager->pGetLightAtIndex(0)->SetAsSpot();
+	// Straight down: glm::vec3(0.0f, -1.0f, 0.0f);
+	::g_pLightManager->pGetLightAtIndex(0)->direction = glm::vec3( 0.0f, -1.0f, 0.0f );
+
+	// FROM WHERE OUR CAMERA AND WORLD AND WHATEVER IS SET UP
+	// -ve Z is towards us, +ve Z is away from us
+	// -ve X is to the left, +ve X is to the right
+	// -ve Y is down, +ve Y is up
+	::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleOuter = 35.0f;
+	::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleInner = 25.0f;
+
+	
+//	// Try a directional light, yo
+//	::g_pLightManager->pGetLightAtIndex(0)->SetAsDirectional();
+//	// +ve X (shining to the left)
+//	// -ve Y (shining down)
+//	::g_pLightManager->pGetLightAtIndex(0)->direction = 
+//			glm::normalize( glm::vec3( -1.0f, -1.0f, 0.0f ) ); 
+
+	
+
+	
 
 	//::g_pLightManager->pGetLightAtIndex(1)->SetAsPoint();
 	//::g_pLightManager->pGetLightAtIndex(1)->position = glm::vec3(2.0f,2.0f,2.0f);
@@ -281,7 +303,12 @@ int main(void)
 
 	while (!glfwWindowShouldClose(::g_window))
 	{
-		
+
+
+//		HACK_EXAMPLE_Update_Spot_Angle_OverTime();
+
+
+
 		//    ___                    ___ _           _         _   _          _      _            
 		//   | __|_ _ _ _  __ _  _  | _ \ |_ _  _ __(_)__ ___ | | | |_ __  __| |__ _| |_ ___ _ _  
 		//   | _/ _` | ' \/ _| || | |  _/ ' \ || (_-< / _(_-< | |_| | '_ \/ _` / _` |  _/ -_) '_| 
@@ -469,6 +496,64 @@ int main(void)
 //void ProcessInput( glm::vec3 &cameraEye, glm::vec3 &cameraTarget, GLFWwindow* &window )
 
 
+float currentAngleY = 0.0f;
+void HACK_EXAMPLE_Update_Spot_Angle_OverTime(void)
+{
+	// Assume that the "default" direction of that imaginary 
+	//	point in front of the spot light is 0,0,1.
+	glm::vec3 defaultSpotDir = glm::vec3(0.0f, 0.0f, 1.0f);	// For "reasons"
+
+	// Just like the cMeshObject orientation... 
+	glm::vec3 orientationXYZ = glm::vec3(0.0f, 0.0f, 0.0f);	// Angle around various axes
+
+	glm::mat4 matSpotLightOrientation = glm::mat4(1.0f);	// 
+
+	// Remember when this spun the Triangle of Death??? 
+	// (What fun times they were...)
+
+	orientationXYZ.x = (float)glfwGetTime();
+
+	//orientationXYZ.y = glm::radians(45.0f);;
+	//orientationXYZ.y = glm::radians(currentAngleY);
+	//currentAngleY += 1.0f;
+
+	//*************************************
+	// ROTATE around Z
+	glm::mat4 matRotateZ = glm::rotate( glm::mat4(1.0f), 
+										orientationXYZ.z, 
+										glm::vec3( 0.0f, 0.0f, 1.0f ) );
+	matSpotLightOrientation = matSpotLightOrientation * matRotateZ;
+
+	// ROTATE around Y
+	glm::mat4 matRotateY = glm::rotate( glm::mat4(1.0f), 
+										orientationXYZ.y, 
+										glm::vec3( 0.0f, 1.0f, 0.0f ) );
+	matSpotLightOrientation = matSpotLightOrientation * matRotateY;
+
+	// ROTATE around X
+	glm::mat4 rotateX = glm::rotate( glm::mat4(1.0f), 
+										orientationXYZ.x, 
+										glm::vec3( 1.0f, 0.0, 0.0f ) );
+	matSpotLightOrientation = matSpotLightOrientation * rotateX;
+	//*************************************
+
+	//matSpotLightOrientation  = glm::lookAt( SpotPosition, TheBunnyRabit, glm::vec3(0,1,1) )
+
+	// Do the magic OF MATH!!
+//	glm::vec3 defaultSpotDir
+//	glm::mat4 matSpotLightOrientation
+//
+//	vec4                    = mat4                    * vec4
+//	gl_Position             = matMVP                  * newVertex;
+	glm::vec4 calcDirection = matSpotLightOrientation * glm::vec4(defaultSpotDir, 1.0f);
+
+
+
+	::g_pLightManager->pGetLightAtIndex(0)->direction = glm::vec3(calcDirection);
+	//::g_pLightManager->pGetLightAtIndex(0)->direction = defaultSpotDir;
+
+	return;
+}
 
 void ShutErDown(void)
 {

@@ -68,6 +68,9 @@ void ProcessInputAsync( glm::vec3 &cameraEye, glm::vec3 &cameraTarget, GLFWwindo
 		}
 	}	
 
+	//5    8   - outer
+ //    6  7    - inner
+
 	// OUTER spot cone angle
 	if ( glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS )		// Make spot BIGGER
 	{	// 

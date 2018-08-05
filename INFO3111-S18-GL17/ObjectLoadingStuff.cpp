@@ -134,31 +134,31 @@ void LoadObjectsIntoScene(void)
 	//	::g_vec_pMeshObjects.push_back( ::g_pTheLightAttenMesh[index] );
 	//}
 
-//	{// Add an object into the "scene"
-//		cMeshObject* pTemp = new cMeshObject(); 
-//	
-//		pTemp->meshName = "DockingBay_allOne_xyz_n_rgba_uv_quarter_size.ply";
-//	
-//		pTemp->pos = glm::vec3( 0.0f, -1.0f, 0.0f );
-//		pTemp->orientation = glm::vec3( 0.0f, glm::radians(90.0f), 0.0f);
-//		pTemp->diffuseColour = glm::vec4( 142.0f/255.0f, 
-//								          205.0f/255.0f,
-//									     49.0f/255.0f,
-//									      1.0f );		// Transparency 'alpha'
-//	
-//		pTemp->ambientToDiffuseRatio = 0.2f;
-//	
-//		pTemp->specularHighlightColour = glm::vec3(1.0f,1.0f,1.0f);
-//		pTemp->specularShininess = 0.0f;
-//	
-//		pTemp->scale = 10.0f;
-//		//pTemp->isWireframe = true;
-//		//pTemp->bDontLightObject = true;
-//	
-//		pTemp->colourSource = cMeshObject::USE_VERTEX_COLOURS;
-//	
-//		::g_vec_pMeshObjects.push_back( pTemp );
-//	}	
+	{// Add an object into the "scene"
+		cMeshObject* pTemp = new cMeshObject(); 
+	
+		pTemp->meshName = "DockingBay_allOne_xyz_n_rgba_uv_quarter_size.ply";
+	
+		pTemp->pos = glm::vec3( 0.0f, -1.0f, 0.0f );
+		pTemp->orientation = glm::vec3( 0.0f, glm::radians(90.0f), 0.0f);
+		pTemp->diffuseColour = glm::vec4( 142.0f/255.0f, 
+								          205.0f/255.0f,
+									     49.0f/255.0f,
+									      1.0f );		// Transparency 'alpha'
+	
+		pTemp->ambientToDiffuseRatio = 0.2f;
+	
+		pTemp->specularHighlightColour = glm::vec3(1.0f,1.0f,1.0f);
+		pTemp->specularShininess = 0.0f;
+	
+		pTemp->scale = 2.5f;
+		//pTemp->isWireframe = true;
+		//pTemp->bDontLightObject = true;
+	
+		pTemp->colourSource = cMeshObject::USE_VERTEX_COLOURS;
+	
+		::g_vec_pMeshObjects.push_back( pTemp );
+	}	
 
 	{// Add an object into the "scene"
 		cMeshObject* pTemp = new cMeshObject(); 

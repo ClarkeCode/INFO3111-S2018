@@ -24,6 +24,8 @@ cLight::cLight()
 	this->spotConeAngleInner = 0.0f;
 	this->spotConeAngleOuter = 0.0f;
 
+	this->m_lightType = cLight::POINT_LIGHT;
+
 
 	this->TurnLightOff();
 
