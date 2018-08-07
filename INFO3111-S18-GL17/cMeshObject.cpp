@@ -3,9 +3,21 @@
 cMeshObject::cMeshObject()
 {
 	this->pos = glm::vec3(0.0f, 0.0f, 0.0f);
-    this->colour = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+//    this->colour = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	this->diffuseColour = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	
+	this->ambientToDiffuseRatio = 0.2f;
+	
+	// Specular colour is often the colour of the lights
+	// Specular power can go well beyond 1.0
+	this->specularHighlightColour = glm::vec3( 1.0f, 1.0f, 1.0f );
+	this->specularShininess = 1.0f;
+
     this->scale = 1.0f;
+
     this->isWireframe = false;
+	this->bUseNonUniformScaling = false;
+	this->nonUniformScale = glm::vec3(1.0f,1.0f,1.0f);
 
 	this->orientation = glm::vec3(0.0f,0.0f,0.0f);
 

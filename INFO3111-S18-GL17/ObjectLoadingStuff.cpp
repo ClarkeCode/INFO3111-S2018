@@ -17,53 +17,148 @@ extern cVAOManager* g_pTheVAOManager;// = 0;
 //std::vector< cMeshObject* > g_vec_pMeshObjects;
 void LoadObjectsIntoScene(void)
 {
-
-
+	// The "debug sphere" that replaces all of the other spheres for the lights, etc.
 	{// Add an object into the "scene"
-		::g_pTheLightMesh = new cMeshObject(); 
+		::g_pDebugSphere = new cMeshObject(); 
 
-		::g_pTheLightMesh->meshName = "isosphere_smooth_xyz_n_rgba_uv.ply";
+		::g_pDebugSphere->meshName = "isosphere_smooth_xyz_n_rgba_uv.ply";
 
-		::g_pTheLightMesh->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
-		::g_pTheLightMesh->colour = glm::vec4( 142.0f/255.0f, 
-								   205.0f/255.0f,
-									49.0f/255.0f,
-									 1.0f );		// Transparency 'alpha'
+		::g_pDebugSphere->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
+		::g_pDebugSphere->diffuseColour = glm::vec4( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		// Get the "unit" scale from the VAOManager
 		sModelDrawInfo modelInfo;
-		::g_pTheVAOManager->FindDrawInfoByModelName ( ::g_pTheLightMesh->meshName, 
-													  modelInfo );
+		::g_pTheVAOManager->FindDrawInfoByModelName ( ::g_pDebugSphere->meshName, 
+														modelInfo );
 		//::g_pTheLightMesh->scale = 0.1f;
-		::g_pTheLightMesh->scale = 1.0f / modelInfo.maxExtent;
+		::g_pDebugSphere->scale = 1.0f / modelInfo.maxExtent;
 
+		::g_pDebugSphere->isWireframe = false;
 
-		::g_pTheLightMesh->isWireframe = false;
+		::g_pDebugSphere->bDontLightObject = true;
 
-		::g_pTheLightMesh->bDontLightObject = true;
-
-		::g_vec_pMeshObjects.push_back( ::g_pTheLightMesh );
-	}	
-	// Load the spheres to show the attenuation
-	for ( unsigned int index = 0; index != 4; index++ )
-	{
-		::g_pTheLightAttenMesh[index] = new cMeshObject(); 
-
-		::g_pTheLightAttenMesh[index]->meshName = "isosphere_smooth_xyz_n_rgba_uv.ply";
-
-		::g_pTheLightAttenMesh[index]->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
-		::g_pTheLightAttenMesh[index]->colour = glm::vec4( 142.0f/255.0f, 
-								   205.0f/255.0f,
-									49.0f/255.0f,
-									 1.0f );		// Transparency 'alpha'
-		::g_pTheLightAttenMesh[index]->scale = 0.1f;
-		::g_pTheLightAttenMesh[index]->isWireframe = true;
-
-		::g_pTheLightAttenMesh[index]->bDontLightObject = true;
-
-		::g_vec_pMeshObjects.push_back( ::g_pTheLightAttenMesh[index] );
+		// DON'T put this into the "scene" object (the "vector of things to draw")
+		//::g_vec_pMeshObjects.push_back( ::g_pTheLightMesh );
 	}
 
+	{// Add an object into the "scene"
+		::g_pDebugSphereSmall = new cMeshObject(); 
+
+		::g_pDebugSphereSmall->meshName = "Isoshphere_Small_InvertedNormals_xyz_n_rgba_uv.ply";
+
+		::g_pDebugSphereSmall->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
+		::g_pDebugSphereSmall->diffuseColour = glm::vec4( 1.0f, 1.0f, 1.0f, 1.0f );
+
+		// Get the "unit" scale from the VAOManager
+		sModelDrawInfo modelInfo;
+		::g_pTheVAOManager->FindDrawInfoByModelName ( ::g_pDebugSphereSmall->meshName, 
+														modelInfo );
+		//::g_pTheLightMesh->scale = 0.1f;
+		::g_pDebugSphereSmall->scale = 1.0f / modelInfo.maxExtent;
+
+		::g_pDebugSphereSmall->isWireframe = false;
+
+		::g_pDebugSphereSmall->bDontLightObject = true;
+
+		// DON'T put this into the "scene" object (the "vector of things to draw")
+		//::g_vec_pMeshObjects.push_back( ::g_pTheLightMesh );
+	}		
+	
+	{// Add an object into the "scene"
+		::g_pDebugCone = new cMeshObject(); 
+
+		::g_pDebugCone->meshName = "SpotCone_xyz_n_rgba_uv.ply";
+		::g_pDebugCone->friendlyName = "SpotCone";
+
+		::g_pDebugCone->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
+		::g_pDebugCone->diffuseColour = glm::vec4( 1.0f, 1.0f, 1.0f, 1.0f );
+
+		// Get the "unit" scale from the VAOManager
+		sModelDrawInfo modelInfo;
+		::g_pTheVAOManager->FindDrawInfoByModelName ( ::g_pDebugCone->meshName, 
+														modelInfo );
+		//::g_pTheLightMesh->scale = 0.1f;
+		::g_pDebugCone->scale = 1.0f / modelInfo.maxExtent;
+
+		::g_pDebugCone->isWireframe = false;
+
+		::g_pDebugCone->bDontLightObject = true;
+
+		// DON'T put this into the "scene" object (the "vector of things to draw")
+		//::g_vec_pMeshObjects.push_back( ::g_pTheLightMesh );
+	}	
+	
+
+	//{// Add an object into the "scene"
+	//	::g_pTheLightMesh = new cMeshObject(); 
+	//
+	//	::g_pTheLightMesh->meshName = "isosphere_smooth_xyz_n_rgba_uv.ply";
+	//
+	//	::g_pTheLightMesh->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
+	//	::g_pTheLightMesh->colour = glm::vec4( 142.0f/255.0f, 
+	//							   205.0f/255.0f,
+	//								49.0f/255.0f,
+	//								 1.0f );		// Transparency 'alpha'
+	//
+	//	// Get the "unit" scale from the VAOManager
+	//	sModelDrawInfo modelInfo;
+	//	::g_pTheVAOManager->FindDrawInfoByModelName ( ::g_pTheLightMesh->meshName, 
+	//												  modelInfo );
+	//	//::g_pTheLightMesh->scale = 0.1f;
+	//	::g_pTheLightMesh->scale = 1.0f / modelInfo.maxExtent;
+	//
+	//
+	//	::g_pTheLightMesh->isWireframe = false;
+	//
+	//	::g_pTheLightMesh->bDontLightObject = true;
+	//
+	//	::g_vec_pMeshObjects.push_back( ::g_pTheLightMesh );
+	//}	
+	//// Load the spheres to show the attenuation
+	//for ( unsigned int index = 0; index != 4; index++ )
+	//{
+	//	::g_pTheLightAttenMesh[index] = new cMeshObject(); 
+	//
+	//	::g_pTheLightAttenMesh[index]->meshName = "isosphere_smooth_xyz_n_rgba_uv.ply";
+	//
+	//	::g_pTheLightAttenMesh[index]->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
+	//	::g_pTheLightAttenMesh[index]->colour = glm::vec4( 142.0f/255.0f, 
+	//							   205.0f/255.0f,
+	//								49.0f/255.0f,
+	//								 1.0f );		// Transparency 'alpha'
+	//	::g_pTheLightAttenMesh[index]->scale = 0.1f;
+	//	::g_pTheLightAttenMesh[index]->isWireframe = true;
+	//
+	//	::g_pTheLightAttenMesh[index]->bDontLightObject = true;
+	//
+	//	::g_vec_pMeshObjects.push_back( ::g_pTheLightAttenMesh[index] );
+	//}
+
+	{// Add an object into the "scene"
+		cMeshObject* pTemp = new cMeshObject(); 
+	
+		pTemp->meshName = "DockingBay_allOne_xyz_n_rgba_uv_quarter_size.ply";
+	
+		pTemp->pos = glm::vec3( 0.0f, -1.0f, 0.0f );
+		pTemp->orientation = glm::vec3( 0.0f, glm::radians(90.0f), 0.0f);
+		pTemp->diffuseColour = glm::vec4( 142.0f/255.0f, 
+								          205.0f/255.0f,
+									     49.0f/255.0f,
+									      1.0f );		// Transparency 'alpha'
+	
+		pTemp->ambientToDiffuseRatio = 0.2f;
+	
+		pTemp->specularHighlightColour = glm::vec3(1.0f,1.0f,1.0f);
+		pTemp->specularShininess = 0.0f;
+	
+		pTemp->scale = 2.5f;
+		//pTemp->isWireframe = true;
+		//pTemp->bDontLightObject = true;
+	
+		pTemp->colourSource = cMeshObject::USE_VERTEX_COLOURS;
+	
+		::g_vec_pMeshObjects.push_back( pTemp );
+	}	
 
 	{// Add an object into the "scene"
 		cMeshObject* pTemp = new cMeshObject(); 
@@ -71,12 +166,21 @@ void LoadObjectsIntoScene(void)
 		pTemp->meshName = "CrappyTerrain_xyz_n_rgba_uv.ply";
 
 		pTemp->pos = glm::vec3( 0.0f, -15.0f, 0.0f );
-		pTemp->colour = glm::vec4( 142.0f/255.0f, 
-								   205.0f/255.0f,
-									49.0f/255.0f,
-									 1.0f );		// Transparency 'alpha'
+		pTemp->diffuseColour = glm::vec4( 142.0f/255.0f, 
+								          205.0f/255.0f,
+									     49.0f/255.0f,
+									      1.0f );		// Transparency 'alpha'
+
+		pTemp->ambientToDiffuseRatio = 0.2f;
+
+		pTemp->specularHighlightColour = glm::vec3(1.0f,1.0f,1.0f);
+		pTemp->specularShininess = 10.0f;
+
 		pTemp->scale = 1.0f;
 		pTemp->isWireframe = false;
+		//pTemp->bDontLightObject = true;
+
+		pTemp->colourSource = cMeshObject::USE_VERTEX_COLOURS;
 
 		::g_vec_pMeshObjects.push_back( pTemp );
 	}	
@@ -87,7 +191,7 @@ void LoadObjectsIntoScene(void)
 		pTemp->meshName = "cow_xyz_n_rgba_uv.ply";
 
 		pTemp->pos = glm::vec3( 1.0f, 0.0f, 0.0f );
-		pTemp->colour = glm::vec4( 243.0f/255.0f,		
+		pTemp->diffuseColour = glm::vec4( 243.0f/255.0f,		
 								     9.0f/255.0f,
 								    25.0f/255.0f,
 									 1.0f );		// Transparency 'alpha'
@@ -108,7 +212,7 @@ void LoadObjectsIntoScene(void)
 		pTemp->meshName = "cow_xyz_n_rgba_uv.ply";
 
 		pTemp->pos = glm::vec3( 2.0f, 1.0f, 0.0f );
-		pTemp->colour = glm::vec4( 142.0f/255.0f,	
+		pTemp->diffuseColour = glm::vec4( 142.0f/255.0f,	
 								   205.0f/255.0f,
 								   248.0f/255.0f,
 									 1.0f );		// Transparency 'alpha'
@@ -133,10 +237,14 @@ void LoadObjectsIntoScene(void)
 		pTemp->velocity.y = 2.0f;
 
 		pTemp->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
-		pTemp->colour = glm::vec4( 1.0f,
+		pTemp->diffuseColour = glm::vec4( 1.0f,
 								   1.0f, 
 									1.0f,
 									 1.0f );		// Transparency 'alpha'
+		pTemp->ambientToDiffuseRatio = 0.2f;
+		pTemp->specularHighlightColour = glm::vec3(1.0f,1.0f,1.0f);
+		pTemp->specularShininess = 10.0f;
+
 		pTemp->scale = 2.0f;
 		sModelDrawInfo modelInfo;
 		::g_pTheVAOManager->FindDrawInfoByModelName ( pTemp->meshName, 
@@ -157,7 +265,7 @@ void LoadObjectsIntoScene(void)
 		pTemp->friendlyName = "Luke";		
 
 		pTemp->pos = glm::vec3( 0.0f, 2.0f, 0.0f );
-		pTemp->colour = glm::vec4( 1.0f,  1.0f, 1.0f, 1.0f );		// Transparency 'alpha'
+		pTemp->diffuseColour = glm::vec4( 1.0f,  1.0f, 1.0f, 1.0f );		// Transparency 'alpha'
 		pTemp->orientation = glm::vec3(0.0f, glm::radians(180.0f), 0.0f );
 
 		// 1.0 unit per second
@@ -191,7 +299,7 @@ void LoadObjectsIntoScene(void)
 		pTemp->orientation.y = 3.14159f * 0.5f;		// YOLO, right? 
 
 		pTemp->pos = glm::vec3( -1.0f, 0.0f, 0.0f );
-		pTemp->colour = glm::vec4( 142.0f/255.0f, 
+		pTemp->diffuseColour = glm::vec4( 142.0f/255.0f, 
 									49.0f/255.0f,
 								   205.0f/255.0f,
 									 1.0f );		// Transparency 'alpha'
@@ -212,7 +320,7 @@ void LoadObjectsIntoScene(void)
 		pTemp->meshName = "free_arena_ASCII_xyz_n_rgba_uv.ply";
 
 		pTemp->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
-		pTemp->colour = glm::vec4( 244.0f/255.0f,  
+		pTemp->diffuseColour = glm::vec4( 244.0f/255.0f,  
 									223.0f/255.0f,
 								    33.0f/255.0f,
 									 1.0f );		// Transparency 'alpha'

@@ -2,14 +2,16 @@
 
 std::vector< cMeshObject* > g_vec_pMeshObjects;
 
-cMeshObject* g_pTheLightMesh = 0;		// or NULL
-
+//cMeshObject* g_pTheLightMesh = 0;		// or NULL
 // Will show the attenuation of the lights
 //  1% brightness
 // 25% brightness
 // 50% brightness
 // 90% brightness
-cMeshObject* g_pTheLightAttenMesh[4] = {0};		// or NULL
+//cMeshObject* g_pTheLightAttenMesh[4] = {0};		// or NULL
+cMeshObject* g_pDebugSphere = NULL; 
+cMeshObject* g_pDebugSphereSmall = NULL;	// Same size, but fewer triangles
+cMeshObject* g_pDebugCone = NULL;
 
 // If true, the spheres around the lights are there
 bool g_bTurnOnDebugLightSpheres = true;
@@ -34,7 +36,12 @@ cMeshObject* g_pFindObjectByFriendlyName(std::string name)
 }
 
 //const unsigned int NUMLIGHTS = 10;
-std::vector<sLight> g_vecLights;
+//std::vector<sLight> g_vecLights;
+
+cLightManager* g_pLightManager = NULL;
+
 
 // When true, the DoPhysicsUpdate is called.
 bool g_bDoEulerPhysicsUpdate = false;	
+
+float g_globalAmbientToDiffuseRatio = 0.2f;	//0.2f;
