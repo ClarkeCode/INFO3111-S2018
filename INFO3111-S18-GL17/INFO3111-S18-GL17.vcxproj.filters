@@ -1,52 +1,83 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="cMeshObject.cpp" />
-    <ClCompile Include="cShader.cpp" />
-    <ClCompile Include="cShaderManager.cpp" />
-    <ClCompile Include="glad.c" />
-    <ClCompile Include="TheMain.cpp" />
-    <ClCompile Include="cVAOManager.cpp" />
-    <ClCompile Include="ObjectLoadingStuff.cpp" />
-    <ClCompile Include="ProcessInputAsync.cpp" />
-    <ClCompile Include="key_callback_GLFW.cpp" />
-    <ClCompile Include="globalStuff.cpp" />
-    <ClCompile Include="CGLColourHelper.cpp" />
-    <ClCompile Include="DrawObjectFunction.cpp" />
-    <ClCompile Include="cLightHelper.cpp">
-      <Filter>Lights</Filter>
-    </ClCompile>
-    <ClCompile Include="cLightManager.cpp">
-      <Filter>Lights</Filter>
+    <ClCompile Include="CGLColourHelper.cpp">
+      <Filter>Implementation</Filter>
     </ClCompile>
     <ClCompile Include="cLight.cpp">
-      <Filter>Lights</Filter>
+      <Filter>Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="cLightHelper.cpp">
+      <Filter>Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="cLightManager.cpp">
+      <Filter>Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="cMeshObject.cpp">
+      <Filter>Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="cShader.cpp">
+      <Filter>Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="cShaderManager.cpp">
+      <Filter>Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="cVAOManager.cpp">
+      <Filter>Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawObjectFunction.cpp">
+      <Filter>Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="glad.c">
+      <Filter>Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="globalStuff.cpp">
+      <Filter>Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="key_callback_GLFW.cpp">
+      <Filter>Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="MyTestFile.cpp">
+      <Filter>Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectLoadingStuff.cpp">
+      <Filter>Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessInputAsync.cpp">
+      <Filter>Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="TheMain.cpp">
+      <Filter>Implementation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cMeshObject.h" />
-    <ClInclude Include="cShaderManager.h" />
-    <ClInclude Include="linmath.h" />
-    <ClInclude Include="cVAOManager.h" />
-    <ClInclude Include="globalStuff.h" />
-    <ClInclude Include="CGLColourHelper.h" />
-    <ClInclude Include="cLightHelper.h">
-      <Filter>Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="cLightManager.h">
-      <Filter>Lights</Filter>
+    <ClInclude Include="CGLColourHelper.h">
+      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="cLight.h">
-      <Filter>Lights</Filter>
+      <Filter>Headers</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{a162d39b-6848-46c7-8daf-06dc7bf3fed3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Lights">
-      <UniqueIdentifier>{bcf82302-6c57-4b0d-9e81-001c2b70cdf5}</UniqueIdentifier>
-    </Filter>
+    <ClInclude Include="cLightHelper.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="cLightManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="cMeshObject.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="cShaderManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="cVAOManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="globalStuff.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="linmath.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vert01.glsl">
@@ -55,5 +86,16 @@
     <None Include="frag01.glsl">
       <Filter>Shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{1ba12497-1465-454d-ba3f-3b29cb146efb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{bc05ff7f-f40c-440d-a22d-dae26a9e7006}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Implementation">
+      <UniqueIdentifier>{ebacb5d2-c3ea-46d6-9964-af17ce718d44}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
