@@ -44,4 +44,4 @@ cLightManager* g_pLightManager = NULL;
 // When true, the DoPhysicsUpdate is called.
 bool g_bDoEulerPhysicsUpdate = false;	
 
-float g_globalAmbientToDiffuseRatio = 0.2f;	//0.2f;
+float g_globalAmbientToDiffuseRatio = 0.1f;	//0.2f;

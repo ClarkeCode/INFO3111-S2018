@@ -149,7 +149,7 @@ void LoadObjectsIntoScene(void)
 		pTemp->ambientToDiffuseRatio = 0.2f;
 	
 		pTemp->specularHighlightColour = glm::vec3(1.0f,1.0f,1.0f);
-		pTemp->specularShininess = 0.0f;
+		pTemp->specularShininess = 1.0f;
 	
 		pTemp->scale = 2.5f;
 		//pTemp->isWireframe = true;
@@ -159,7 +159,36 @@ void LoadObjectsIntoScene(void)
 	
 		::g_vec_pMeshObjects.push_back( pTemp );
 	}	
+	{// Add an object into the "scene"
+		cMeshObject* pTemp = new cMeshObject(); 
 
+		pTemp->meshName = "bun_zipper_res2_xyz_n_rgba_uv.ply";
+
+		pTemp->friendlyName = "Bugs";		// as in Bugs Bunny
+
+		pTemp->velocity.y = 2.0f;
+
+		pTemp->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
+		pTemp->diffuseColour = glm::vec4( 1.0f,
+								   1.0f, 
+									1.0f,
+									 1.0f );		// Transparency 'alpha'
+		pTemp->ambientToDiffuseRatio = 0.2f;
+		pTemp->specularHighlightColour = glm::vec3(1.0f,1.0f,1.0f);
+		// This goes from 1 to whatver (like 10,000 is fine)
+		pTemp->specularShininess = 100.0f;
+
+		pTemp->scale = 2.0f;
+		sModelDrawInfo modelInfo;
+		::g_pTheVAOManager->FindDrawInfoByModelName ( pTemp->meshName, 
+													  modelInfo );
+		//pTemp->scale = 2.0f;
+		pTemp->scale = 1.0f / modelInfo.maxExtent;
+
+		pTemp->isWireframe = false;
+
+		::g_vec_pMeshObjects.push_back( pTemp );
+	}
 	{// Add an object into the "scene"
 		cMeshObject* pTemp = new cMeshObject(); 
 
@@ -207,55 +236,50 @@ void LoadObjectsIntoScene(void)
 	}
 
 	{// Add an object into the "scene"
-		cMeshObject* pTemp = new cMeshObject(); 
+		cMeshObject* pCow = new cMeshObject(); 
 
-		pTemp->meshName = "cow_xyz_n_rgba_uv.ply";
+		pCow->meshName = "cow_xyz_n_rgba_uv.ply";
 
-		pTemp->pos = glm::vec3( 2.0f, 1.0f, 0.0f );
-		pTemp->diffuseColour = glm::vec4( 142.0f/255.0f,	
+		pCow->pos = glm::vec3( 2.0f, 1.0f, 0.0f );
+		pCow->diffuseColour = glm::vec4( 142.0f/255.0f,	
 								   205.0f/255.0f,
 								   248.0f/255.0f,
 									 1.0f );		// Transparency 'alpha'
 		sModelDrawInfo modelInfo;
-		::g_pTheVAOManager->FindDrawInfoByModelName ( pTemp->meshName, 
+		::g_pTheVAOManager->FindDrawInfoByModelName ( pCow->meshName, 
 													  modelInfo );
 		//pTemp->scale = 0.1f;
-		pTemp->scale = 1.0f / modelInfo.maxExtent;
+		pCow->scale = 1.0f / modelInfo.maxExtent;
 
-		pTemp->isWireframe = true;
+		pCow->isWireframe = true;
 
-		::g_vec_pMeshObjects.push_back( pTemp );
+		::g_vec_pMeshObjects.push_back( pCow );
+		{
+			{// Add an object into the "scene"
+				cMeshObject* pCalf = new cMeshObject(); 
+
+				pCalf->meshName = "cow_xyz_n_rgba_uv.ply";
+
+				pCalf->pos = glm::vec3( 0.0f, 1.0f, 0.0f );
+				pCalf->diffuseColour = glm::vec4( 142.0f/255.0f,	
+										   205.0f/255.0f,
+										   248.0f/255.0f,
+											 1.0f );		// Transparency 'alpha'
+				sModelDrawInfo modelInfo;
+				::g_pTheVAOManager->FindDrawInfoByModelName ( pCalf->meshName, 
+															  modelInfo );
+				//pTemp->scale = 0.1f;
+				pCalf->scale = 0.5f / modelInfo.maxExtent;
+
+				pCalf->isWireframe = false;
+
+				// Calf will move with cow
+				pCow->vec_pChildObjects.push_back( pCalf );
+			}
+		}
 	}
 
-	{// Add an object into the "scene"
-		cMeshObject* pTemp = new cMeshObject(); 
 
-		pTemp->meshName = "bun_zipper_res2_xyz_n_rgba_uv.ply";
-
-		pTemp->friendlyName = "Bugs";		// as in Bugs Bunny
-
-		pTemp->velocity.y = 2.0f;
-
-		pTemp->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
-		pTemp->diffuseColour = glm::vec4( 1.0f,
-								   1.0f, 
-									1.0f,
-									 1.0f );		// Transparency 'alpha'
-		pTemp->ambientToDiffuseRatio = 0.2f;
-		pTemp->specularHighlightColour = glm::vec3(1.0f,1.0f,1.0f);
-		pTemp->specularShininess = 10.0f;
-
-		pTemp->scale = 2.0f;
-		sModelDrawInfo modelInfo;
-		::g_pTheVAOManager->FindDrawInfoByModelName ( pTemp->meshName, 
-													  modelInfo );
-		//pTemp->scale = 2.0f;
-		pTemp->scale = 1.0f / modelInfo.maxExtent;
-
-		pTemp->isWireframe = false;
-
-		::g_vec_pMeshObjects.push_back( pTemp );
-	}
 
 	{// Add an object into the "scene"
 		cMeshObject* pTemp = new cMeshObject(); 

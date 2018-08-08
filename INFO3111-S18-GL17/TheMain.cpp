@@ -18,6 +18,9 @@
 #include <vector>		// for the ply model loader
 #include <sstream>
 
+#include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
+
+
 #include "cMeshObject.h"
 // A vector of POINTERS to mesh objects...
 //std::vector< cMeshObject* > g_vec_pMeshObjects;
@@ -198,6 +201,8 @@ int main(void)
 		std::cout << "Light uniforms set up OK." << std::endl;
 	}
 
+	//cLight* pTheLight = ::g_pLightManager->pGetLightAtIndex(0);
+
 	::g_pLightManager->pGetLightAtIndex(0)->SetAsPoint();
 	::g_pLightManager->pGetLightAtIndex(0)->position = glm::vec3(2.0f,2.0f,2.0f);
 	::g_pLightManager->pGetLightAtIndex(0)->diffuse = glm::vec3(1.0f,1.0f,1.0f);
@@ -205,16 +210,29 @@ int main(void)
 	::g_pLightManager->pGetLightAtIndex(0)->attenQuad = 0.0115f;
 	::g_pLightManager->pGetLightAtIndex(0)->TurnLightOn();
 
-	::g_pLightManager->pGetLightAtIndex(0)->SetAsSpot();
-	// Straight down: glm::vec3(0.0f, -1.0f, 0.0f);
-	::g_pLightManager->pGetLightAtIndex(0)->direction = glm::vec3( 0.0f, -1.0f, 0.0f );
+	//::g_pLightManager->pGetLightAtIndex(0)->SetAsSpot();
+	//// Straight down: glm::vec3(0.0f, -1.0f, 0.0f);
+	//::g_pLightManager->pGetLightAtIndex(0)->direction = glm::vec3( 0.0f, -1.0f, 0.0f );
+	//::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleOuter = 35.0f;
+	//::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleInner = 25.0f;
 
-	// FROM WHERE OUR CAMERA AND WORLD AND WHATEVER IS SET UP
-	// -ve Z is towards us, +ve Z is away from us
-	// -ve X is to the left, +ve X is to the right
-	// -ve Y is down, +ve Y is up
-	::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleOuter = 35.0f;
-	::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleInner = 25.0f;
+	//// Spin the light around the x axis
+	//// vec4 = mat4 * vec4
+	////gl_Position = matMVP * newVertex;
+	//glm::vec4 spotDirection = glm::vec4( 0.0f, 1.0f, 0.0f, 1.0f );
+
+	//glm::mat4 matSpotDirAdj = glm::mat4(1.0f);	// Identity matrix
+
+	//matSpotDirAdj = glm::rotate( glm::mat4(1.0f), 
+	//							 glm::radians( 180.0f ),			// Angle to rotate
+	//							 glm::vec3( 1.0f, 0.0f, 0.0f ) );	// Only x
+
+	//spotDirection = matSpotDirAdj * spotDirection;
+
+	//::g_pLightManager->pGetLightAtIndex(0)->direction 
+	//											= glm::vec3( spotDirection );
+
+
 
 	
 //	// Try a directional light, yo
@@ -303,6 +321,21 @@ int main(void)
 
 	while (!glfwWindowShouldClose(::g_window))
 	{
+
+//glm::vec4 spotDirection = glm::vec4( 0.0f, -1.0f, 0.0f, 1.0f );
+//
+//glm::mat4 matSpotDirAdj = glm::mat4(1.0f);	// Identity matrix
+//
+//double theTime = glfwGetTime() * 100.0f;
+//
+//matSpotDirAdj = glm::rotate( glm::mat4(1.0f), 
+//						glm::radians( (float)theTime ),			// Angle to rotate
+//						glm::vec3( 1.0f, 0.0f, 0.0f ) );	// Only x
+//
+//spotDirection = matSpotDirAdj * spotDirection;
+//
+//::g_pLightManager->pGetLightAtIndex(0)->direction 
+//									= glm::vec3( spotDirection );
 
 
 //		HACK_EXAMPLE_Update_Spot_Angle_OverTime();
