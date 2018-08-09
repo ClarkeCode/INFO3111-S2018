@@ -37,9 +37,6 @@
     <ClCompile Include="key_callback_GLFW.cpp">
       <Filter>Implementation</Filter>
     </ClCompile>
-    <ClCompile Include="MyTestFile.cpp">
-      <Filter>Implementation</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectLoadingStuff.cpp">
       <Filter>Implementation</Filter>
     </ClCompile>
@@ -86,6 +83,27 @@
     <None Include="frag01.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="AUDI_TT_COUPE_xyz_rgba_n_uv.ply">
+      <Filter>Models</Filter>
+    </None>
+    <None Include="building_xyz_rgba_n_uv.ply">
+      <Filter>Models</Filter>
+    </None>
+    <None Include="bun_zipper_xyz_rgba_n_uv.ply">
+      <Filter>Models</Filter>
+    </None>
+    <None Include="cow_xyz_rgba_n_uv.ply">
+      <Filter>Models</Filter>
+    </None>
+    <None Include="palm-tree_xyz_rgba_n_uv.ply">
+      <Filter>Models</Filter>
+    </None>
+    <None Include="rob-terrain-xyz-rgba-n-uv.ply">
+      <Filter>Models</Filter>
+    </None>
+    <None Include="isosphere_smooth_xyz_n_rgba_uv.ply">
+      <Filter>Models</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -96,6 +114,9 @@
     </Filter>
     <Filter Include="Implementation">
       <UniqueIdentifier>{ebacb5d2-c3ea-46d6-9964-af17ce718d44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Models">
+      <UniqueIdentifier>{a3b5020a-1b3e-43f9-9577-1c55170571eb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

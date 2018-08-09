@@ -167,7 +167,6 @@
     <ClCompile Include="cVAOManager.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="key_callback_GLFW.cpp" />
-    <ClCompile Include="MyTestFile.cpp" />
     <ClCompile Include="ObjectLoadingStuff.cpp" />
     <ClCompile Include="ProcessInputAsync.cpp" />
     <ClCompile Include="cLight.cpp" />
@@ -185,7 +184,14 @@
     <ClInclude Include="cLight.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="AUDI_TT_COUPE_xyz_rgba_n_uv.ply" />
+    <None Include="building_xyz_rgba_n_uv.ply" />
+    <None Include="bun_zipper_xyz_rgba_n_uv.ply" />
+    <None Include="cow_xyz_rgba_n_uv.ply" />
     <None Include="frag01.glsl" />
+    <None Include="isosphere_smooth_xyz_n_rgba_uv.ply" />
+    <None Include="palm-tree_xyz_rgba_n_uv.ply" />
+    <None Include="rob-terrain-xyz-rgba-n-uv.ply" />
     <None Include="vert01.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
