@@ -11,6 +11,7 @@
 #include <vector>
 
 #include <sstream>
+#include <iostream>
 
 sModelDrawInfo::sModelDrawInfo()
 {
@@ -173,6 +174,10 @@ bool cVAOManager::FindDrawInfoByModelName(
 bool cVAOManager::m_LoadTheModel(std::string fileName,
 								 sModelDrawInfo &drawInfo )
 {
+	//Model loading messages
+	glfwSetTime(0.0);
+	std::cout << "Loading '" << fileName << "': ";
+
 	// Open the file. 
 	// Read until we hit the word "vertex"
 	// Read until we hit the word "face"
@@ -379,6 +384,10 @@ bool cVAOManager::m_LoadTheModel(std::string fileName,
 		drawInfo.pIndices[indexBufferIndex + 2] = curTri.vindex[2];
 
 	}// for ( unsigned int triIndex = 0...
+
+
+	 //Report on loadtimes
+	std::cout << glfwGetTime() << "s loadtime" << std::endl;
 
 	return true;
 }
