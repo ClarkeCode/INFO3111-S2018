@@ -239,6 +239,7 @@ void LoadObjectsIntoScene(void)
 		cMeshObject* pCow = new cMeshObject(); 
 
 		pCow->meshName = "cow_xyz_n_rgba_uv.ply";
+		pCow->friendlyName = "Cow, with calf";
 
 		pCow->pos = glm::vec3( 2.0f, 1.0f, 0.0f );
 		pCow->diffuseColour = glm::vec4( 142.0f/255.0f,	
@@ -253,30 +254,34 @@ void LoadObjectsIntoScene(void)
 
 		pCow->isWireframe = true;
 
-		::g_vec_pMeshObjects.push_back( pCow );
-		{
-			{// Add an object into the "scene"
-				cMeshObject* pCalf = new cMeshObject(); 
 
-				pCalf->meshName = "cow_xyz_n_rgba_uv.ply";
+		{// Add an object into the "scene"
+			cMeshObject* pCalf = new cMeshObject(); 
 
-				pCalf->pos = glm::vec3( 0.0f, 1.0f, 0.0f );
-				pCalf->diffuseColour = glm::vec4( 142.0f/255.0f,	
-										   205.0f/255.0f,
-										   248.0f/255.0f,
-											 1.0f );		// Transparency 'alpha'
-				sModelDrawInfo modelInfo;
-				::g_pTheVAOManager->FindDrawInfoByModelName ( pCalf->meshName, 
-															  modelInfo );
-				//pTemp->scale = 0.1f;
-				pCalf->scale = 0.5f / modelInfo.maxExtent;
+			pCalf->meshName = "cow_xyz_n_rgba_uv.ply";
+			pCalf->friendlyName = "Calf";
 
-				pCalf->isWireframe = false;
+			pCalf->pos = glm::vec3( 0.0f, 1.0f, 0.0f );
+			pCalf->diffuseColour = glm::vec4( 142.0f/255.0f,	
+										205.0f/255.0f,
+										248.0f/255.0f,
+											1.0f );		// Transparency 'alpha'
 
-				// Calf will move with cow
-				pCow->vec_pChildObjects.push_back( pCalf );
-			}
+			pCalf->colourSource = cMeshObject::USE_OBJECT_COLOUR;
+
+			sModelDrawInfo modelInfo;
+			::g_pTheVAOManager->FindDrawInfoByModelName ( pCalf->meshName, 
+															modelInfo );
+			//pTemp->scale = 0.1f;
+			pCalf->scale = 0.5f / modelInfo.maxExtent;
+			//pCalf->scale = 1.0f;
+
+			pCalf->isWireframe = false;
+
+			// Calf will move with cow
+			pCow->vec_pChildObjects.push_back( pCalf );
 		}
+		::g_vec_pMeshObjects.push_back( pCow );
 	}
 
 

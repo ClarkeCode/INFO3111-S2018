@@ -201,11 +201,19 @@ void DrawObject( cMeshObject* pCurMesh,
 	// If only there was a way to call DrawObject...
 	if ( ! pCurMesh->vec_pChildObjects.empty() )
 	{
+		// Apply the INVERSE of the parent scale matrix
+		float scaleBack = 1.0f / pCurMesh->scale;
+
+		glm::mat4 matScaleBack = glm::scale( glm::mat4(1.0f), 
+											 glm::vec3(scaleBack, scaleBack, scaleBack) );
+
 		std::vector< cMeshObject* >::iterator itChildMesh = pCurMesh->vec_pChildObjects.begin();
 
 		for ( ; itChildMesh != pCurMesh->vec_pChildObjects.end(); itChildMesh++ )
 		{
 			cMeshObject* pChild = *itChildMesh;
+
+			matModel = matModel * matScaleBack;
 
 			DrawObject( pChild, pShaderProg, pVAOManager,
 						matModel );		// Key to this, starts where parent is.
