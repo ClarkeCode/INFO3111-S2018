@@ -13,6 +13,21 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		::debug_CopyToClipboard(::debug_serializeCMeshObjectToString(::g_vec_pMeshObjects[::g_SelectedModelID]));
 	}
 
+	if ((key == GLFW_KEY_F8) && (action == GLFW_PRESS)) {
+		//::g_myCamera.lookAtModelByFName("Cow1");
+	}
+	if ((key == GLFW_KEY_F9) && (action == GLFW_PRESS)) {
+		//::g_myCamera.lookAtModelByFName("Cow1");
+		::g_myCamera.cam_eye_position = glm::vec3(0.63f, 3.1f, 7.1f);
+	}
+	if ((key == GLFW_KEY_F10) && (action == GLFW_PRESS)) {
+		::g_myCamera.lookAtModelByFName("Cow1");
+	}
+	if ((key == GLFW_KEY_F11) && (action == GLFW_PRESS)) {
+		::g_myCamera.lookAtModelByFName("Moon");
+		::g_myCamera.cam_target_position.y /= 3.0f;
+	}
+
 	// Is the shift key pressed at the same time?
 	if ( mods == GLFW_MOD_SHIFT )	// ONLY shift and nothing else
 	{

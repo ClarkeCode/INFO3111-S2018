@@ -199,7 +199,7 @@ int main(void)
 	}
 
 	::g_pLightManager->pGetLightAtIndex(0)->SetAsPoint();
-	::g_pLightManager->pGetLightAtIndex(0)->position = glm::vec3(2.0f,2.0f,2.0f);
+	::g_pLightManager->pGetLightAtIndex(0)->position = glm::vec3(-0.499f,-0.599f,-1.2f);
 	::g_pLightManager->pGetLightAtIndex(0)->diffuse = glm::vec3(1.0f,1.0f,1.0f);
 	::g_pLightManager->pGetLightAtIndex(0)->attenLinear = 0.324f;
 	::g_pLightManager->pGetLightAtIndex(0)->attenQuad = 0.0115f;
@@ -207,7 +207,7 @@ int main(void)
 
 	::g_pLightManager->pGetLightAtIndex(0)->SetAsSpot();
 	// Straight down: glm::vec3(0.0f, -1.0f, 0.0f);
-	::g_pLightManager->pGetLightAtIndex(0)->direction = glm::vec3( 0.0f, -1.0f, 0.0f );
+	::g_pLightManager->pGetLightAtIndex(0)->direction = glm::vec3(0.0f, 0.0f, -1.0f);
 
 	// FROM WHERE OUR CAMERA AND WORLD AND WHATEVER IS SET UP
 	// -ve Z is towards us, +ve Z is away from us
@@ -215,6 +215,29 @@ int main(void)
 	// -ve Y is down, +ve Y is up
 	::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleOuter = 35.0f;
 	::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleInner = 25.0f;
+
+
+
+
+	::g_pLightManager->pGetLightAtIndex(3)->SetAsSpot();
+	::g_pLightManager->pGetLightAtIndex(3)->position = glm::vec3(0.2f, -0.499f, -1.45f);
+	::g_pLightManager->pGetLightAtIndex(3)->diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
+	::g_pLightManager->pGetLightAtIndex(3)->attenLinear = 0.324f;
+	::g_pLightManager->pGetLightAtIndex(3)->attenQuad = 0.0115f;
+	::g_pLightManager->pGetLightAtIndex(3)->direction = glm::vec3(0.0f, 0.0f, -1.0f);
+	::g_pLightManager->pGetLightAtIndex(3)->spotConeAngleOuter = 35.0f;
+	::g_pLightManager->pGetLightAtIndex(3)->spotConeAngleInner = 25.0f;
+	::g_pLightManager->pGetLightAtIndex(3)->TurnLightOn();
+
+
+
+
+	::g_pLightManager->pGetLightAtIndex(4)->SetAsPoint();
+	::g_pLightManager->pGetLightAtIndex(4)->position = glm::vec3(1.0f, 8.401f, -12.5f);
+	::g_pLightManager->pGetLightAtIndex(4)->diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
+	::g_pLightManager->pGetLightAtIndex(4)->attenLinear = 0.0228977f;
+	::g_pLightManager->pGetLightAtIndex(4)->attenQuad = 0.0247289;
+	::g_pLightManager->pGetLightAtIndex(4)->TurnLightOn();
 
 	
 //	// Try a directional light, yo
@@ -228,25 +251,39 @@ int main(void)
 
 	
 
-	//::g_pLightManager->pGetLightAtIndex(1)->SetAsPoint();
-	//::g_pLightManager->pGetLightAtIndex(1)->position = glm::vec3(2.0f,2.0f,2.0f);
-	//::g_pLightManager->pGetLightAtIndex(1)->diffuse = glm::vec3(1.0f,1.0f,1.0f);
-	//::g_pLightManager->pGetLightAtIndex(1)->attenLinear = 0.324f;
-	//::g_pLightManager->pGetLightAtIndex(1)->attenQuad = 0.0115f;
+	::g_pLightManager->pGetLightAtIndex(1)->SetAsPoint();
+	::g_pLightManager->pGetLightAtIndex(1)->position = glm::vec3(-0.45f, -0.199f,0.3f);
+	::g_pLightManager->pGetLightAtIndex(1)->diffuse = glm::vec3(1.0f,0.0f,0.0f);
+	::g_pLightManager->pGetLightAtIndex(1)->attenLinear = 5.119f;
+	::g_pLightManager->pGetLightAtIndex(1)->attenQuad = 0.314255f;
 	//::g_pLightManager->pGetLightAtIndex(1)->specular = glm::vec3(1.0f,1.0f,1.0f);
 	//::g_pLightManager->pGetLightAtIndex(1)->specularPower = 1.0f;
 	//::g_pLightManager->pGetLightAtIndex(1)->setAmbientFromDiffuse(0.2f);
-	//::g_pLightManager->pGetLightAtIndex(1)->TurnLightOn();
+	::g_pLightManager->pGetLightAtIndex(1)->TurnLightOn();
 
-	//::g_pLightManager->pGetLightAtIndex(2)->SetAsPoint();
-	//::g_pLightManager->pGetLightAtIndex(2)->position = glm::vec3(2.0f,2.0f,2.0f);
-	//::g_pLightManager->pGetLightAtIndex(1)->diffuse = glm::vec3(1.0f,1.0f,1.0f);
-	//::g_pLightManager->pGetLightAtIndex(2)->attenLinear = 0.324f;
-	//::g_pLightManager->pGetLightAtIndex(2)->attenQuad = 0.0115f;
+	::g_pLightManager->pGetLightAtIndex(2)->SetAsPoint();
+	::g_pLightManager->pGetLightAtIndex(2)->position = glm::vec3(0.25f,-0.1999f,0.3f);
+	::g_pLightManager->pGetLightAtIndex(2)->diffuse = glm::vec3(1.0f,0.0f,0.0f);
+	::g_pLightManager->pGetLightAtIndex(2)->attenLinear = 5.119f;
+	::g_pLightManager->pGetLightAtIndex(2)->attenQuad = 0.314255f;
 	//::g_pLightManager->pGetLightAtIndex(2)->specular = glm::vec3(1.0f,1.0f,1.0f);
 	//::g_pLightManager->pGetLightAtIndex(2)->specularPower = 1.0f;
 	//::g_pLightManager->pGetLightAtIndex(2)->setAmbientFromDiffuse(0.2f);
-	//::g_pLightManager->pGetLightAtIndex(2)->TurnLightOn();
+	::g_pLightManager->pGetLightAtIndex(2)->TurnLightOn();
+
+	::g_pLightManager->pGetLightAtIndex(5)->SetAsPoint();
+	::g_pLightManager->pGetLightAtIndex(5)->position = glm::vec3(-0.45f, -0.499f, -1.6f);
+	::g_pLightManager->pGetLightAtIndex(5)->diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
+	::g_pLightManager->pGetLightAtIndex(5)->attenLinear = 5.119f;
+	::g_pLightManager->pGetLightAtIndex(5)->attenQuad = 0.314255f;
+	::g_pLightManager->pGetLightAtIndex(5)->TurnLightOn();
+
+	::g_pLightManager->pGetLightAtIndex(6)->SetAsPoint();
+	::g_pLightManager->pGetLightAtIndex(6)->position = glm::vec3(0.25f, -0.499f, -1.6f);
+	::g_pLightManager->pGetLightAtIndex(6)->diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
+	::g_pLightManager->pGetLightAtIndex(6)->attenLinear = 5.119f;
+	::g_pLightManager->pGetLightAtIndex(6)->attenQuad = 0.314255f;
+	::g_pLightManager->pGetLightAtIndex(6)->TurnLightOn();
 
 
 
@@ -272,6 +309,7 @@ int main(void)
 	vecModelFilesToLoad.push_back("building_xyz_rgba_n_uv.ply");
 	vecModelFilesToLoad.push_back("palm-tree_xyz_rgba_n_uv.ply");
 	vecModelFilesToLoad.push_back("rob-terrain-xyz-rgba-n-uv.ply");
+	vecModelFilesToLoad.push_back("rob-terrain4-xyz-rgba-n-uv.ply");
 
 
 	std::string errors;
@@ -403,7 +441,7 @@ int main(void)
 		cMeshObject* pLuke = ::g_pFindObjectByFriendlyName("Luke");
 		cMeshObject* pBugs = ::g_pFindObjectByFriendlyName("Bugs");
 		
-		::g_myCamera.lookAtModelByPointer(::g_vec_pMeshObjects[::g_SelectedModelID]);
+		//::g_myCamera.lookAtModelByPointer(::g_vec_pMeshObjects[::g_SelectedModelID]);
 		matView = glm::lookAt( ::g_myCamera.cam_eye_position, //cameraEye,		// position (3d space)
 							   ::g_myCamera.cam_target_position, //pBugs->pos,		// looking at
 							   upVector );		// Up vector

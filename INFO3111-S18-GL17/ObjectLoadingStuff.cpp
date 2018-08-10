@@ -94,7 +94,7 @@ void LoadObjectsIntoScene(void)
 	std::string carMeshName = "AUDI_TT_COUPE_xyz_rgba_n_uv.ply";
 	std::string buildingMeshName = ("building_xyz_rgba_n_uv.ply");
 	std::string treeMeshName = ("palm-tree_xyz_rgba_n_uv.ply");
-	std::string terrainMeshName = ("rob-terrain-xyz-rgba-n-uv.ply");
+	std::string terrainMeshName = ("rob-terrain4-xyz-rgba-n-uv.ply");
 	std::string moonMeshName = ("isosphere_smooth_xyz_n_rgba_uv.ply");
 
 	{// Add an object into the "scene"
@@ -166,7 +166,7 @@ void LoadObjectsIntoScene(void)
 
 		pTemp->friendlyName = "Moon";
 
-		pTemp->pos = glm::vec3(-0.15000f, 12.44999f, -10.85000f);
+		pTemp->pos = glm::vec3(-0.95000f, 7.36670f, -17.59990f);
 		pTemp->diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);		// Transparency 'alpha'
 		pTemp->orientation = glm::vec3(0.15000f, 3.14159f, 0.00000f);
 
