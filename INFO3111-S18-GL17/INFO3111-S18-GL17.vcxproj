@@ -176,6 +176,9 @@
     <ClCompile Include="Ply\CVector3f.cpp" />
     <ClCompile Include="ProcessInputAsync.cpp" />
     <ClCompile Include="cLight.cpp" />
+    <ClCompile Include="Texture\C24BitBMPpixel.cpp" />
+    <ClCompile Include="Texture\cBasicTextureManager.cpp" />
+    <ClCompile Include="Texture\CTextureFromBMP.cpp" />
     <ClCompile Include="TheMain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +196,9 @@
     <ClInclude Include="Ply\CPlyInfo.h" />
     <ClInclude Include="Ply\CStringHelper.h" />
     <ClInclude Include="Ply\CVector3f.h" />
+    <ClInclude Include="Texture\C24BitBMPpixel.h" />
+    <ClInclude Include="Texture\cBasicTextureManager.h" />
+    <ClInclude Include="Texture\CTextureFromBMP.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="frag01.glsl" />

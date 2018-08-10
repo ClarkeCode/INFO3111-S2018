@@ -267,6 +267,26 @@ int main(void)
 	//::g_pLightManager->pGetLightAtIndex(2)->TurnLightOn();
 
 
+	// TEXTURE STUFF
+	::g_pTextureManager = new cBasicTextureManager();
+
+	::g_pTextureManager->SetBasePath( "textures" );
+	// "textures\800px_COLOURBOX15652566.bmp"
+
+	// Have to be square and BMP 
+	// (Doesn't have to be a "power of 2" in size, but you'll hear that)
+	if ( ::g_pTextureManager->Create2DTextureFromBMPFile( "800px_COLOURBOX15652566.bmp", true ) )
+	{
+		std::cout << "Loaded the texture OK." << std::endl;
+	}
+	else 
+	{
+		std::cout << "Texture DIDN'T load." << std::endl;
+	}
+
+
+
+
 
 
 	::g_pTheVAOManager = new cVAOManager();
@@ -371,6 +391,13 @@ int main(void)
 				pBunny->velocity.y = fabs(pBunny->velocity.y);
 				pBunny->pos.y = -2.0f;
 			}
+
+			cMeshObject* pLuke = ::g_pFindObjectByFriendlyName("Luke");
+			pLuke->pos.z += 0.01f;
+	
+			pLuke->orientation.z += 0.01f;	// Do a barrel roll!!
+
+
 		}//if ( ::g_bDoEulerPhysicsUpdate )
 		
 
@@ -439,7 +466,7 @@ int main(void)
 		cMeshObject* pBugs = ::g_pFindObjectByFriendlyName("Bugs");
 
 		matView = glm::lookAt( cameraEye,		// position (3d space)
-							   pBugs->pos,		// looking at
+							   pLuke->pos,		// looking at
 							   upVector );		// Up vector
 
 
@@ -603,6 +630,10 @@ void ShutErDown(void)
 		delete ::g_pTheVAOManager;
 	}
 
+	if ( ::g_pTextureManager )
+	{
+		delete ::g_pTextureManager;
+	}
 
 	unsigned int vectorSize = (unsigned int)::g_vec_pMeshObjects.size();
 	for ( unsigned int index = 0; index != vectorSize; index++ )

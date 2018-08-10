@@ -196,6 +196,10 @@ void main()
 	outputColour.rgb = max(ambientObjectColour, outputColour.rgb);
 	
 	outputColour.rgb = clamp( outputColour.rgb, vec3(0.0f,0.0f,0.0f), vec3(1.0f,1.0f,1.0f) );
+
+	// Bump colour output as projector is dark
+	outputColour.rgb *= 1.2f;
+	
 };
 
 // Caulate the specular contribution from the light

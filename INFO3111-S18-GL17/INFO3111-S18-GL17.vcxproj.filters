@@ -38,6 +38,15 @@
       <Filter>Ply</Filter>
     </ClCompile>
     <ClCompile Include="cVAOManager_ExtraPlyStuff.cpp" />
+    <ClCompile Include="Texture\C24BitBMPpixel.cpp">
+      <Filter>Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture\cBasicTextureManager.cpp">
+      <Filter>Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture\CTextureFromBMP.cpp">
+      <Filter>Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cMeshObject.h" />
@@ -70,6 +79,15 @@
     <ClInclude Include="Ply\CVector3f.h">
       <Filter>Ply</Filter>
     </ClInclude>
+    <ClInclude Include="Texture\C24BitBMPpixel.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture\cBasicTextureManager.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture\CTextureFromBMP.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -80,6 +98,9 @@
     </Filter>
     <Filter Include="Ply">
       <UniqueIdentifier>{f8d963ea-8420-4642-bdd0-27fc67f23cb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Texture">
+      <UniqueIdentifier>{4636d31f-e267-46ca-a036-0e915c6fd63e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

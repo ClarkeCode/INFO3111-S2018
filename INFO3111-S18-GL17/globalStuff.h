@@ -18,6 +18,9 @@
 
 #include "cVAOManager.h"
 
+// Add textures FTW!
+#include "Texture/cBasicTextureManager.h"
+
 // Put common stuff in the header 
 // ALWAYS use header variables as extern
 // NEVER "regular" variables
@@ -92,6 +95,6 @@ void DrawDebugSphere( cShaderManager::cShaderProgram* pShaderProgram,
 // Set to 1.0 if you want it to look you're on the surface of the sun (everthing lit everywhere).
 extern float g_globalAmbientToDiffuseRatio;	// = 0.2f;
 
-
+extern cBasicTextureManager* g_pTextureManager;
 
 #endif

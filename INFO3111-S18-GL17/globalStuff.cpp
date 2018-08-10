@@ -45,3 +45,5 @@ cLightManager* g_pLightManager = NULL;
 bool g_bDoEulerPhysicsUpdate = false;	
 
 float g_globalAmbientToDiffuseRatio = 0.1f;	//0.2f;
+
+cBasicTextureManager* g_pTextureManager = NULL;

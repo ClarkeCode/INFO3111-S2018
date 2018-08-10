@@ -290,32 +290,62 @@ void LoadObjectsIntoScene(void)
 
 
 	{// Add an object into the "scene"
-		cMeshObject* pTemp = new cMeshObject(); 
+		cMeshObject* pXWing = new cMeshObject(); 
 
-		pTemp->meshName = "X-Wing_Attack_(33569 faces)_xyz_n_rgba_uv.ply";
+		pXWing->meshName = "X-Wing_Attack_(33569 faces)_xyz_n_rgba_uv.ply";
 
-		pTemp->friendlyName = "Luke";		
+		pXWing->friendlyName = "Luke";		
 
-		pTemp->pos = glm::vec3( 0.0f, 2.0f, 0.0f );
-		pTemp->diffuseColour = glm::vec4( 1.0f,  1.0f, 1.0f, 1.0f );		// Transparency 'alpha'
-		pTemp->orientation = glm::vec3(0.0f, glm::radians(180.0f), 0.0f );
+		pXWing->pos = glm::vec3( 0.0f, 2.0f, 0.0f );
+		pXWing->diffuseColour = glm::vec4( 1.0f,  1.0f, 1.0f, 1.0f );		// Transparency 'alpha'
+		pXWing->orientation = glm::vec3(0.0f, glm::radians(180.0f), 0.0f );
 
 		// 1.0 unit per second
 //		pTemp->velocity.z = 0.1f;
-		pTemp->acceleration.z = 0.01f;
+		pXWing->acceleration.z = 0.01f;
 
 
 		sModelDrawInfo modelInfo;
-		::g_pTheVAOManager->FindDrawInfoByModelName ( pTemp->meshName, 
+		::g_pTheVAOManager->FindDrawInfoByModelName ( pXWing->meshName, 
 													  modelInfo );
 		//pTemp->scale = 2.0f;
-		pTemp->scale = 1.0f / modelInfo.maxExtent;
-		pTemp->scale *= 2.0f;			// a bit bigger
+		pXWing->scale = 1.0f / modelInfo.maxExtent;
+		pXWing->scale *= 2.0f;			// a bit bigger
 
-		pTemp->isWireframe = false;
+		pXWing->isWireframe = false;
 
-		::g_vec_pMeshObjects.push_back( pTemp );
+		// Add the X-Wing to the "things I'm drawing" vector...
+		::g_vec_pMeshObjects.push_back( pXWing );
+
+		//// Add 4 cMeshObjects... 
+		//lightMeshLeftBrake.isVisible = false;
+		//lightMeshLeftBrake.friendlyName = "LeftBrakeLight";
+		//pCar->vecChild.Push_back( lightMeshLeftBrake );
+		//pCar->vecChild.Push_back( lightMeshRightBrake );
+
+
+		// Have a cow track with Luke...
+		{// Load a cow!!!
+			cMeshObject* cLukesCow = new cMeshObject(); 
+			cLukesCow->meshName = "cow_xyz_n_rgba_uv.ply";
+			// Because this is added as a "child" of another object,
+			//  this location is RELATIVE to the 'parent' object
+			cLukesCow->pos = glm::vec3( 1.0f, 0.0f, 0.0f );
+			cLukesCow->diffuseColour = glm::vec4( 1.0f, 0.0f, 0.0f, 1.0f );
+			cLukesCow->colourSource = cMeshObject::USE_OBJECT_COLOUR;
+			sModelDrawInfo modelInfo;
+			::g_pTheVAOManager->FindDrawInfoByModelName ( cLukesCow->meshName, modelInfo );
+			cLukesCow->scale = 1.0f / modelInfo.maxExtent;
+			cLukesCow->isWireframe = false;
+			//::g_vec_pMeshObjects.push_back( pTemp );
+
+			pXWing->vec_pChildObjects.push_back( cLukesCow );
+
+		}// ENDOF: Load a cow!!
+
 	}
+
+
 	{// Add an object into the "scene"
 		cMeshObject* pTemp = new cMeshObject(); 
 
