@@ -18,6 +18,9 @@
 
 #include "cVAOManager.h"
 
+// Add textures FTW!
+#include "Texture/cBasicTextureManager.h"
+
 // Put common stuff in the header 
 // ALWAYS use header variables as extern
 // NEVER "regular" variables
@@ -33,6 +36,7 @@ extern std::vector< cMeshObject* > g_vec_pMeshObjects;
 void LoadObjectsIntoScene(void);
 bool LoadModelTypes(GLint shadProgID, std::string &errors);
 bool LoadModelTypes(GLint shadProgID, std::vector<std::string> vecModelNames, std::string &errors);
+bool LoadModelTypes_PlyLoader(GLint shadProgID, std::vector<std::string> vecModelNames, std::string &errors);
 
 // If true, the spheres around the lights are there
 extern bool g_bTurnOnDebugLightSpheres;	// = false
@@ -91,7 +95,7 @@ void DrawDebugSphere( cShaderManager::cShaderProgram* pShaderProgram,
 // Set to 1.0 if you want it to look you're on the surface of the sun (everthing lit everywhere).
 extern float g_globalAmbientToDiffuseRatio;	// = 0.2f;
 
-
+extern cBasicTextureManager* g_pTextureManager;
 
 
 /*

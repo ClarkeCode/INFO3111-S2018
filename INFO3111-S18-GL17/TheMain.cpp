@@ -18,6 +18,9 @@
 #include <vector>		// for the ply model loader
 #include <sstream>
 
+#include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
+
+
 #include "cMeshObject.h"
 // A vector of POINTERS to mesh objects...
 //std::vector< cMeshObject* > g_vec_pMeshObjects;
@@ -198,92 +201,90 @@ int main(void)
 		std::cout << "Light uniforms set up OK." << std::endl;
 	}
 
+	//cLight* pTheLight = ::g_pLightManager->pGetLightAtIndex(0);
+
 	::g_pLightManager->pGetLightAtIndex(0)->SetAsPoint();
-	::g_pLightManager->pGetLightAtIndex(0)->position = glm::vec3(-0.499f,-0.599f,-1.2f);
+	::g_pLightManager->pGetLightAtIndex(0)->position = glm::vec3(2.0f,2.0f,2.0f);
 	::g_pLightManager->pGetLightAtIndex(0)->diffuse = glm::vec3(1.0f,1.0f,1.0f);
 	::g_pLightManager->pGetLightAtIndex(0)->attenLinear = 0.324f;
 	::g_pLightManager->pGetLightAtIndex(0)->attenQuad = 0.0115f;
 	::g_pLightManager->pGetLightAtIndex(0)->TurnLightOn();
 
-	::g_pLightManager->pGetLightAtIndex(0)->SetAsSpot();
-	// Straight down: glm::vec3(0.0f, -1.0f, 0.0f);
-	::g_pLightManager->pGetLightAtIndex(0)->direction = glm::vec3(0.0f, 0.0f, -1.0f);
+	//::g_pLightManager->pGetLightAtIndex(0)->SetAsSpot();
+	//// Straight down: glm::vec3(0.0f, -1.0f, 0.0f);
+	//::g_pLightManager->pGetLightAtIndex(0)->direction = glm::vec3( 0.0f, -1.0f, 0.0f );
+	//::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleOuter = 35.0f;
+	//::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleInner = 25.0f;
 
-	// FROM WHERE OUR CAMERA AND WORLD AND WHATEVER IS SET UP
-	// -ve Z is towards us, +ve Z is away from us
-	// -ve X is to the left, +ve X is to the right
-	// -ve Y is down, +ve Y is up
-	::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleOuter = 35.0f;
-	::g_pLightManager->pGetLightAtIndex(0)->spotConeAngleInner = 25.0f;
+	//// Spin the light around the x axis
+	//// vec4 = mat4 * vec4
+	////gl_Position = matMVP * newVertex;
+	//glm::vec4 spotDirection = glm::vec4( 0.0f, 1.0f, 0.0f, 1.0f );
 
+	//glm::mat4 matSpotDirAdj = glm::mat4(1.0f);	// Identity matrix
 
+	//matSpotDirAdj = glm::rotate( glm::mat4(1.0f), 
+	//							 glm::radians( 180.0f ),			// Angle to rotate
+	//							 glm::vec3( 1.0f, 0.0f, 0.0f ) );	// Only x
 
+	//spotDirection = matSpotDirAdj * spotDirection;
 
-	::g_pLightManager->pGetLightAtIndex(3)->SetAsSpot();
-	::g_pLightManager->pGetLightAtIndex(3)->position = glm::vec3(0.2f, -0.499f, -1.45f);
-	::g_pLightManager->pGetLightAtIndex(3)->diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
-	::g_pLightManager->pGetLightAtIndex(3)->attenLinear = 0.324f;
-	::g_pLightManager->pGetLightAtIndex(3)->attenQuad = 0.0115f;
-	::g_pLightManager->pGetLightAtIndex(3)->direction = glm::vec3(0.0f, 0.0f, -1.0f);
-	::g_pLightManager->pGetLightAtIndex(3)->spotConeAngleOuter = 35.0f;
-	::g_pLightManager->pGetLightAtIndex(3)->spotConeAngleInner = 25.0f;
-	::g_pLightManager->pGetLightAtIndex(3)->TurnLightOn();
+	//::g_pLightManager->pGetLightAtIndex(0)->direction 
+	//											= glm::vec3( spotDirection );
 
 
-
-
-	::g_pLightManager->pGetLightAtIndex(4)->SetAsPoint();
-	::g_pLightManager->pGetLightAtIndex(4)->position = glm::vec3(1.0f, 8.401f, -12.5f);
-	::g_pLightManager->pGetLightAtIndex(4)->diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
-	::g_pLightManager->pGetLightAtIndex(4)->attenLinear = 0.0228977f;
-	::g_pLightManager->pGetLightAtIndex(4)->attenQuad = 0.0247289;
-	::g_pLightManager->pGetLightAtIndex(4)->TurnLightOn();
 
 	
 //	// Try a directional light, yo
-	//::g_pLightManager->pGetLightAtIndex(0)->SetAsDirectional();
-	//// +ve X (shining to the left)
-	//// -ve Y (shining down)
-	//::g_pLightManager->pGetLightAtIndex(0)->direction = 
-	//		glm::normalize( glm::vec3( -1.0f, -1.0f, 0.0f ) ); 
+//	::g_pLightManager->pGetLightAtIndex(0)->SetAsDirectional();
+//	// +ve X (shining to the left)
+//	// -ve Y (shining down)
+//	::g_pLightManager->pGetLightAtIndex(0)->direction = 
+//			glm::normalize( glm::vec3( -1.0f, -1.0f, 0.0f ) ); 
 
 	
 
 	
 
-	::g_pLightManager->pGetLightAtIndex(1)->SetAsPoint();
-	::g_pLightManager->pGetLightAtIndex(1)->position = glm::vec3(-0.45f, -0.199f,0.3f);
-	::g_pLightManager->pGetLightAtIndex(1)->diffuse = glm::vec3(1.0f,0.0f,0.0f);
-	::g_pLightManager->pGetLightAtIndex(1)->attenLinear = 5.119f;
-	::g_pLightManager->pGetLightAtIndex(1)->attenQuad = 0.314255f;
+	//::g_pLightManager->pGetLightAtIndex(1)->SetAsPoint();
+	//::g_pLightManager->pGetLightAtIndex(1)->position = glm::vec3(2.0f,2.0f,2.0f);
+	//::g_pLightManager->pGetLightAtIndex(1)->diffuse = glm::vec3(1.0f,1.0f,1.0f);
+	//::g_pLightManager->pGetLightAtIndex(1)->attenLinear = 0.324f;
+	//::g_pLightManager->pGetLightAtIndex(1)->attenQuad = 0.0115f;
 	//::g_pLightManager->pGetLightAtIndex(1)->specular = glm::vec3(1.0f,1.0f,1.0f);
 	//::g_pLightManager->pGetLightAtIndex(1)->specularPower = 1.0f;
 	//::g_pLightManager->pGetLightAtIndex(1)->setAmbientFromDiffuse(0.2f);
-	::g_pLightManager->pGetLightAtIndex(1)->TurnLightOn();
+	//::g_pLightManager->pGetLightAtIndex(1)->TurnLightOn();
 
-	::g_pLightManager->pGetLightAtIndex(2)->SetAsPoint();
-	::g_pLightManager->pGetLightAtIndex(2)->position = glm::vec3(0.25f,-0.1999f,0.3f);
-	::g_pLightManager->pGetLightAtIndex(2)->diffuse = glm::vec3(1.0f,0.0f,0.0f);
-	::g_pLightManager->pGetLightAtIndex(2)->attenLinear = 5.119f;
-	::g_pLightManager->pGetLightAtIndex(2)->attenQuad = 0.314255f;
+	//::g_pLightManager->pGetLightAtIndex(2)->SetAsPoint();
+	//::g_pLightManager->pGetLightAtIndex(2)->position = glm::vec3(2.0f,2.0f,2.0f);
+	//::g_pLightManager->pGetLightAtIndex(1)->diffuse = glm::vec3(1.0f,1.0f,1.0f);
+	//::g_pLightManager->pGetLightAtIndex(2)->attenLinear = 0.324f;
+	//::g_pLightManager->pGetLightAtIndex(2)->attenQuad = 0.0115f;
 	//::g_pLightManager->pGetLightAtIndex(2)->specular = glm::vec3(1.0f,1.0f,1.0f);
 	//::g_pLightManager->pGetLightAtIndex(2)->specularPower = 1.0f;
 	//::g_pLightManager->pGetLightAtIndex(2)->setAmbientFromDiffuse(0.2f);
-	::g_pLightManager->pGetLightAtIndex(2)->TurnLightOn();
+	//::g_pLightManager->pGetLightAtIndex(2)->TurnLightOn();
 
-	::g_pLightManager->pGetLightAtIndex(5)->SetAsPoint();
-	::g_pLightManager->pGetLightAtIndex(5)->position = glm::vec3(-0.45f, -0.499f, -1.6f);
-	::g_pLightManager->pGetLightAtIndex(5)->diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
-	::g_pLightManager->pGetLightAtIndex(5)->attenLinear = 5.119f;
-	::g_pLightManager->pGetLightAtIndex(5)->attenQuad = 0.314255f;
-	::g_pLightManager->pGetLightAtIndex(5)->TurnLightOn();
 
-	::g_pLightManager->pGetLightAtIndex(6)->SetAsPoint();
-	::g_pLightManager->pGetLightAtIndex(6)->position = glm::vec3(0.25f, -0.499f, -1.6f);
-	::g_pLightManager->pGetLightAtIndex(6)->diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
-	::g_pLightManager->pGetLightAtIndex(6)->attenLinear = 5.119f;
-	::g_pLightManager->pGetLightAtIndex(6)->attenQuad = 0.314255f;
-	::g_pLightManager->pGetLightAtIndex(6)->TurnLightOn();
+	// TEXTURE STUFF
+	::g_pTextureManager = new cBasicTextureManager();
+
+	::g_pTextureManager->SetBasePath( "textures" );
+	// "textures\800px_COLOURBOX15652566.bmp"
+
+	// Have to be square and BMP 
+	// (Doesn't have to be a "power of 2" in size, but you'll hear that)
+	if ( ::g_pTextureManager->Create2DTextureFromBMPFile( "800px_COLOURBOX15652566.bmp", true ) )
+	{
+		std::cout << "Loaded the texture OK." << std::endl;
+	}
+	else 
+	{
+		std::cout << "Texture DIDN'T load." << std::endl;
+	}
+
+
 
 
 
@@ -293,28 +294,22 @@ int main(void)
 	// Load objects into scene...
 
 	std::vector<std::string> vecModelFilesToLoad;
-	//vecModelFilesToLoad.push_back("bun_zipper_res2_xyz_n_rgba_uv.ply");
-	//vecModelFilesToLoad.push_back("cow_xyz_n_rgba_uv.ply");
-	//vecModelFilesToLoad.push_back("ssj100_xyz_n_rgba_uv.ply");
-	//vecModelFilesToLoad.push_back("free_arena_ASCII_xyz_n_rgba_uv.ply");
-	//vecModelFilesToLoad.push_back("CrappyTerrain_xyz_n_rgba_uv.ply");
+	vecModelFilesToLoad.push_back("bun_zipper_res2_xyz_n_rgba_uv.ply");
+	vecModelFilesToLoad.push_back("cow_xyz_n_rgba_uv.ply");
+	vecModelFilesToLoad.push_back("ssj100_xyz_n_rgba_uv.ply");
+	vecModelFilesToLoad.push_back("free_arena_ASCII_xyz_n_rgba_uv.ply");
+	vecModelFilesToLoad.push_back("CrappyTerrain_xyz_n_rgba_uv.ply");
 	vecModelFilesToLoad.push_back("isosphere_smooth_xyz_n_rgba_uv.ply");
-	//vecModelFilesToLoad.push_back("X-Wing_Attack_(33569 faces)_xyz_n_rgba_uv.ply");
-	//vecModelFilesToLoad.push_back("DockingBay_allOne_xyz_n_rgba_uv_quarter_size.ply");
+	vecModelFilesToLoad.push_back("X-Wing_Attack_(33569 faces)_xyz_n_rgba_uv.ply");
+	vecModelFilesToLoad.push_back("DockingBay_allOne_xyz_n_rgba_uv_quarter_size.ply");
 	vecModelFilesToLoad.push_back("Isoshphere_Small_InvertedNormals_xyz_n_rgba_uv.ply");
-
-	vecModelFilesToLoad.push_back("bun_zipper_xyz_rgba_n_uv.ply");
-	vecModelFilesToLoad.push_back("cow_xyz_rgba_n_uv.ply");
-	vecModelFilesToLoad.push_back("AUDI_TT_COUPE_xyz_rgba_n_uv.ply");
-	vecModelFilesToLoad.push_back("building_xyz_rgba_n_uv.ply");
-	vecModelFilesToLoad.push_back("palm-tree_xyz_rgba_n_uv.ply");
-	vecModelFilesToLoad.push_back("rob-terrain-xyz-rgba-n-uv.ply");
-	vecModelFilesToLoad.push_back("rob-terrain4-xyz-rgba-n-uv.ply");
 
 
 	std::string errors;
 //	if ( ! LoadModelTypes(shadProgID, errors) )
-	if ( ! LoadModelTypes( shadProgID, vecModelFilesToLoad, errors ) ) {
+//	if ( ! LoadModelTypes( shadProgID, vecModelFilesToLoad, errors ) )
+	if ( ! LoadModelTypes_PlyLoader( shadProgID, vecModelFilesToLoad, errors ) )
+	{
 		std::cout << "There were errors loading the model files..." << std::endl;
 		std::cout << errors << std::endl;
 	}
@@ -348,6 +343,21 @@ int main(void)
 	while (!glfwWindowShouldClose(::g_window))
 	{
 
+//glm::vec4 spotDirection = glm::vec4( 0.0f, -1.0f, 0.0f, 1.0f );
+//
+//glm::mat4 matSpotDirAdj = glm::mat4(1.0f);	// Identity matrix
+//
+//double theTime = glfwGetTime() * 100.0f;
+//
+//matSpotDirAdj = glm::rotate( glm::mat4(1.0f), 
+//						glm::radians( (float)theTime ),			// Angle to rotate
+//						glm::vec3( 1.0f, 0.0f, 0.0f ) );	// Only x
+//
+//spotDirection = matSpotDirAdj * spotDirection;
+//
+//::g_pLightManager->pGetLightAtIndex(0)->direction 
+//									= glm::vec3( spotDirection );
+
 
 //		HACK_EXAMPLE_Update_Spot_Angle_OverTime();
 
@@ -358,7 +368,8 @@ int main(void)
 		//   | _/ _` | ' \/ _| || | |  _/ ' \ || (_-< / _(_-< | |_| | '_ \/ _` / _` |  _/ -_) '_| 
 		//   |_|\__,_|_||_\__|\_, | |_| |_||_\_, /__/_\__/__/  \___/| .__/\__,_\__,_|\__\___|_|   
 		//                    |__/           |__/                   |_|                           
-		if ( ::g_bDoEulerPhysicsUpdate ) {
+		if ( ::g_bDoEulerPhysicsUpdate )
+		{
 			double currentTime = glfwGetTime();
 			// Aka "frame time"
 			double deltaTime = currentTime - globalLastTimeStamp;
@@ -375,10 +386,18 @@ int main(void)
 				<< "a = " << pBunny->acceleration.y << ", " 
 				<< "v = " << pBunny->velocity.y << std::endl;
 
-			if ( pBunny->pos.y <= -2.0f ) {
+			if ( pBunny->pos.y <= -2.0f )
+			{
 				pBunny->velocity.y = fabs(pBunny->velocity.y);
 				pBunny->pos.y = -2.0f;
 			}
+
+			cMeshObject* pLuke = ::g_pFindObjectByFriendlyName("Luke");
+			pLuke->pos.z += 0.01f;
+	
+			pLuke->orientation.z += 0.01f;	// Do a barrel roll!!
+
+
 		}//if ( ::g_bDoEulerPhysicsUpdate )
 		
 
@@ -435,15 +454,19 @@ int main(void)
 		// Deal with the keyboard, etc.
 		ProcessInputAsync( cameraEye, cameraTarget, ::g_window );
 
-		
+
+
+
+		//matView = glm::lookAt( cameraEye,		// position (3d space)
+		//					   cameraTarget,	// looking at
+		//					   upVector );		// Up vector
 
 		// Look at Luke's ship
 		cMeshObject* pLuke = ::g_pFindObjectByFriendlyName("Luke");
 		cMeshObject* pBugs = ::g_pFindObjectByFriendlyName("Bugs");
-		
-		//::g_myCamera.lookAtModelByPointer(::g_vec_pMeshObjects[::g_SelectedModelID]);
-		matView = glm::lookAt( ::g_myCamera.cam_eye_position, //cameraEye,		// position (3d space)
-							   ::g_myCamera.cam_target_position, //pBugs->pos,		// looking at
+
+		matView = glm::lookAt( cameraEye,		// position (3d space)
+							   pLuke->pos,		// looking at
 							   upVector );		// Up vector
 
 
@@ -607,6 +630,10 @@ void ShutErDown(void)
 		delete ::g_pTheVAOManager;
 	}
 
+	if ( ::g_pTextureManager )
+	{
+		delete ::g_pTextureManager;
+	}
 
 	unsigned int vectorSize = (unsigned int)::g_vec_pMeshObjects.size();
 	for ( unsigned int index = 0; index != vectorSize; index++ )
@@ -621,93 +648,6 @@ void ShutErDown(void)
 
 	return;
 }
-
-// MOVED: bool LoadModelTypes(GLint shadProgID, std::string &errors)
-
-//struct sLight
-//{
-//	glm::vec3 position;
-//	float attenLinear;
-//	float attenConst;
-//	float attenQuad;
-//
-//	GLint UniLoc_Position;
-//	GLint UniLoc_AttenAndLight;
-//};
-//
-//const unsigned int NUMLIGHTS = 3;
-//std::vector<sLight> g_vecLights;
-
-//void SetUpTheLights(GLint shaderProgID)
-//{
-//	for ( int count = 0; count != NUMLIGHTS; count++ )
-//	{
-//		sLight tempLight;
-//		// Note that the constructor set a bunch of defaults
-//		::g_vecLights.push_back( tempLight );
-//	}
-//
-//	// Set the #0 light to white
-//	::g_vecLights[0].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-//
-//	// Load all the uniform variables for these lights:
-//	::g_vecLights[0].UniLoc_Position = glGetUniformLocation( shaderProgID, "theLights[0].Position" );
-//	::g_vecLights[0].UniLoc_Diffuse = glGetUniformLocation( shaderProgID, "theLights[0].Diffuse" );
-//	::g_vecLights[0].UniLoc_AttenAndLight = glGetUniformLocation( shaderProgID, "theLights[0].AttenAndType" );
-//
-//	::g_vecLights[1].UniLoc_Position = glGetUniformLocation( shaderProgID, "theLights[1].Position" );
-//	::g_vecLights[1].UniLoc_Diffuse = glGetUniformLocation( shaderProgID, "theLights[1].Diffuse" );
-//	::g_vecLights[1].UniLoc_AttenAndLight = glGetUniformLocation( shaderProgID, "theLights[1].AttenAndType" );
-//
-//	::g_vecLights[2].UniLoc_Position = glGetUniformLocation( shaderProgID, "theLights[2].Position" );
-//	::g_vecLights[2].UniLoc_Diffuse = glGetUniformLocation( shaderProgID, "theLights[2].Diffuse" );
-//	::g_vecLights[2].UniLoc_AttenAndLight = glGetUniformLocation( shaderProgID, "theLights[2].AttenAndType" );
-//
-//
-//	// Set up the light values, too
-//	::g_vecLights[0].position = glm::vec3( 2.0f, 2.0f, 0.0f );
-//	::g_vecLights[0].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-//	::g_vecLights[0].attenConst = 0.0f;
-//	::g_vecLights[0].attenLinear = 0.324f;		// Why this number? It looked nice!
-//	::g_vecLights[0].attenQuad = 0.0115f;		// Same with this number!
-//
-//	::g_vecLights[1].position = glm::vec3( 2.0f, 2.0f, 0.0f );
-//	::g_vecLights[1].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-//	::g_vecLights[1].attenConst = 0.0f;
-//	::g_vecLights[1].attenLinear = 0.324f;		// Why this number? It looked nice!
-//	::g_vecLights[1].attenQuad = 0.0115f;		// Same with this number!
-//
-//	::g_vecLights[2].position = glm::vec3( 2.0f, 2.0f, 0.0f );
-//	::g_vecLights[2].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-//	::g_vecLights[2].attenConst = 0.0f;
-//	::g_vecLights[2].attenLinear = 0.324f;		// Why this number? It looked nice!
-//	::g_vecLights[2].attenQuad = 0.0115f;		// Same with this number!
-//
-//	return;
-//}
-
-//void CopyLightInfoToShader( unsigned int numberOfLightsToCopy )
-//{
-//	for ( unsigned int index = 0; index != numberOfLightsToCopy; index++ )
-//	{
-//		sLight &curLight = ::g_vecLights[index];
-//
-//		glUniform3f( curLight.UniLoc_Position, curLight.position.x, curLight.position.y, curLight.position.z );
-//
-//		glUniform4f( curLight.UniLoc_Diffuse, 
-//					 curLight.diffuseColour.r, curLight.diffuseColour.g, curLight.diffuseColour.b, 
-//					 curLight.diffuseColour.a );
-//
-//		glUniform4f( curLight.UniLoc_AttenAndLight, 
-//					 curLight.attenConst, 
-//					 curLight.attenLinear, 
-//					 curLight.attenQuad, 
-//					 1.0f );
-//	}//for ( unsigned int index = ...
-//
-//	return;
-//}
-
 
 void DoPhysicsIntegrationUpdate(double deltaTime)
 {

@@ -53,6 +53,20 @@ bool cVAOManager::LoadModelIntoVAO(
 		return false;
 	}
 
+	return this->m_Load_ModelDrawInfo_IntoVAO( fileName, drawInfo, shaderProgramID );
+}
+
+bool cVAOManager::m_Load_ModelDrawInfo_IntoVAO( std::string fileName, 
+                                                sModelDrawInfo &drawInfo, 
+                                                unsigned int shaderProgramID )
+{
+	// Idiot check...
+	if ( ( drawInfo.numberOfIndices == 0) || ( drawInfo.numberOfIndices == 0) )
+	{
+		this->m_AppendTextToLastError("Empty ModelDrawInfo object passed to VAO load.");
+		return false;
+	}
+
 	// 
 	// Model is loaded and the vertices and indices are in the drawInfo struct
 	// 

@@ -160,6 +160,7 @@
     <ClCompile Include="cLightHelper.cpp" />
     <ClCompile Include="cLightManager.cpp" />
     <ClCompile Include="cMeshObject.cpp" />
+    <ClCompile Include="cVAOManager_ExtraPlyStuff.cpp" />
     <ClCompile Include="DrawObjectFunction.cpp" />
     <ClCompile Include="globalStuff.cpp" />
     <ClCompile Include="cShader.cpp" />
@@ -168,8 +169,16 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="key_callback_GLFW.cpp" />
     <ClCompile Include="ObjectLoadingStuff.cpp" />
+    <ClCompile Include="Ply\CHRTimer.cpp" />
+    <ClCompile Include="Ply\CPlyFile5nt.cpp" />
+    <ClCompile Include="Ply\CPlyFile5nt_experimental.cpp" />
+    <ClCompile Include="Ply\CStringHelper.cpp" />
+    <ClCompile Include="Ply\CVector3f.cpp" />
     <ClCompile Include="ProcessInputAsync.cpp" />
     <ClCompile Include="cLight.cpp" />
+    <ClCompile Include="Texture\C24BitBMPpixel.cpp" />
+    <ClCompile Include="Texture\cBasicTextureManager.cpp" />
+    <ClCompile Include="Texture\CTextureFromBMP.cpp" />
     <ClCompile Include="TheMain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +191,14 @@
     <ClInclude Include="cVAOManager.h" />
     <ClInclude Include="linmath.h" />
     <ClInclude Include="cLight.h" />
+    <ClInclude Include="Ply\CHRTimer.h" />
+    <ClInclude Include="Ply\CPlyFile5nt.h" />
+    <ClInclude Include="Ply\CPlyInfo.h" />
+    <ClInclude Include="Ply\CStringHelper.h" />
+    <ClInclude Include="Ply\CVector3f.h" />
+    <ClInclude Include="Texture\C24BitBMPpixel.h" />
+    <ClInclude Include="Texture\cBasicTextureManager.h" />
+    <ClInclude Include="Texture\CTextureFromBMP.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AUDI_TT_COUPE_xyz_rgba_n_uv.ply" />

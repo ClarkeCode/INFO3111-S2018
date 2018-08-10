@@ -1,80 +1,107 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="CGLColourHelper.cpp">
-      <Filter>Implementation</Filter>
-    </ClCompile>
-    <ClCompile Include="cLight.cpp">
-      <Filter>Implementation</Filter>
-    </ClCompile>
+    <ClCompile Include="cMeshObject.cpp" />
+    <ClCompile Include="cShader.cpp" />
+    <ClCompile Include="cShaderManager.cpp" />
+    <ClCompile Include="glad.c" />
+    <ClCompile Include="TheMain.cpp" />
+    <ClCompile Include="cVAOManager.cpp" />
+    <ClCompile Include="ObjectLoadingStuff.cpp" />
+    <ClCompile Include="ProcessInputAsync.cpp" />
+    <ClCompile Include="key_callback_GLFW.cpp" />
+    <ClCompile Include="globalStuff.cpp" />
+    <ClCompile Include="CGLColourHelper.cpp" />
+    <ClCompile Include="DrawObjectFunction.cpp" />
     <ClCompile Include="cLightHelper.cpp">
-      <Filter>Implementation</Filter>
+      <Filter>Lights</Filter>
     </ClCompile>
     <ClCompile Include="cLightManager.cpp">
-      <Filter>Implementation</Filter>
+      <Filter>Lights</Filter>
     </ClCompile>
-    <ClCompile Include="cMeshObject.cpp">
-      <Filter>Implementation</Filter>
+    <ClCompile Include="cLight.cpp">
+      <Filter>Lights</Filter>
     </ClCompile>
-    <ClCompile Include="cShader.cpp">
-      <Filter>Implementation</Filter>
+    <ClCompile Include="Ply\CHRTimer.cpp">
+      <Filter>Ply</Filter>
     </ClCompile>
-    <ClCompile Include="cShaderManager.cpp">
-      <Filter>Implementation</Filter>
+    <ClCompile Include="Ply\CPlyFile5nt.cpp">
+      <Filter>Ply</Filter>
     </ClCompile>
-    <ClCompile Include="cVAOManager.cpp">
-      <Filter>Implementation</Filter>
+    <ClCompile Include="Ply\CPlyFile5nt_experimental.cpp">
+      <Filter>Ply</Filter>
     </ClCompile>
-    <ClCompile Include="DrawObjectFunction.cpp">
-      <Filter>Implementation</Filter>
+    <ClCompile Include="Ply\CStringHelper.cpp">
+      <Filter>Ply</Filter>
     </ClCompile>
-    <ClCompile Include="glad.c">
-      <Filter>Implementation</Filter>
+    <ClCompile Include="Ply\CVector3f.cpp">
+      <Filter>Ply</Filter>
     </ClCompile>
-    <ClCompile Include="globalStuff.cpp">
-      <Filter>Implementation</Filter>
+    <ClCompile Include="cVAOManager_ExtraPlyStuff.cpp" />
+    <ClCompile Include="Texture\C24BitBMPpixel.cpp">
+      <Filter>Texture</Filter>
     </ClCompile>
-    <ClCompile Include="key_callback_GLFW.cpp">
-      <Filter>Implementation</Filter>
+    <ClCompile Include="Texture\cBasicTextureManager.cpp">
+      <Filter>Texture</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectLoadingStuff.cpp">
-      <Filter>Implementation</Filter>
-    </ClCompile>
-    <ClCompile Include="ProcessInputAsync.cpp">
-      <Filter>Implementation</Filter>
-    </ClCompile>
-    <ClCompile Include="TheMain.cpp">
-      <Filter>Implementation</Filter>
+    <ClCompile Include="Texture\CTextureFromBMP.cpp">
+      <Filter>Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CGLColourHelper.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="cLight.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
+    <ClInclude Include="cMeshObject.h" />
+    <ClInclude Include="cShaderManager.h" />
+    <ClInclude Include="linmath.h" />
+    <ClInclude Include="cVAOManager.h" />
+    <ClInclude Include="globalStuff.h" />
+    <ClInclude Include="CGLColourHelper.h" />
     <ClInclude Include="cLightHelper.h">
-      <Filter>Headers</Filter>
+      <Filter>Lights</Filter>
     </ClInclude>
     <ClInclude Include="cLightManager.h">
-      <Filter>Headers</Filter>
+      <Filter>Lights</Filter>
     </ClInclude>
-    <ClInclude Include="cMeshObject.h">
-      <Filter>Headers</Filter>
+    <ClInclude Include="cLight.h">
+      <Filter>Lights</Filter>
     </ClInclude>
-    <ClInclude Include="cShaderManager.h">
-      <Filter>Headers</Filter>
+    <ClInclude Include="Ply\CHRTimer.h">
+      <Filter>Ply</Filter>
     </ClInclude>
-    <ClInclude Include="cVAOManager.h">
-      <Filter>Headers</Filter>
+    <ClInclude Include="Ply\CPlyFile5nt.h">
+      <Filter>Ply</Filter>
     </ClInclude>
-    <ClInclude Include="globalStuff.h">
-      <Filter>Headers</Filter>
+    <ClInclude Include="Ply\CPlyInfo.h">
+      <Filter>Ply</Filter>
     </ClInclude>
-    <ClInclude Include="linmath.h">
-      <Filter>Headers</Filter>
+    <ClInclude Include="Ply\CStringHelper.h">
+      <Filter>Ply</Filter>
     </ClInclude>
+    <ClInclude Include="Ply\CVector3f.h">
+      <Filter>Ply</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture\C24BitBMPpixel.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture\cBasicTextureManager.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture\CTextureFromBMP.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{a162d39b-6848-46c7-8daf-06dc7bf3fed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lights">
+      <UniqueIdentifier>{bcf82302-6c57-4b0d-9e81-001c2b70cdf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ply">
+      <UniqueIdentifier>{f8d963ea-8420-4642-bdd0-27fc67f23cb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Texture">
+      <UniqueIdentifier>{4636d31f-e267-46ca-a036-0e915c6fd63e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="vert01.glsl">
@@ -83,40 +110,5 @@
     <None Include="frag01.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="AUDI_TT_COUPE_xyz_rgba_n_uv.ply">
-      <Filter>Models</Filter>
-    </None>
-    <None Include="building_xyz_rgba_n_uv.ply">
-      <Filter>Models</Filter>
-    </None>
-    <None Include="bun_zipper_xyz_rgba_n_uv.ply">
-      <Filter>Models</Filter>
-    </None>
-    <None Include="cow_xyz_rgba_n_uv.ply">
-      <Filter>Models</Filter>
-    </None>
-    <None Include="palm-tree_xyz_rgba_n_uv.ply">
-      <Filter>Models</Filter>
-    </None>
-    <None Include="rob-terrain-xyz-rgba-n-uv.ply">
-      <Filter>Models</Filter>
-    </None>
-    <None Include="isosphere_smooth_xyz_n_rgba_uv.ply">
-      <Filter>Models</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{1ba12497-1465-454d-ba3f-3b29cb146efb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers">
-      <UniqueIdentifier>{bc05ff7f-f40c-440d-a22d-dae26a9e7006}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Implementation">
-      <UniqueIdentifier>{ebacb5d2-c3ea-46d6-9964-af17ce718d44}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Models">
-      <UniqueIdentifier>{a3b5020a-1b3e-43f9-9577-1c55170571eb}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
 </Project>
