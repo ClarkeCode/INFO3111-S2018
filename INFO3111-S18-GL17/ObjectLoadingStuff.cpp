@@ -167,6 +167,10 @@ void LoadObjectsIntoScene(void)
 
 		pTemp->friendlyName = "Bugs";		// as in Bugs Bunny
 
+		pTemp->textureMixRatios[0] = 0.5f;
+		pTemp->textureMixRatios[1] = 0.5f;
+
+
 		pTemp->velocity.y = 2.0f;
 
 		pTemp->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
@@ -305,6 +309,11 @@ void LoadObjectsIntoScene(void)
 		pXWing->acceleration.z = 0.01f;
 
 
+		pXWing->textureMixRatios[0] = 0.0f;
+		pXWing->textureMixRatios[1] = 1.0f;
+
+
+
 		sModelDrawInfo modelInfo;
 		::g_pTheVAOManager->FindDrawInfoByModelName ( pXWing->meshName, 
 													  modelInfo );
@@ -339,6 +348,8 @@ void LoadObjectsIntoScene(void)
 			cLukesCow->isWireframe = false;
 			//::g_vec_pMeshObjects.push_back( pTemp );
 
+
+
 			pXWing->vec_pChildObjects.push_back( cLukesCow );
 
 		}// ENDOF: Load a cow!!
@@ -370,6 +381,9 @@ void LoadObjectsIntoScene(void)
 													  modelInfo );
 		//pTemp->scale = 1.5f;
 		pTemp->scale = 1.0f / modelInfo.maxExtent;
+
+		pTemp->textureMixRatios[0] = 1.0f;
+		pTemp->textureMixRatios[1] = 0.0f;
 
 		pTemp->isWireframe = false;
 

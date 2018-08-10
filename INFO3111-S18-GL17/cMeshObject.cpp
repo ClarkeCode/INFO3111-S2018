@@ -35,6 +35,9 @@ cMeshObject::cMeshObject()
 	this->velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	this->acceleration = glm::vec3(0.0f, 0.0f, 0.0f);
 
+	this->textureMixRatios[0] = 0.0f;
+	this->textureMixRatios[1] = 0.0f;
+	// ...and so on...
 
 	return;
 }

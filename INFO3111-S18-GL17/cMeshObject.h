@@ -72,6 +72,8 @@ public:
 
 	//
 	std::string textureName;
+	static const int NUMBEROFMIXRATIOS = 2;
+	float textureMixRatios[NUMBEROFMIXRATIOS];
 
 private:
 	void m_AssignUniqueID(void);
