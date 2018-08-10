@@ -9,7 +9,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 
 	if ((key == GLFW_KEY_F1) && (action == GLFW_PRESS)) {
-		::debug_CopyToClipboard(::g_vec_pMeshObjects.front()->debug_serializeToString());
+		//::debug_CopyToClipboard(::g_vec_pMeshObjects.front()->debug_serializeToString());
 	}
 
 	// Is the shift key pressed at the same time?

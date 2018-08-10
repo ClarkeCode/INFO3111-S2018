@@ -177,9 +177,10 @@
     <ClInclude Include="cLightHelper.h" />
     <ClInclude Include="cLightManager.h" />
     <ClInclude Include="cMeshObject.h" />
-    <ClInclude Include="globalStuffOld.h" />
+    <ClInclude Include="globalStuff.h" />
     <ClInclude Include="cShaderManager.h" />
     <ClInclude Include="cVAOManager.h" />
+    <ClInclude Include="globalStuff2.h" />
     <ClInclude Include="linmath.h" />
     <ClInclude Include="cLight.h" />
   </ItemGroup>
