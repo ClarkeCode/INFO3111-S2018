@@ -75,9 +75,6 @@
     <ClInclude Include="globalStuffOld.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="globalStuff.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="vert01.glsl">
