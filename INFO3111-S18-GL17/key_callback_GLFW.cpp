@@ -9,6 +9,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 	}
 
+	if ((key == GLFW_KEY_F1) && (action == GLFW_PRESS)) {
+		::debug_CopyToClipboard(::debug_serializeCMeshObjectToString(::g_vec_pMeshObjects[::g_SelectedModelID]));
+	}
+
 	// Is the shift key pressed at the same time?
 	if ( mods == GLFW_MOD_SHIFT )	// ONLY shift and nothing else
 	{
@@ -32,6 +36,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			::g_SelectedLightID = NUMLIGHTS - 1;
 		}
 
+		if ((key == GLFW_KEY_LEFT_BRACKET) && (action == GLFW_PRESS)) {
+			::g_SelectedModelID = ::g_SelectedModelID == 0 ? ::g_vec_pMeshObjects.size() - 1 : ::g_SelectedModelID - 1;
+		}
+		if ((key == GLFW_KEY_RIGHT_BRACKET) && (action == GLFW_PRESS)) {
+			::g_SelectedModelID = ::g_SelectedModelID >= g_vec_pMeshObjects.size() ? 0 : ::g_SelectedModelID + 1;
+		}
 
 	}//if ( mods == GLFW_MOD_SHIFT )
 

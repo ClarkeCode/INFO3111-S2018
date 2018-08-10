@@ -129,6 +129,9 @@ struct myCamera {
 	inline void lookAtModelByFName(std::string s) {
 		cam_target_position = getModelPosByFName(s);
 	}
+	inline void lookAtModelByPointer(cMeshObject* p) {
+		cam_target_position = p->pos;
+	}
 };
 
 extern myCamera g_myCamera;
@@ -141,4 +144,7 @@ std::string debug_vec4ToString(glm::vec4 v);
 
 ////Debug serialize
 std::string debug_serializeCMeshObjectToString(cMeshObject * cMesh);
+
+
+extern unsigned int g_SelectedModelID; //=0; 
 #endif

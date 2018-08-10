@@ -1,5 +1,6 @@
 #include "globalStuff.h"
 
+#include "cVAOManager.h"
 #include <sstream>
 
 void ProcessInputAsync( glm::vec3 &cameraEye, glm::vec3 &cameraTarget, GLFWwindow* &window )
@@ -125,7 +126,47 @@ void ProcessInputAsync( glm::vec3 &cameraEye, glm::vec3 &cameraTarget, GLFWwindo
 	if ( glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS )
 	{
 		pSelectedLight->position.y -= cameraSpeed;		
-	}		
+	}
+
+	cMeshObject * curMesh = ::g_vec_pMeshObjects[::g_SelectedModelID];
+	float modelMovespeed = cameraSpeed / 3.0f;
+	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+			curMesh->pos.x += modelMovespeed;
+		else
+			curMesh->orientation.x += 0.05f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+			curMesh->pos.x -= modelMovespeed;
+		else
+			curMesh->orientation.x -= 0.05f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+			curMesh->pos.z += modelMovespeed;
+		else
+			curMesh->orientation.z += 0.05f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+			curMesh->pos.z -= modelMovespeed;
+		else
+			curMesh->orientation.z -= 0.05f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS) {
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+			curMesh->pos.y += modelMovespeed;
+		else
+			curMesh->orientation.y += 0.05f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS) {
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+			curMesh->pos.y -= modelMovespeed;
+		else
+			curMesh->orientation.y -= 0.05f;
+	}
 
 	// 
 	//if ( glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS )
@@ -163,7 +204,7 @@ void ProcessInputAsync( glm::vec3 &cameraEye, glm::vec3 &cameraTarget, GLFWwindo
 	case E_LIGHT_DIRECTION:		ssTitle << "DIR"; break;
 	default:					ssTitle << ""; break;
 	}
-	ssTitle << "] ";
+	ssTitle << "] " << ::g_vec_pMeshObjects[::g_SelectedModelID]->friendlyName;
 
 	glfwSetWindowTitle( ::g_window, ssTitle.str().c_str() );
 

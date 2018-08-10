@@ -218,11 +218,11 @@ int main(void)
 
 	
 //	// Try a directional light, yo
-//	::g_pLightManager->pGetLightAtIndex(0)->SetAsDirectional();
-//	// +ve X (shining to the left)
-//	// -ve Y (shining down)
-//	::g_pLightManager->pGetLightAtIndex(0)->direction = 
-//			glm::normalize( glm::vec3( -1.0f, -1.0f, 0.0f ) ); 
+	//::g_pLightManager->pGetLightAtIndex(0)->SetAsDirectional();
+	//// +ve X (shining to the left)
+	//// -ve Y (shining down)
+	//::g_pLightManager->pGetLightAtIndex(0)->direction = 
+	//		glm::normalize( glm::vec3( -1.0f, -1.0f, 0.0f ) ); 
 
 	
 
@@ -256,15 +256,22 @@ int main(void)
 	// Load objects into scene...
 
 	std::vector<std::string> vecModelFilesToLoad;
-	vecModelFilesToLoad.push_back("bun_zipper_res2_xyz_n_rgba_uv.ply");
-	vecModelFilesToLoad.push_back("cow_xyz_n_rgba_uv.ply");
-	vecModelFilesToLoad.push_back("ssj100_xyz_n_rgba_uv.ply");
-	vecModelFilesToLoad.push_back("free_arena_ASCII_xyz_n_rgba_uv.ply");
-	vecModelFilesToLoad.push_back("CrappyTerrain_xyz_n_rgba_uv.ply");
+	//vecModelFilesToLoad.push_back("bun_zipper_res2_xyz_n_rgba_uv.ply");
+	//vecModelFilesToLoad.push_back("cow_xyz_n_rgba_uv.ply");
+	//vecModelFilesToLoad.push_back("ssj100_xyz_n_rgba_uv.ply");
+	//vecModelFilesToLoad.push_back("free_arena_ASCII_xyz_n_rgba_uv.ply");
+	//vecModelFilesToLoad.push_back("CrappyTerrain_xyz_n_rgba_uv.ply");
 	vecModelFilesToLoad.push_back("isosphere_smooth_xyz_n_rgba_uv.ply");
-	vecModelFilesToLoad.push_back("X-Wing_Attack_(33569 faces)_xyz_n_rgba_uv.ply");
-	vecModelFilesToLoad.push_back("DockingBay_allOne_xyz_n_rgba_uv_quarter_size.ply");
+	//vecModelFilesToLoad.push_back("X-Wing_Attack_(33569 faces)_xyz_n_rgba_uv.ply");
+	//vecModelFilesToLoad.push_back("DockingBay_allOne_xyz_n_rgba_uv_quarter_size.ply");
 	vecModelFilesToLoad.push_back("Isoshphere_Small_InvertedNormals_xyz_n_rgba_uv.ply");
+
+	vecModelFilesToLoad.push_back("bun_zipper_xyz_rgba_n_uv.ply");
+	vecModelFilesToLoad.push_back("cow_xyz_rgba_n_uv.ply");
+	vecModelFilesToLoad.push_back("AUDI_TT_COUPE_xyz_rgba_n_uv.ply");
+	vecModelFilesToLoad.push_back("building_xyz_rgba_n_uv.ply");
+	vecModelFilesToLoad.push_back("palm-tree_xyz_rgba_n_uv.ply");
+	vecModelFilesToLoad.push_back("rob-terrain-xyz-rgba-n-uv.ply");
 
 
 	std::string errors;
@@ -395,7 +402,8 @@ int main(void)
 		// Look at Luke's ship
 		cMeshObject* pLuke = ::g_pFindObjectByFriendlyName("Luke");
 		cMeshObject* pBugs = ::g_pFindObjectByFriendlyName("Bugs");
-
+		
+		::g_myCamera.lookAtModelByPointer(::g_vec_pMeshObjects[::g_SelectedModelID]);
 		matView = glm::lookAt( ::g_myCamera.cam_eye_position, //cameraEye,		// position (3d space)
 							   ::g_myCamera.cam_target_position, //pBugs->pos,		// looking at
 							   upVector );		// Up vector

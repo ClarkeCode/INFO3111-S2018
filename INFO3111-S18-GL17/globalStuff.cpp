@@ -1,4 +1,6 @@
 #include "globalStuff.h"
+#include <sstream> //for debug_ functions
+#include <iomanip>
 
 std::vector< cMeshObject* > g_vec_pMeshObjects;
 
@@ -118,3 +120,34 @@ myCamera g_myCamera = { 0.04f, 10.0f ,
 void debug_CopyToClipboard(std::string s) {
 	glfwSetClipboardString(::g_window, s.c_str());
 }
+
+std::string debug_vec3ToString(glm::vec3 v) {
+	std::stringstream ss;
+	ss << std::setprecision(5) << std::fixed;
+	ss << "( " << v.x << "f, " << v.y << "f, " << v.z << "f )";
+	return ss.str();
+}
+
+std::string debug_vec4ToString(glm::vec4 v) {
+	std::stringstream ss;
+	ss << std::setprecision(5) << std::fixed;
+	ss << "( " << v.x << "f, " << v.y << "f, " << v.z << "f, " << v.w << "f )";
+	return ss.str();
+}
+
+
+std::string debug_serializeCMeshObjectToString(cMeshObject * cMesh) {
+	std::stringstream ss;
+	ss << std::setprecision(5) << std::fixed;
+	ss << cMesh->meshName + " //meshName \n";
+	ss << cMesh->friendlyName + " //friendly name \n";
+	ss << ::debug_vec3ToString(cMesh->pos) + "; //pos \n";
+	ss << ::debug_vec3ToString(cMesh->orientation) + "; //orientation \n";
+
+
+	ss << (cMesh->scale);// + " //scale \n";
+	ss << "f //scale \n";
+	return ss.str();
+}
+
+unsigned int g_SelectedModelID = 0;
