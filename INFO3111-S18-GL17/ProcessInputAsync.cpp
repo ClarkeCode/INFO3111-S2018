@@ -7,22 +7,22 @@ void ProcessInputAsync( glm::vec3 &cameraEye, glm::vec3 &cameraTarget, GLFWwindo
 	float cameraSpeed = 0.05f; 
 
 	int state = glfwGetKey(window, GLFW_KEY_D);
-	if (state == GLFW_PRESS) { cameraEye.x += cameraSpeed; }
-
+	if (state == GLFW_PRESS) { ::g_myCamera.cam_eye_position.x += ::g_myCamera.cam_movement_speed; }
+	
 	state = glfwGetKey(window, GLFW_KEY_A);
-	if (state == GLFW_PRESS) { cameraEye.x -= cameraSpeed; }
+	if (state == GLFW_PRESS) { ::g_myCamera.cam_eye_position.x -= ::g_myCamera.cam_movement_speed; }
 
 	state = glfwGetKey(window, GLFW_KEY_W);
-	if (state == GLFW_PRESS) { cameraEye.z += cameraSpeed; }
+	if (state == GLFW_PRESS) { ::g_myCamera.cam_eye_position.z += ::g_myCamera.cam_movement_speed; }
 
 	state = glfwGetKey(window, GLFW_KEY_S);
-	if (state == GLFW_PRESS) { cameraEye.z -= cameraSpeed; }
+	if (state == GLFW_PRESS) { ::g_myCamera.cam_eye_position.z -= ::g_myCamera.cam_movement_speed; }
 
 	state = glfwGetKey(window, GLFW_KEY_Q);	// Up
-	if (state == GLFW_PRESS) { cameraEye.y += cameraSpeed; }
+	if (state == GLFW_PRESS) { ::g_myCamera.cam_eye_position.y += ::g_myCamera.cam_movement_speed; }
 
 	state = glfwGetKey(window, GLFW_KEY_E);	// Down
-	if (state == GLFW_PRESS) { cameraEye.y -= cameraSpeed; }
+	if (state == GLFW_PRESS) { ::g_myCamera.cam_eye_position.y -= ::g_myCamera.cam_movement_speed; }
 
 
 	cLight* pSelectedLight = ::g_pLightManager->pGetLightAtIndex(::g_SelectedLightID);
@@ -144,6 +144,26 @@ void ProcessInputAsync( glm::vec3 &cameraEye, glm::vec3 &cameraTarget, GLFWwindo
 		<< pSelectedLight->attenLinear << " "
 		<< "Quad: " 
 		<< pSelectedLight->attenQuad;
+
+
+	ssTitle << "[";
+	ssTitle << (::g_editMode == E_EDIT_CAMERA ? "CAMERA" : "");
+	ssTitle << (::g_editMode == E_EDIT_MODEL ? "MODEL" : ""); 
+	ssTitle << (::g_editMode == E_EDIT_LIGHT ? "LIGHT" : "");
+
+	ssTitle << (::g_editSubMode != E_NO_SUB_MODE ? " " : "");
+	//E_CAMERA_RELATIVE, E_CAMERA_FIXED_TARGET, E_CAMERA_FIXED_EYE,
+	//	E_LIGHT_POSITION, E_LIGHT_DIRECTION,
+	//	E_NO_SUB_MODE
+	switch (::g_editSubMode) {
+	case E_CAMERA_RELATIVE:		ssTitle << "REL"; break;
+	case E_CAMERA_FIXED_TARGET: ssTitle << "FXT"; break;
+	case E_CAMERA_FIXED_EYE:	ssTitle << "FXE"; break;
+	case E_LIGHT_POSITION:		ssTitle << "POS"; break;
+	case E_LIGHT_DIRECTION:		ssTitle << "DIR"; break;
+	default:					ssTitle << ""; break;
+	}
+	ssTitle << "] ";
 
 	glfwSetWindowTitle( ::g_window, ssTitle.str().c_str() );
 

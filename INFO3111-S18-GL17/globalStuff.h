@@ -93,4 +93,44 @@ extern float g_globalAmbientToDiffuseRatio;	// = 0.2f;
 
 
 
+
+/*
+	______      _               _     _____           _                  
+	| ___ \    | |             | |   /  __ \         | |                 
+	| |_/ /___ | |__   ___ _ __| |_  | /  \/_   _ ___| |_ ___  _ __ ___  
+	|    // _ \| '_ \ / _ \ '__| __| | |   | | | / __| __/ _ \| '_ ` _ \ 
+	| |\ \ (_) | |_) |  __/ |  | |_  | \__/\ |_| \__ \ || (_) | | | | | |
+	\_| \_\___/|_.__/ \___|_|   \__|  \____/\__,_|___/\__\___/|_| |_| |_|
+
+	Here lies my global-level changes
+*/
+enum e_edit_mode { E_EDIT_CAMERA, E_EDIT_MODEL, E_EDIT_LIGHT };
+enum e_edit_sub_mode { E_CAMERA_RELATIVE, E_CAMERA_FIXED_TARGET, E_CAMERA_FIXED_EYE,
+						E_LIGHT_POSITION, E_LIGHT_DIRECTION,
+						E_NO_SUB_MODE
+};
+extern e_edit_mode g_editMode;// = E_EDIT_CAMERA;
+extern e_edit_sub_mode g_editSubMode; //E_CAMERA_RELATIVE
+
+void g_setSubModeToDefault();
+void g_incrementEditMode();
+void g_incrementSubMode();
+
+
+struct myCamera {
+	float cam_movement_speed, cam_view_distance;
+	glm::vec3 cam_eye_position, cam_target_position;
+	bool isTargetPosLocked;
+	bool isEyePosLocked;
+
+	static inline glm::vec3 getModelPosByFName(std::string s) {
+		return g_pFindObjectByFriendlyName(s)->pos;
+	}
+	inline void lookAtModelByFName(std::string s) {
+		cam_target_position = getModelPosByFName(s);
+	}
+};
+
+extern myCamera g_myCamera;
+
 #endif

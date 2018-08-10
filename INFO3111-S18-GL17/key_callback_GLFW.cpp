@@ -1,4 +1,5 @@
 #include "globalStuff.h"
+#include <iostream> //for debugging
 
 // This one is connected to the regular "keyboard" handler in Winders.
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -34,10 +35,23 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	}//if ( mods == GLFW_MOD_SHIFT )
 
-	if ( ( mods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT )
-	{
-		// Shift, and any other modifier, too.
+
+	// Shift, and any other modifier, too.
+	if ( ( mods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT ) {
 		//DestroyAllHumans();
+
+		if ((key == GLFW_KEY_GRAVE_ACCENT) && (action == GLFW_PRESS)) {
+			::g_incrementSubMode();
+			std::cout << ::g_editMode << " " << ::g_editSubMode << "\n";
+		}
+		
+	}
+	else {
+		if ((key == GLFW_KEY_GRAVE_ACCENT) && (action == GLFW_PRESS)) {
+			//::g_editMode = ::g_editMode == E_EDIT_LIGHT ? E_EDIT_CAMERA : static_cast<e_edit_mode>(static_cast<int>(::g_editMode) + 1);
+			::g_incrementEditMode();
+			std::cout << ::g_editMode << " " << ::g_editSubMode << "\n";
+		}
 	}
 
 	// STARTOF: Turn the physics updater on or off

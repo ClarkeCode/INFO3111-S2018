@@ -269,8 +269,7 @@ int main(void)
 
 	std::string errors;
 //	if ( ! LoadModelTypes(shadProgID, errors) )
-	if ( ! LoadModelTypes( shadProgID, vecModelFilesToLoad, errors ) )
-	{
+	if ( ! LoadModelTypes( shadProgID, vecModelFilesToLoad, errors ) ) {
 		std::cout << "There were errors loading the model files..." << std::endl;
 		std::cout << errors << std::endl;
 	}
@@ -314,8 +313,7 @@ int main(void)
 		//   | _/ _` | ' \/ _| || | |  _/ ' \ || (_-< / _(_-< | |_| | '_ \/ _` / _` |  _/ -_) '_| 
 		//   |_|\__,_|_||_\__|\_, | |_| |_||_\_, /__/_\__/__/  \___/| .__/\__,_\__,_|\__\___|_|   
 		//                    |__/           |__/                   |_|                           
-		if ( ::g_bDoEulerPhysicsUpdate )
-		{
+		if ( ::g_bDoEulerPhysicsUpdate ) {
 			double currentTime = glfwGetTime();
 			// Aka "frame time"
 			double deltaTime = currentTime - globalLastTimeStamp;
@@ -332,8 +330,7 @@ int main(void)
 				<< "a = " << pBunny->acceleration.y << ", " 
 				<< "v = " << pBunny->velocity.y << std::endl;
 
-			if ( pBunny->pos.y <= -2.0f )
-			{
+			if ( pBunny->pos.y <= -2.0f ) {
 				pBunny->velocity.y = fabs(pBunny->velocity.y);
 				pBunny->pos.y = -2.0f;
 			}
@@ -393,19 +390,14 @@ int main(void)
 		// Deal with the keyboard, etc.
 		ProcessInputAsync( cameraEye, cameraTarget, ::g_window );
 
-
-
-
-		//matView = glm::lookAt( cameraEye,		// position (3d space)
-		//					   cameraTarget,	// looking at
-		//					   upVector );		// Up vector
+		
 
 		// Look at Luke's ship
 		cMeshObject* pLuke = ::g_pFindObjectByFriendlyName("Luke");
 		cMeshObject* pBugs = ::g_pFindObjectByFriendlyName("Bugs");
 
-		matView = glm::lookAt( cameraEye,		// position (3d space)
-							   pBugs->pos,		// looking at
+		matView = glm::lookAt( ::g_myCamera.cam_eye_position, //cameraEye,		// position (3d space)
+							   ::g_myCamera.cam_target_position, //pBugs->pos,		// looking at
 							   upVector );		// Up vector
 
 
