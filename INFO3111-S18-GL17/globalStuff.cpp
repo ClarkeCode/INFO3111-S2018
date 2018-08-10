@@ -1,4 +1,5 @@
 #include "globalStuff.h"
+#include <sstream> //for debug_ functions
 
 std::vector< cMeshObject* > g_vec_pMeshObjects;
 
@@ -117,4 +118,16 @@ myCamera g_myCamera = { 0.04f, 10.0f ,
 
 void debug_CopyToClipboard(std::string s) {
 	glfwSetClipboardString(::g_window, s.c_str());
+}
+
+std::string debug_vec3ToString(glm::vec3 v) {
+	std::stringstream ss;
+	ss << "( " << v.x << ", " << v.y << ", " << v.z << " )";
+	return ss.str();
+}
+
+std::string debug_vec4ToString(glm::vec4 v) {
+	std::stringstream ss;
+	ss << "( " << v.x << ", " << v.y << ", " << v.z << ", " << v.w << " )";
+	return ss.str();
 }
