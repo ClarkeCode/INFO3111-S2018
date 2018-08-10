@@ -180,6 +180,7 @@
     <ClInclude Include="globalStuff.h" />
     <ClInclude Include="cShaderManager.h" />
     <ClInclude Include="cVAOManager.h" />
+    <ClInclude Include="globalStuff2.h" />
     <ClInclude Include="linmath.h" />
     <ClInclude Include="cLight.h" />
   </ItemGroup>

@@ -6,6 +6,7 @@
 #include <glm/vec3.hpp> // glm::vec3
 #include <glm/vec4.hpp> // glm::vec4
 #include <vector>
+#include "globalStuff.h" //for debug functions
 
 class cMeshObject
 {

@@ -69,10 +69,13 @@
     <ClInclude Include="cVAOManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="linmath.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
     <ClInclude Include="globalStuff.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="linmath.h">
+    <ClInclude Include="globalStuff2.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
