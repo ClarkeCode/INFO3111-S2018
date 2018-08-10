@@ -275,14 +275,16 @@ int main(void)
 
 	// Have to be square and BMP 
 	// (Doesn't have to be a "power of 2" in size, but you'll hear that)
-	if ( ::g_pTextureManager->Create2DTextureFromBMPFile( "800px_COLOURBOX15652566.bmp", true ) )
-	{
-		std::cout << "Loaded the texture OK." << std::endl;
-	}
-	else 
-	{
-		std::cout << "Texture DIDN'T load." << std::endl;
-	}
+	//if ( ::g_pTextureManager->Create2DTextureFromBMPFile( "800px_COLOURBOX15652566.bmp", true ) )
+	//{
+	//	std::cout << "Loaded the texture OK." << std::endl;
+	//}
+	//else 
+	//{
+	//	std::cout << "Texture DIDN'T load." << std::endl;
+	//}
+
+	::g_pTextureManager->Create2DTextureFromBMPFile( "emma-watson_gettyimages-619546914.bmp", true );
 
 
 

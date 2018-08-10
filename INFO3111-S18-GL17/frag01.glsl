@@ -22,8 +22,7 @@ uniform float globalAmbientToDiffuseRatio;
 const int NUMLIGHTS = 10;
 
 
-//uniform sampler2D texCuteBunnyTexure;
-//uniform sampler2D texBrick;
+uniform sampler2D texBrick;
 //uniform sampler2D texObama;
 //uniform samplerCube mySexySkyBox;
 
@@ -76,6 +75,13 @@ void main()
 	outputColour.rgb = vec3(0.0f, 0.0f, 0.0f);	// Start with black 
 	
 	outputColour.a = vertColourRGBA.a;			// Set transparency ('alpha transparency')
+
+	
+	// "Sample" the colour of the texture at these texture coordinates
+	//uniform sampler2D texBrick;
+	vec3 textureSampleRGB = texture(texBrick, vertTexUV.st).rgb;
+	
+
 	
 	for ( int lightIndex = 0; lightIndex != NUMLIGHTS; lightIndex++ )
 	{
@@ -179,7 +185,11 @@ void main()
 		// Sample the texture to get the colour:
 
 		
-		outputColour.rgb += (vertColourRGBA.rgb * lightDiffuseContrib.rgb)
+//		outputColour.rgb += (vertColourRGBA.rgb * lightDiffuseContrib.rgb)
+//		                     + lightSpecularContrib.rgb;
+		
+		// textureSampleRGB is sampled BEFORE the light for loop
+		outputColour.rgb += (textureSampleRGB * lightDiffuseContrib.rgb)
 		                     + lightSpecularContrib.rgb;
 									
 	}// for ( int index = 0
@@ -188,7 +198,10 @@ void main()
 	// Calculate the global ambient (i.e. no matter how many lights, this will be the same)
 	// (So we are adding the ambient 'light' to the object, simulating the light
 	//  that's just 'around' the scene, but not being directly lit.)
-	vec3 ambientObjectColour = (globalAmbientToDiffuseRatio * vertColourRGBA.rgb);
+//	vec3 ambientObjectColour = ( globalAmbientToDiffuseRatio 
+//	                             * vertColourRGBA.rgb );
+	vec3 ambientObjectColour = ( globalAmbientToDiffuseRatio 
+	                             * textureSampleRGB );
 	                               
 	// Another simplification: if the colour is darker than 
 	//  the ambient, pick the ambient colour. 

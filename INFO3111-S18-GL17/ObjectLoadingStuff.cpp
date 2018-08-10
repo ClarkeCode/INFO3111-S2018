@@ -440,6 +440,9 @@ bool LoadModelTypes_PlyLoader(GLint shadProgID, std::vector<std::string> vecMode
 	{
 		sModelDrawInfo theModel;
 		cVAOManager::sLoadParamsINFO3111S2018 loadParams;
+		//
+		loadParams.Force_UV_Regeneration = true;
+		// 
 		std::string plyLoadErrors;
 		//if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( *itModelName, theModel, shadProgID ) )
 		if ( ! ::g_pTheVAOManager->LoadModelInfoVAO_PlyFile5t( *itModelName, shadProgID, 
