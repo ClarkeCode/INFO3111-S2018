@@ -275,17 +275,20 @@ int main(void)
 
 	// Have to be square and BMP 
 	// (Doesn't have to be a "power of 2" in size, but you'll hear that)
-	//if ( ::g_pTextureManager->Create2DTextureFromBMPFile( "800px_COLOURBOX15652566.bmp", true ) )
-	//{
-	//	std::cout << "Loaded the texture OK." << std::endl;
-	//}
-	//else 
-	//{
-	//	std::cout << "Texture DIDN'T load." << std::endl;
-	//}
+	if ( ::g_pTextureManager->Create2DTextureFromBMPFile( "800px_COLOURBOX15652566.bmp", true ) )
+	{
+		std::cout << "Loaded the texture OK." << std::endl;
+	}
+	else 
+	{
+		std::cout << "Texture DIDN'T load." << std::endl;
+	}
 
 	::g_pTextureManager->Create2DTextureFromBMPFile( "emma-watson_gettyimages-619546914.bmp", true );
-
+	::g_pTextureManager->Create2DTextureFromBMPFile( "3487.alphabet-letter-noodles-lrg-450x300.bmp", true );
+	::g_pTextureManager->Create2DTextureFromBMPFile( "13982479-jelly-beans-seamless-texture-tile.bmp", true );
+	::g_pTextureManager->Create2DTextureFromBMPFile( "Grass.bmp", true );
+	::g_pTextureManager->Create2DTextureFromBMPFile( "water_texture__by_heavensinyoureyes-d75vg6r.bmp", true );
 
 
 
@@ -362,6 +365,8 @@ int main(void)
 
 
 //		HACK_EXAMPLE_Update_Spot_Angle_OverTime();
+
+
 
 
 
@@ -496,9 +501,24 @@ int main(void)
 		//				 0.3f );
 
 
+		// Set the textures once per frame 
+		// ('cause Feeney just decided to do that)
+		// ************************************
+		GLuint grassTextureID = 
+			::g_pTextureManager->getTextureIDFromName("13982479-jelly-beans-seamless-texture-tile.bmp");
 
+		GLuint grassTextureUnit = 69;		// Arbitrary... 0
 
+		// 0x84C0 is texture unit #0;
+		glActiveTexture( grassTextureUnit + GL_TEXTURE0 );	// Selects 'texture unit'
+		glBindTexture( GL_TEXTURE_2D, grassTextureID );	// Selects 'texture'
 
+		GLint texBrick_UniformLocID = 
+				glGetUniformLocation( pShaderProgram->ID, "texBrick" );
+
+		// Set the sampler to the "Texture UNIT"
+		glUniform1i( texBrick_UniformLocID, grassTextureUnit );
+		// ************************************
 
 
 		glUniformMatrix4fv( pShaderProgram->getUniformID_From_Name("matView"),		//matView_Uniloc, 

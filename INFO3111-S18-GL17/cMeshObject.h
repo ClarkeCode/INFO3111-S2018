@@ -70,6 +70,9 @@ public:
 	// (they will move and rotate and scale with this object)
 	std::vector< cMeshObject* > vec_pChildObjects;
 
+	//
+	std::string textureName;
+
 private:
 	void m_AssignUniqueID(void);
 	static unsigned int m_nextID;	// = 1000
