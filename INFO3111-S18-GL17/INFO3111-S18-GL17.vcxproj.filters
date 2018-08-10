@@ -22,6 +22,22 @@
     <ClCompile Include="cLight.cpp">
       <Filter>Lights</Filter>
     </ClCompile>
+    <ClCompile Include="Ply\CHRTimer.cpp">
+      <Filter>Ply</Filter>
+    </ClCompile>
+    <ClCompile Include="Ply\CPlyFile5nt.cpp">
+      <Filter>Ply</Filter>
+    </ClCompile>
+    <ClCompile Include="Ply\CPlyFile5nt_experimental.cpp">
+      <Filter>Ply</Filter>
+    </ClCompile>
+    <ClCompile Include="Ply\CStringHelper.cpp">
+      <Filter>Ply</Filter>
+    </ClCompile>
+    <ClCompile Include="Ply\CVector3f.cpp">
+      <Filter>Ply</Filter>
+    </ClCompile>
+    <ClCompile Include="cVAOManager_ExtraPlyStuff.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cMeshObject.h" />
@@ -39,6 +55,21 @@
     <ClInclude Include="cLight.h">
       <Filter>Lights</Filter>
     </ClInclude>
+    <ClInclude Include="Ply\CHRTimer.h">
+      <Filter>Ply</Filter>
+    </ClInclude>
+    <ClInclude Include="Ply\CPlyFile5nt.h">
+      <Filter>Ply</Filter>
+    </ClInclude>
+    <ClInclude Include="Ply\CPlyInfo.h">
+      <Filter>Ply</Filter>
+    </ClInclude>
+    <ClInclude Include="Ply\CStringHelper.h">
+      <Filter>Ply</Filter>
+    </ClInclude>
+    <ClInclude Include="Ply\CVector3f.h">
+      <Filter>Ply</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -46,6 +77,9 @@
     </Filter>
     <Filter Include="Lights">
       <UniqueIdentifier>{bcf82302-6c57-4b0d-9e81-001c2b70cdf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ply">
+      <UniqueIdentifier>{f8d963ea-8420-4642-bdd0-27fc67f23cb8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

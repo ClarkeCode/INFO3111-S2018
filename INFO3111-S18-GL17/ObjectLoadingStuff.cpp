@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <sstream>
+#include <iostream>
 
 //extern std::vector< cMeshObject* > g_vec_pMeshObjects;
 //
@@ -173,6 +174,8 @@ void LoadObjectsIntoScene(void)
 								   1.0f, 
 									1.0f,
 									 1.0f );		// Transparency 'alpha'
+		pTemp->colourSource = cMeshObject::USE_OBJECT_COLOUR;
+
 		pTemp->ambientToDiffuseRatio = 0.2f;
 		pTemp->specularHighlightColour = glm::vec3(1.0f,1.0f,1.0f);
 		// This goes from 1 to whatver (like 10,000 is fine)
@@ -396,6 +399,45 @@ bool LoadModelTypes(GLint shadProgID, std::vector<std::string> vecModelNames, st
 	return bAllGood;
 }
 
+bool LoadModelTypes_PlyLoader(GLint shadProgID, std::vector<std::string> vecModelNames, std::string &errors)
+{
+	bool bAllGood = true;
+
+	std::stringstream ssError;
+
+	for ( std::vector<std::string>::iterator itModelName = vecModelNames.begin(); 
+		  itModelName != vecModelNames.end(); itModelName++ )
+	{
+		sModelDrawInfo theModel;
+		cVAOManager::sLoadParamsINFO3111S2018 loadParams;
+		std::string plyLoadErrors;
+		//if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( *itModelName, theModel, shadProgID ) )
+		if ( ! ::g_pTheVAOManager->LoadModelInfoVAO_PlyFile5t( *itModelName, shadProgID, 
+			                                                    theModel, plyLoadErrors, 
+		                                                        loadParams) )
+		{
+			ssError << "ERROR: " << *itModelName << " wasn't loaded because: " << plyLoadErrors << std::endl;
+			bAllGood = false;
+		}
+		else
+		{
+			std::cout 
+				<< "Loaded " << *itModelName << " OK: " << std::endl;
+			std::cout 
+				<< "\t" << theModel.numberOfVertices << " vertices, "
+				<< theModel.numberOfTriangles << " triangles, " << std::endl;
+			std::cout  
+				<< "\t" << "V.Buff.ID = " << theModel.VertexBufferID << ", "
+				<< "I.Buff.ID = " << theModel.IndexBufferID << ", "
+				<< "VAOID = " << theModel.VAO_ID << std::endl;
+		}
+
+	}// for ( ...iterator itModelName...
+
+	errors = ssError.str();
+
+	return bAllGood;
+}
 
 
 bool LoadModelTypes(GLint shadProgID, std::string &errors)

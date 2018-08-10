@@ -287,7 +287,8 @@ int main(void)
 
 	std::string errors;
 //	if ( ! LoadModelTypes(shadProgID, errors) )
-	if ( ! LoadModelTypes( shadProgID, vecModelFilesToLoad, errors ) )
+//	if ( ! LoadModelTypes( shadProgID, vecModelFilesToLoad, errors ) )
+	if ( ! LoadModelTypes_PlyLoader( shadProgID, vecModelFilesToLoad, errors ) )
 	{
 		std::cout << "There were errors loading the model files..." << std::endl;
 		std::cout << errors << std::endl;
@@ -616,93 +617,6 @@ void ShutErDown(void)
 
 	return;
 }
-
-// MOVED: bool LoadModelTypes(GLint shadProgID, std::string &errors)
-
-//struct sLight
-//{
-//	glm::vec3 position;
-//	float attenLinear;
-//	float attenConst;
-//	float attenQuad;
-//
-//	GLint UniLoc_Position;
-//	GLint UniLoc_AttenAndLight;
-//};
-//
-//const unsigned int NUMLIGHTS = 3;
-//std::vector<sLight> g_vecLights;
-
-//void SetUpTheLights(GLint shaderProgID)
-//{
-//	for ( int count = 0; count != NUMLIGHTS; count++ )
-//	{
-//		sLight tempLight;
-//		// Note that the constructor set a bunch of defaults
-//		::g_vecLights.push_back( tempLight );
-//	}
-//
-//	// Set the #0 light to white
-//	::g_vecLights[0].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-//
-//	// Load all the uniform variables for these lights:
-//	::g_vecLights[0].UniLoc_Position = glGetUniformLocation( shaderProgID, "theLights[0].Position" );
-//	::g_vecLights[0].UniLoc_Diffuse = glGetUniformLocation( shaderProgID, "theLights[0].Diffuse" );
-//	::g_vecLights[0].UniLoc_AttenAndLight = glGetUniformLocation( shaderProgID, "theLights[0].AttenAndType" );
-//
-//	::g_vecLights[1].UniLoc_Position = glGetUniformLocation( shaderProgID, "theLights[1].Position" );
-//	::g_vecLights[1].UniLoc_Diffuse = glGetUniformLocation( shaderProgID, "theLights[1].Diffuse" );
-//	::g_vecLights[1].UniLoc_AttenAndLight = glGetUniformLocation( shaderProgID, "theLights[1].AttenAndType" );
-//
-//	::g_vecLights[2].UniLoc_Position = glGetUniformLocation( shaderProgID, "theLights[2].Position" );
-//	::g_vecLights[2].UniLoc_Diffuse = glGetUniformLocation( shaderProgID, "theLights[2].Diffuse" );
-//	::g_vecLights[2].UniLoc_AttenAndLight = glGetUniformLocation( shaderProgID, "theLights[2].AttenAndType" );
-//
-//
-//	// Set up the light values, too
-//	::g_vecLights[0].position = glm::vec3( 2.0f, 2.0f, 0.0f );
-//	::g_vecLights[0].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-//	::g_vecLights[0].attenConst = 0.0f;
-//	::g_vecLights[0].attenLinear = 0.324f;		// Why this number? It looked nice!
-//	::g_vecLights[0].attenQuad = 0.0115f;		// Same with this number!
-//
-//	::g_vecLights[1].position = glm::vec3( 2.0f, 2.0f, 0.0f );
-//	::g_vecLights[1].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-//	::g_vecLights[1].attenConst = 0.0f;
-//	::g_vecLights[1].attenLinear = 0.324f;		// Why this number? It looked nice!
-//	::g_vecLights[1].attenQuad = 0.0115f;		// Same with this number!
-//
-//	::g_vecLights[2].position = glm::vec3( 2.0f, 2.0f, 0.0f );
-//	::g_vecLights[2].diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-//	::g_vecLights[2].attenConst = 0.0f;
-//	::g_vecLights[2].attenLinear = 0.324f;		// Why this number? It looked nice!
-//	::g_vecLights[2].attenQuad = 0.0115f;		// Same with this number!
-//
-//	return;
-//}
-
-//void CopyLightInfoToShader( unsigned int numberOfLightsToCopy )
-//{
-//	for ( unsigned int index = 0; index != numberOfLightsToCopy; index++ )
-//	{
-//		sLight &curLight = ::g_vecLights[index];
-//
-//		glUniform3f( curLight.UniLoc_Position, curLight.position.x, curLight.position.y, curLight.position.z );
-//
-//		glUniform4f( curLight.UniLoc_Diffuse, 
-//					 curLight.diffuseColour.r, curLight.diffuseColour.g, curLight.diffuseColour.b, 
-//					 curLight.diffuseColour.a );
-//
-//		glUniform4f( curLight.UniLoc_AttenAndLight, 
-//					 curLight.attenConst, 
-//					 curLight.attenLinear, 
-//					 curLight.attenQuad, 
-//					 1.0f );
-//	}//for ( unsigned int index = ...
-//
-//	return;
-//}
-
 
 void DoPhysicsIntegrationUpdate(double deltaTime)
 {
