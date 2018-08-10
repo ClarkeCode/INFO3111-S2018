@@ -133,4 +133,12 @@ struct myCamera {
 
 extern myCamera g_myCamera;
 
+
+
+void debug_CopyToClipboard(std::string s);
+std::string debug_vec3ToString(glm::vec3 v);
+std::string debug_vec4ToString(glm::vec4 v);
+
+////Debug serialize
+std::string debug_serializeCMeshObjectToString(cMeshObject * cMesh);
 #endif
