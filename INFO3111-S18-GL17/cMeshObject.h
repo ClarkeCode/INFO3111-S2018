@@ -71,9 +71,13 @@ public:
 	std::vector< cMeshObject* > vec_pChildObjects;
 
 	//
-	std::string textureName;
-	static const int NUMBEROFMIXRATIOS = 2;
+
+	static const int NUMBEROFMIXRATIOS = 4;
+	// The name of the texture (COMING SOON!)
+	std::string textureNames[NUMBEROFMIXRATIOS];
+	// Set the value here to 1, the rest to 0 to "select" the texture
 	float textureMixRatios[NUMBEROFMIXRATIOS];
+
 
 private:
 	void m_AssignUniqueID(void);

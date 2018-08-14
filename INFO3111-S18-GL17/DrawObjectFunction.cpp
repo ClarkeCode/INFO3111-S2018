@@ -178,13 +178,19 @@ void DrawObject( cMeshObject* pCurMesh,
 	//		glDrawArrays(GL_TRIANGLES, 0, ::g_NumberOfVertsToDraw);
 
 	// Getting uniforms in the draw call is really stupid..
+	GLint textureMix00_UniLoc = glGetUniformLocation( pShaderProg->ID, 
+													  "textureMix00" );
 	GLint textureMix01_UniLoc = glGetUniformLocation( pShaderProg->ID, 
 													  "textureMix01" );
 	GLint textureMix02_UniLoc = glGetUniformLocation( pShaderProg->ID, 
 													  "textureMix02" );
+	GLint textureMix03_UniLoc = glGetUniformLocation( pShaderProg->ID, 
+													  "textureMix03" );
 
-	glUniform1f( textureMix01_UniLoc, pCurMesh->textureMixRatios[0] );
-	glUniform1f( textureMix02_UniLoc, pCurMesh->textureMixRatios[1] );
+	glUniform1f( textureMix00_UniLoc, pCurMesh->textureMixRatios[0] );
+	glUniform1f( textureMix01_UniLoc, pCurMesh->textureMixRatios[1] );
+	glUniform1f( textureMix02_UniLoc, pCurMesh->textureMixRatios[2] );
+	glUniform1f( textureMix03_UniLoc, pCurMesh->textureMixRatios[3] );
 
 
 

@@ -291,8 +291,9 @@ int main(void)
 	::g_pTextureManager->Create2DTextureFromBMPFile( "13982479-jelly-beans-seamless-texture-tile.bmp", true );
 	::g_pTextureManager->Create2DTextureFromBMPFile( "Grass.bmp", true );
 	::g_pTextureManager->Create2DTextureFromBMPFile( "water_texture__by_heavensinyoureyes-d75vg6r.bmp", true );
+	::g_pTextureManager->Create2DTextureFromBMPFile( "Brenda.bmp", true );
 
-
+//	::g_pTextureManager->getTextureIDFromName("Grass.bmp");
 
 
 
@@ -310,6 +311,7 @@ int main(void)
 	vecModelFilesToLoad.push_back("X-Wing_Attack_(33569 faces)_xyz_n_rgba_uv.ply");
 	vecModelFilesToLoad.push_back("DockingBay_allOne_xyz_n_rgba_uv_quarter_size.ply");
 	vecModelFilesToLoad.push_back("Isoshphere_Small_InvertedNormals_xyz_n_rgba_uv.ply");
+	vecModelFilesToLoad.push_back("Cube_xyz_n_rgba_uv.ply");
 
 
 	std::string errors;
@@ -849,11 +851,11 @@ void SetUpTextureBindings( GLint shaderID )
 	glActiveTexture( jellyBeanTextureUnit + GL_TEXTURE0 );	// Selects 'texture unit'
 	glBindTexture( GL_TEXTURE_2D, jellyBeanTextureID );	// Selects 'texture'
 
-	GLint texture01_UniformLocID = 
-			glGetUniformLocation( shaderID, "texture01" );
+	GLint texture00_UniformLocID = 
+			glGetUniformLocation( shaderID, "texture00" );
 
 	// Set the sampler to the "Texture UNIT"
-	glUniform1i( texture01_UniformLocID, jellyBeanTextureUnit );
+	glUniform1i( texture00_UniformLocID, jellyBeanTextureUnit );
 	// ************************************
 
 	// ************************************
@@ -867,11 +869,22 @@ void SetUpTextureBindings( GLint shaderID )
 	glActiveTexture( grassTextureUnit + GL_TEXTURE0 );	// Selects 'texture unit'
 	glBindTexture( GL_TEXTURE_2D, grassTextureID );	// Selects 'texture'
 
-	GLint texture02_UniformLocID = 
-			glGetUniformLocation( shaderID, "texture02" );
+	GLint texture01_UniformLocID = 
+			glGetUniformLocation( shaderID, "texture01" );
 
 	// Set the sampler to the "Texture UNIT"
-	glUniform1i( texture02_UniformLocID, grassTextureUnit );
+	glUniform1i( texture01_UniformLocID, grassTextureUnit );
 	// ************************************
+
+	GLuint brendaTextureID = 
+		::g_pTextureManager->getTextureIDFromName("Brenda.bmp");
+	// Pick a texture UNIT for Brenda's texture. We'll pick 8
+	glActiveTexture( GL_TEXTURE0 + 8 );	// Selects 'texture unit'
+	glBindTexture( GL_TEXTURE_2D, brendaTextureID );
+	GLint texture03Sampler_LocationID = glGetUniformLocation( shaderID, "texture03" );
+	glUniform1i( texture03Sampler_LocationID, 8 );
+	// OpenGL 4.5 and later...
+	//glBindTextureUnit( 8, texture03Sampler_LocationID );
+
 	return;
 }

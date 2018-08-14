@@ -22,15 +22,17 @@ uniform float globalAmbientToDiffuseRatio;
 const int NUMLIGHTS = 10;
 
 
-uniform sampler2D texture01;		// Jellybean
-uniform sampler2D texture02;		// Grass
-uniform sampler2D texture03;
-uniform sampler2D texture04;
+uniform sampler2D texture00;		// Jellybean
+uniform sampler2D texture01;		// Grass
+uniform sampler2D texture02;
+uniform sampler2D texture03;		// Brenda R.
 
+//vec3 theColour = texture( texture01, vertTexUVst ).rgb;
+
+uniform float textureMix00;
 uniform float textureMix01;
 uniform float textureMix02;
 uniform float textureMix03;
-uniform float textureMix04;
 
 
 struct sLight
@@ -85,18 +87,18 @@ void main()
 	
 	// "Sample" the colour of the texture at these texture coordinates
 	//uniform sampler2D texBrick;
+	vec3 texture00_SampleRGB = texture(texture00, vertTexUV.st).rgb;
 	vec3 texture01_SampleRGB = texture(texture01, vertTexUV.st).rgb;
 	vec3 texture02_SampleRGB = texture(texture02, vertTexUV.st).rgb;
-//	vec3 texture03_SampleRGB = texture(texture03, vertTexUV.st).rgb;
-//	vec3 texture04_SampleRGB = texture(texture04, vertTexUV.st).rgb;
-	
+	vec3 texture03_SampleRGB = texture(texture03, vertTexUV.st).rgb;
+
 
 	// Why is he doing this?
 	vec3 textureSampleRGB = 
-			( textureMix01 * texture01_SampleRGB )
-		  + ( textureMix02 * texture02_SampleRGB );
-//		  + ( textureMix03 * texture03_SampleRGB )
-//		  + ( textureMix04 * texture04_SampleRGB );
+			( textureMix00 * texture00_SampleRGB )		// 0 or 1
+		  + ( textureMix01 * texture01_SampleRGB )		// 1 
+		  + ( textureMix02 * texture02_SampleRGB )		// 0 
+		  + ( textureMix03 * texture03_SampleRGB );		// 0
 	
 	for ( int lightIndex = 0; lightIndex != NUMLIGHTS; lightIndex++ )
 	{

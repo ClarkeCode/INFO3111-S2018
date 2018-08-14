@@ -51,6 +51,10 @@ bool cVAOManager::m_LoadTheModel_PlyFile5t( std::string fileName,
 
 	if ( loadParams.Force_UV_Regeneration )
 	{
+		// Here the "scale" is the UV repeat value.
+		// 1.0 --> UVs-STs go from 0.0 to 1.0
+		// 2.0 --> 0.0 to 2.0;
+		// 4.0 --> 0.0 to 4.0;
 		thePlyFile.GenTextureCoordsSpherical( CPlyFile5nt::enumTEXCOORDBIAS::POSITIVE_X, 
 											  CPlyFile5nt::enumTEXCOORDBIAS::POSITIVE_Y, 
 											  false,	// Based on normals

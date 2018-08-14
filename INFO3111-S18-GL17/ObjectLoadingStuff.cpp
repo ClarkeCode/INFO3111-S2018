@@ -135,31 +135,70 @@ void LoadObjectsIntoScene(void)
 	//	::g_vec_pMeshObjects.push_back( ::g_pTheLightAttenMesh[index] );
 	//}
 
+	//{// Add an object into the "scene"
+	//	cMeshObject* pTemp = new cMeshObject(); 
+	//
+	//	pTemp->meshName = "DockingBay_allOne_xyz_n_rgba_uv_quarter_size.ply";
+	//
+	//	pTemp->pos = glm::vec3( 0.0f, -1.0f, 0.0f );
+	//	pTemp->orientation = glm::vec3( 0.0f, glm::radians(90.0f), 0.0f);
+	//	pTemp->diffuseColour = glm::vec4( 142.0f/255.0f, 
+	//							          205.0f/255.0f,
+	//								     49.0f/255.0f,
+	//								      1.0f );		// Transparency 'alpha'
+	//
+	//	pTemp->ambientToDiffuseRatio = 0.2f;
+	//
+	//	pTemp->specularHighlightColour = glm::vec3(1.0f,1.0f,1.0f);
+	//	pTemp->specularShininess = 1.0f;
+	//
+	//	pTemp->scale = 2.5f;
+	//	//pTemp->isWireframe = true;
+	//	//pTemp->bDontLightObject = true;
+	//
+	//	pTemp->colourSource = cMeshObject::USE_VERTEX_COLOURS;
+	//
+	//	::g_vec_pMeshObjects.push_back( pTemp );
+	//}	
 	{// Add an object into the "scene"
 		cMeshObject* pTemp = new cMeshObject(); 
-	
-		pTemp->meshName = "DockingBay_allOne_xyz_n_rgba_uv_quarter_size.ply";
-	
-		pTemp->pos = glm::vec3( 0.0f, -1.0f, 0.0f );
-		pTemp->orientation = glm::vec3( 0.0f, glm::radians(90.0f), 0.0f);
-		pTemp->diffuseColour = glm::vec4( 142.0f/255.0f, 
-								          205.0f/255.0f,
-									     49.0f/255.0f,
-									      1.0f );		// Transparency 'alpha'
-	
+
+		pTemp->meshName = "Cube_xyz_n_rgba_uv.ply";
+
+		pTemp->friendlyName = "Cube";		// as in Bugs Bunny
+
+		pTemp->textureMixRatios[0] = 0.0f;
+		pTemp->textureMixRatios[1] = 0.0f;
+		pTemp->textureMixRatios[2] = 0.0f;
+		pTemp->textureMixRatios[3] = 1.0f;
+
+
+		pTemp->velocity.y = 2.0f;
+
+		pTemp->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
+		pTemp->diffuseColour = glm::vec4( 1.0f,
+								   1.0f, 
+									1.0f,
+									 1.0f );		// Transparency 'alpha'
+		pTemp->colourSource = cMeshObject::USE_OBJECT_COLOUR;
+
 		pTemp->ambientToDiffuseRatio = 0.2f;
-	
 		pTemp->specularHighlightColour = glm::vec3(1.0f,1.0f,1.0f);
-		pTemp->specularShininess = 1.0f;
-	
-		pTemp->scale = 2.5f;
-		//pTemp->isWireframe = true;
-		//pTemp->bDontLightObject = true;
-	
-		pTemp->colourSource = cMeshObject::USE_VERTEX_COLOURS;
-	
+		// This goes from 1 to whatver (like 10,000 is fine)
+		pTemp->specularShininess = 100.0f;
+
+		pTemp->scale = 10.0f;
+		sModelDrawInfo modelInfo;
+		::g_pTheVAOManager->FindDrawInfoByModelName ( pTemp->meshName, 
+													  modelInfo );
+		//pTemp->scale = 2.0f;
+		pTemp->scale = 1.0f / modelInfo.maxExtent;
+
+		pTemp->isWireframe = false;
+
 		::g_vec_pMeshObjects.push_back( pTemp );
 	}	
+
 	{// Add an object into the "scene"
 		cMeshObject* pTemp = new cMeshObject(); 
 
@@ -167,8 +206,10 @@ void LoadObjectsIntoScene(void)
 
 		pTemp->friendlyName = "Bugs";		// as in Bugs Bunny
 
-		pTemp->textureMixRatios[0] = 0.5f;
-		pTemp->textureMixRatios[1] = 0.5f;
+		pTemp->textureMixRatios[0] = 0.0f;
+		pTemp->textureMixRatios[1] = 0.0f;
+		pTemp->textureMixRatios[2] = 0.0f;
+		pTemp->textureMixRatios[3] = 1.0f;
 
 
 		pTemp->velocity.y = 2.0f;
@@ -207,10 +248,15 @@ void LoadObjectsIntoScene(void)
 									     49.0f/255.0f,
 									      1.0f );		// Transparency 'alpha'
 
+		pTemp->textureMixRatios[0] = 0.0f;
+		pTemp->textureMixRatios[1] = 1.0f;		// Grass
+		pTemp->textureMixRatios[2] = 0.0f;
+		pTemp->textureMixRatios[3] = 0.0f;		// Select texture 3 (Brenda R.)
+
 		pTemp->ambientToDiffuseRatio = 0.2f;
 
 		pTemp->specularHighlightColour = glm::vec3(1.0f,1.0f,1.0f);
-		pTemp->specularShininess = 10.0f;
+		pTemp->specularShininess = 1.0f;
 
 		pTemp->scale = 1.0f;
 		pTemp->isWireframe = false;
@@ -341,14 +387,18 @@ void LoadObjectsIntoScene(void)
 			//  this location is RELATIVE to the 'parent' object
 			cLukesCow->pos = glm::vec3( 1.0f, 0.0f, 0.0f );
 			cLukesCow->diffuseColour = glm::vec4( 1.0f, 0.0f, 0.0f, 1.0f );
-			cLukesCow->colourSource = cMeshObject::USE_OBJECT_COLOUR;
+			cLukesCow->colourSource = cMeshObject::USE_VERTEX_COLOURS;
 			sModelDrawInfo modelInfo;
 			::g_pTheVAOManager->FindDrawInfoByModelName ( cLukesCow->meshName, modelInfo );
-			cLukesCow->scale = 1.0f / modelInfo.maxExtent;
+			cLukesCow->scale = 5.0f / modelInfo.maxExtent;
 			cLukesCow->isWireframe = false;
 			//::g_vec_pMeshObjects.push_back( pTemp );
 
 
+			cLukesCow->textureMixRatios[0] = 0.0f;
+			cLukesCow->textureMixRatios[1] = 0.0f;
+			cLukesCow->textureMixRatios[2] = 0.0f;
+			cLukesCow->textureMixRatios[3] = 1.0f;
 
 			pXWing->vec_pChildObjects.push_back( cLukesCow );
 
