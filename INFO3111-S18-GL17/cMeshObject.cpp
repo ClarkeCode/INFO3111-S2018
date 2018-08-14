@@ -39,6 +39,10 @@ cMeshObject::cMeshObject()
 	this->textureMixRatios[1] = 0.0f;
 	this->textureMixRatios[2] = 0.0f;
 	this->textureMixRatios[3] = 0.0f;
+	this->textureMixRatios[4] = 0.0f;
+	this->textureMixRatios[5] = 0.0f;
+	this->textureMixRatios[6] = 0.0f;
+	this->textureMixRatios[7] = 0.0f;
 	// ...and so on...
 
 	return;

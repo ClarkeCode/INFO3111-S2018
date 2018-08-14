@@ -33,6 +33,7 @@
 void SetUpTextureBindings( GLint shaderID );
 
 
+
 void ShutErDown(void);
 
 
@@ -187,6 +188,25 @@ int main(void)
 	pShader->LoadUniformLocation( "objectSpecularColour" );
 	pShader->LoadUniformLocation( "globalAmbientToDiffuseRatio" );
 	pShader->LoadUniformLocation( "eyeLocation" );
+	pShader->LoadUniformLocation( "alphaTransparency" );
+
+	pShader->LoadUniformLocation( "texture00" );
+	pShader->LoadUniformLocation( "texture01" );
+	pShader->LoadUniformLocation( "texture02" );
+	pShader->LoadUniformLocation( "texture03" );
+	pShader->LoadUniformLocation( "texture04" );
+	pShader->LoadUniformLocation( "texture05" );
+	pShader->LoadUniformLocation( "texture06" );
+	pShader->LoadUniformLocation( "texture07" );
+
+	pShader->LoadUniformLocation( "textureMix00" );
+	pShader->LoadUniformLocation( "textureMix01" );
+	pShader->LoadUniformLocation( "textureMix02" );
+	pShader->LoadUniformLocation( "textureMix03" );
+	pShader->LoadUniformLocation( "textureMix04" );
+	pShader->LoadUniformLocation( "textureMix05" );
+	pShader->LoadUniformLocation( "textureMix06" );
+	pShader->LoadUniformLocation( "textureMix07" );
 
 	// The light values...
 	//SetUpTheLights(shadProgID);
@@ -293,7 +313,12 @@ int main(void)
 	::g_pTextureManager->Create2DTextureFromBMPFile( "water_texture__by_heavensinyoureyes-d75vg6r.bmp", true );
 	::g_pTextureManager->Create2DTextureFromBMPFile( "Brenda.bmp", true );
 
-//	::g_pTextureManager->getTextureIDFromName("Grass.bmp");
+	// These textures are from the 2016 final exam, too. 
+	// NOTE: they had to be converted to 24-bit BMP files
+	::g_pTextureManager->Create2DTextureFromBMPFile( "_original.bmp", true );
+	::g_pTextureManager->Create2DTextureFromBMPFile( "Aerographe albedo.bmp", true );
+	::g_pTextureManager->Create2DTextureFromBMPFile( "depositphotos_14127078-Seamless-texture-surface-of-the.bmp", true );
+
 
 
 
@@ -312,7 +337,27 @@ int main(void)
 	vecModelFilesToLoad.push_back("DockingBay_allOne_xyz_n_rgba_uv_quarter_size.ply");
 	vecModelFilesToLoad.push_back("Isoshphere_Small_InvertedNormals_xyz_n_rgba_uv.ply");
 	vecModelFilesToLoad.push_back("Cube_xyz_n_rgba_uv.ply");
-
+	// These models are from the 2016 final exam:
+	// NOTE: Now that there's a "fancier" ply file loader, 
+	// it will load these files, even though they might not have UVs, normals, etc.
+	// Also note that there is a struct that sets the way that it generates
+	//	the "extra" vertex attributes: sLoadParamsINFO3111S2018
+	vecModelFilesToLoad.push_back("Asteroid_001.ply");
+	vecModelFilesToLoad.push_back("Asteroid_002.ply");
+	vecModelFilesToLoad.push_back("Asteroid_003.ply");
+	vecModelFilesToLoad.push_back("Asteroid_004.ply");
+	vecModelFilesToLoad.push_back("Asteroid_005.ply");
+	vecModelFilesToLoad.push_back("Asteroid_006.ply");
+	vecModelFilesToLoad.push_back("Asteroid_007.ply");
+	vecModelFilesToLoad.push_back("Asteroid_008.ply");
+	vecModelFilesToLoad.push_back("Asteroid_009.ply");
+	vecModelFilesToLoad.push_back("Asteroid_010.ply");
+	vecModelFilesToLoad.push_back("Asteroid_011.ply");
+	vecModelFilesToLoad.push_back("Asteroid_012.ply");
+	vecModelFilesToLoad.push_back("Asteroid_013.ply");
+	vecModelFilesToLoad.push_back("Asteroid_014.ply");
+	vecModelFilesToLoad.push_back("Asteroid_015.ply");
+	vecModelFilesToLoad.push_back("Asteroid_016.ply");
 
 	std::string errors;
 //	if ( ! LoadModelTypes(shadProgID, errors) )
@@ -486,6 +531,9 @@ int main(void)
 		cShaderManager::cShaderProgram* pShaderProgram = 
 			::g_pTheShaderManager->pGetShaderProgramFromFriendlyName("simpleshader");
 
+
+		// Assume everything is using the 'per object' alpha value
+		glUniform1f( pShaderProgram->getUniformID_From_Name("bUse_vColourRGBA_AlphaValue"), (float)GL_FALSE);
 
 		//CopyLightInfoToShader(NUMLIGHTS);
 		::g_pLightManager->CopyLightInfoToShader();
@@ -834,11 +882,11 @@ void DrawDebugLightSpheres2(cShaderManager::cShaderProgram* pShaderProgram)
 	return;
 }
 
+
+
 void SetUpTextureBindings( GLint shaderID )
 {
-	// Set the textures once per frame 
-	// ('cause Feeney just decided to do that)
-	// ************************************
+
 	// texture01
 	GLuint jellyBeanTextureID = 
 		::g_pTextureManager->getTextureIDFromName("13982479-jelly-beans-seamless-texture-tile.bmp");

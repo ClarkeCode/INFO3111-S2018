@@ -7,6 +7,8 @@
 #include "cShaderManager.h"
 #include "cVAOManager.h"
 
+void SetUpTextureBindingsPerObject( cShaderManager::cShaderProgram* pShaderProgram, cMeshObject* pCurMesh );
+
 
 void DrawObject( cMeshObject* pCurMesh, 
 				 cShaderManager::cShaderProgram* pShaderProg,	// To get at uniforms
@@ -177,23 +179,42 @@ void DrawObject( cMeshObject* pCurMesh,
 	//		glDrawArrays(GL_TRIANGLES, 0, 3);
 	//		glDrawArrays(GL_TRIANGLES, 0, ::g_NumberOfVertsToDraw);
 
+	SetUpTextureBindingsPerObject( pShaderProg, pCurMesh );
+
+
 	// Getting uniforms in the draw call is really stupid..
-	GLint textureMix00_UniLoc = glGetUniformLocation( pShaderProg->ID, 
-													  "textureMix00" );
-	GLint textureMix01_UniLoc = glGetUniformLocation( pShaderProg->ID, 
-													  "textureMix01" );
-	GLint textureMix02_UniLoc = glGetUniformLocation( pShaderProg->ID, 
-													  "textureMix02" );
-	GLint textureMix03_UniLoc = glGetUniformLocation( pShaderProg->ID, 
-													  "textureMix03" );
+	glUniform1f( pShaderProg->getUniformID_From_Name( "textureMix00" ), 
+				                                      pCurMesh->textureMixRatios[0] );
+	glUniform1f( pShaderProg->getUniformID_From_Name( "textureMix01" ), 
+				                                      pCurMesh->textureMixRatios[1] );
+	glUniform1f( pShaderProg->getUniformID_From_Name( "textureMix02" ), 
+				                                      pCurMesh->textureMixRatios[2] );
+	glUniform1f( pShaderProg->getUniformID_From_Name( "textureMix03" ), 
+				                                      pCurMesh->textureMixRatios[3] );
+	glUniform1f( pShaderProg->getUniformID_From_Name( "textureMix04" ), 
+				                                      pCurMesh->textureMixRatios[4] );
+	glUniform1f( pShaderProg->getUniformID_From_Name( "textureMix05" ), 
+				                                      pCurMesh->textureMixRatios[5] );
+	glUniform1f( pShaderProg->getUniformID_From_Name( "textureMix06" ), 
+				                                      pCurMesh->textureMixRatios[6] );
+	glUniform1f( pShaderProg->getUniformID_From_Name( "textureMix07" ), 
+				                                      pCurMesh->textureMixRatios[7] );
 
-	glUniform1f( textureMix00_UniLoc, pCurMesh->textureMixRatios[0] );
-	glUniform1f( textureMix01_UniLoc, pCurMesh->textureMixRatios[1] );
-	glUniform1f( textureMix02_UniLoc, pCurMesh->textureMixRatios[2] );
-	glUniform1f( textureMix03_UniLoc, pCurMesh->textureMixRatios[3] );
+	//******************************************
+//	// Transparency thing
+//	if ( pCurMesh->getAlphaValue() < 1.0f )
+//	{
+		glEnable(GL_BLEND);		// Enables "blending"
+					//glDisable( GL_BLEND );
+					// Source == already on framebuffer
+					// Dest == what you're about to draw
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+		glUniform1f( pShaderProg->getUniformID_From_Name("alphaTransparency"), 
+		                                                 pCurMesh->getAlphaValue() );			        
 
-
+//	}
+//	//******************************************
 
 
 	// Figure out what model we are loading
@@ -242,6 +263,68 @@ void DrawObject( cMeshObject* pCurMesh,
 	return;
 }
 
+void SetUpTextureBindingsPerObject( cShaderManager::cShaderProgram* pShaderProgram, cMeshObject* pCurMesh )
+{
+	// Set the textures once per frame 
+	// ('cause Feeney just decided to do that)
+	// ************************************
+	// For each object...
+	// ...Loop through the texture names...
+	// .....Look up the texture ID, 
+	// .....Bind them IN LOCATION THEY ARE IN THE MESHOBJECT
+	//		pTemp->textureNames[0] = "Brenda.bmp";
+	//		pTemp->textureMixRatios[0] = 0.25f;
+	//
+	//		pTemp->textureNames[1] = "Grass.bmp";
+	//		pTemp->textureMixRatios[2] = 0.35f;
+	//
+	//		pTemp->textureNames[3] = "JellyBeans.bmp";
+	//		pTemp->textureMixRatios[3] = 0.60f;
+
+	for ( unsigned int textureBindingUnitLocationIndex = 0;
+		  textureBindingUnitLocationIndex != cMeshObject::NUMBEROFMIXRATIOS;
+		  textureBindingUnitLocationIndex++ )
+	{
+		std::string meshTexture = pCurMesh->textureNames[textureBindingUnitLocationIndex];
+		// Is there a texture? 
+		if ( meshTexture == "" )
+		{	
+			// Skip the rest.
+			continue;
+		}
+		// Get GL texture "name" (or ID)
+		GLuint textureID = ::g_pTextureManager->getTextureIDFromName(meshTexture);
+
+		// Choose a texture unit to bind to... 
+		glActiveTexture( GL_TEXTURE0 +  textureBindingUnitLocationIndex );	// Selects 'texture unit'
+
+		// Choose an active texture to bind to this unit
+		glBindTexture( GL_TEXTURE_2D, textureID );	// Selects 'texture'
+		
+		// use a switch would be faster...
+		switch( textureBindingUnitLocationIndex )
+		{
+		case 0:
+			glUniform1i( pShaderProgram->getUniformID_From_Name("texture00"), textureBindingUnitLocationIndex );
+			break;
+		case 1:
+			glUniform1i( pShaderProgram->getUniformID_From_Name("texture01"), textureBindingUnitLocationIndex );
+			break;
+		case 2:
+			glUniform1i( pShaderProgram->getUniformID_From_Name("texture02"), textureBindingUnitLocationIndex );
+			break;
+		case 3:
+			glUniform1i( pShaderProgram->getUniformID_From_Name("texture03"), textureBindingUnitLocationIndex );
+			break;
+		// ... and so on
+
+		}
+			// Set the sampler to the "Texture UNIT"
+
+	}
+
+	return;
+}
 
 // Used mainly for debug objects, so we can pass explicitly pass the model matrix
 void DrawObject_ExplicitModelMatrix( cMeshObject* pCurMesh, 

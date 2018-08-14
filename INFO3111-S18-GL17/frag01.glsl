@@ -2,7 +2,7 @@
 // FRAGMENT SHADER
 
 // From the vertex shader:
-in vec4 vertColourRGBA;
+in vec4 vertColourRGBA;			
 in vec4 vertWorldPosXYZ;
 in vec4 vertNormal;
 in vec4 vertTexUV;	
@@ -19,6 +19,15 @@ uniform vec4 objectSpecularColour;
 // This his how bright things are when outside of the light.
 uniform float globalAmbientToDiffuseRatio;		
 
+uniform vec4 meshColourRGBA; 		// Now a vec4!!
+uniform bool bUse_vColourRGBA_AlphaValue;		
+
+// Often the 4th value of the diffuse is being used, 
+// but we'll just explicity set it here...
+// Set this from 0 (transparent) to 1 (solid)
+uniform float alphaTransparency;
+
+
 const int NUMLIGHTS = 10;
 
 
@@ -26,13 +35,24 @@ uniform sampler2D texture00;		// Jellybean
 uniform sampler2D texture01;		// Grass
 uniform sampler2D texture02;
 uniform sampler2D texture03;		// Brenda R.
+uniform sampler2D texture04;		// Jellybean
+uniform sampler2D texture05;		// Grass
+uniform sampler2D texture06;
+uniform sampler2D texture07;		// Brenda R.
 
-//vec3 theColour = texture( texture01, vertTexUVst ).rgb;
+uniform samplerCube mySexySkybox;
+
+//vec3 theColour = texture( texture01, vertTexUV.st ).rgb;
+//vec3 theColour = texture( mySexySkybox, meshNormal.xyz ).rgb;
 
 uniform float textureMix00;
 uniform float textureMix01;
 uniform float textureMix02;
 uniform float textureMix03;
+uniform float textureMix04;
+uniform float textureMix05;
+uniform float textureMix06;
+uniform float textureMix07;
 
 
 struct sLight
@@ -58,6 +78,8 @@ uniform sLight theLights[NUMLIGHTS];
 
 uniform vec3 eyeLocation;		// Camera location IN WORLD
 
+// Going to the frame buffer (back buffer)
+// (aka "the screen")  RGBA
 out vec4 outputColour;
 
 vec3 CalculateDirectionalLightContrib( uint lightIndex, vec3 vertWorldNormal );
@@ -82,7 +104,13 @@ void main()
 	// Assume object is black
 	outputColour.rgb = vec3(0.0f, 0.0f, 0.0f);	// Start with black 
 	
-	outputColour.a = vertColourRGBA.a;			// Set transparency ('alpha transparency')
+	// Assume we are using the meshColour alpha value...
+	outputColour.a = meshColourRGBA.a;
+	// ...unless we are using the 'per vertex' alpha values from the ply model
+	if ( bUse_vColourRGBA_AlphaValue )
+	{
+		outputColour.a = vertColourRGBA.a;			// Set transparency ('alpha transparency')
+	}
 
 	
 	// "Sample" the colour of the texture at these texture coordinates
@@ -91,14 +119,22 @@ void main()
 	vec3 texture01_SampleRGB = texture(texture01, vertTexUV.st).rgb;
 	vec3 texture02_SampleRGB = texture(texture02, vertTexUV.st).rgb;
 	vec3 texture03_SampleRGB = texture(texture03, vertTexUV.st).rgb;
+	vec3 texture04_SampleRGB = texture(texture04, vertTexUV.st).rgb;
+	vec3 texture05_SampleRGB = texture(texture05, vertTexUV.st).rgb;
+	vec3 texture06_SampleRGB = texture(texture06, vertTexUV.st).rgb;
+	vec3 texture07_SampleRGB = texture(texture07, vertTexUV.st).rgb;
 
 
 	// Why is he doing this?
 	vec3 textureSampleRGB = 
-			( textureMix00 * texture00_SampleRGB )		// 0 or 1
-		  + ( textureMix01 * texture01_SampleRGB )		// 1 
+			( textureMix00 * texture00_SampleRGB )		// 0
+		  + ( textureMix01 * texture01_SampleRGB )		// 0 
 		  + ( textureMix02 * texture02_SampleRGB )		// 0 
-		  + ( textureMix03 * texture03_SampleRGB );		// 0
+		  + ( textureMix03 * texture03_SampleRGB )		// 0
+		  + ( textureMix04 * texture04_SampleRGB )		// 0 
+		  + ( textureMix05 * texture05_SampleRGB )		// 1   chooses this texture
+		  + ( textureMix06 * texture06_SampleRGB )		// 0 
+		  + ( textureMix07 * texture07_SampleRGB );		// 0
 	
 	for ( int lightIndex = 0; lightIndex != NUMLIGHTS; lightIndex++ )
 	{
@@ -227,6 +263,10 @@ void main()
 	
 	outputColour.rgb = clamp( outputColour.rgb, vec3(0.0f,0.0f,0.0f), vec3(1.0f,1.0f,1.0f) );
 
+//	// Copy the alpha value from the object
+//	outputColour.a = meshColourRGBA.a;
+	outputColour.a = alphaTransparency;
+	
 	// Bump colour output as projector is dark
 	outputColour.rgb *= 1.2f;
 	

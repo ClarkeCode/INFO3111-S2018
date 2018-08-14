@@ -54,6 +54,18 @@ public:
 	//	'overall' transparency value (like for the entire object)
 	bool bUseColourAlphaValue;	// = true
 
+	// Our shader uses the a or w (4th component) value of the diffuse
+	// to set the "alpha" value in the shader. 
+	// It's passed to the meshColourRGBA uniform.
+	void setAlphaValue( float alpha_0_to_1 )
+	{
+		this->diffuseColour.a = alpha_0_to_1;
+	}
+	float getAlphaValue(void)
+	{
+		return this->diffuseColour.a;
+	}
+
 	const unsigned int uniqueID = 0;
 
 	bool bIsVisible; 
@@ -72,7 +84,7 @@ public:
 
 	//
 
-	static const int NUMBEROFMIXRATIOS = 4;
+	static const int NUMBEROFMIXRATIOS = 8;
 	// The name of the texture (COMING SOON!)
 	std::string textureNames[NUMBEROFMIXRATIOS];
 	// Set the value here to 1, the rest to 0 to "select" the texture

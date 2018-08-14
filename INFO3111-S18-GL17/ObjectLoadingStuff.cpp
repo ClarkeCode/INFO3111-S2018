@@ -13,11 +13,77 @@
 // Should be in a header somewhere... 
 extern cVAOManager* g_pTheVAOManager;// = 0;
 
+// Got this from here: https://stackoverflow.com/questions/686353/c-random-float-number-generation
+float getRandInRange(float LO, float HI)
+{
+	return LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+}
 
 
 //std::vector< cMeshObject* > g_vec_pMeshObjects;
 void LoadObjectsIntoScene(void)
 {
+
+	// Load a bunch of asteroids
+	std::vector<std::string> vecAssNames;
+	vecAssNames.push_back("Asteroid_001.ply");
+	vecAssNames.push_back("Asteroid_002.ply");
+	vecAssNames.push_back("Asteroid_003.ply");
+	vecAssNames.push_back("Asteroid_004.ply");
+	vecAssNames.push_back("Asteroid_005.ply");
+	vecAssNames.push_back("Asteroid_006.ply");
+	vecAssNames.push_back("Asteroid_007.ply");
+	vecAssNames.push_back("Asteroid_008.ply");
+	vecAssNames.push_back("Asteroid_009.ply");
+	vecAssNames.push_back("Asteroid_010.ply");
+	vecAssNames.push_back("Asteroid_011.ply");
+	vecAssNames.push_back("Asteroid_012.ply");
+	vecAssNames.push_back("Asteroid_013.ply");
+	vecAssNames.push_back("Asteroid_014.ply");
+	vecAssNames.push_back("Asteroid_015.ply");
+	vecAssNames.push_back("Asteroid_016.ply");
+
+
+	for ( int count = 0; count != 150; count++ )
+	{// Add an object into the "scene"
+		cMeshObject* pTemp = new cMeshObject(); 
+		// Pick a random asteroid
+		int asteroidIndex = rand() % (vecAssNames.size() + 1);
+		if ( asteroidIndex > vecAssNames.size() - 1 ) 
+		{
+			asteroidIndex = 0;
+		}
+		pTemp->meshName = vecAssNames[asteroidIndex];
+
+		float range = 10.0f;
+		pTemp->pos = glm::vec3( getRandInRange(-range, range), 
+								getRandInRange(-range, range), 
+								getRandInRange(-range, range) );
+
+		std::cout << pTemp->meshName << ":" 
+			<< pTemp->pos.x << ", " << pTemp->pos.y << ", " << pTemp->pos.z << std::endl;
+		
+		pTemp->diffuseColour = glm::vec4( 244.0f/255.0f,  223.0f/255.0f,33.0f/255.0f, 1.0f );		// Transparency 'alpha'
+		sModelDrawInfo modelInfo;
+		::g_pTheVAOManager->FindDrawInfoByModelName ( pTemp->meshName, modelInfo );
+		pTemp->scale = 1.0f / modelInfo.maxExtent;
+		pTemp->isWireframe = false;
+		pTemp->colourSource = cMeshObject::USE_OBJECT_COLOUR;
+		pTemp->bDontLightObject = false;
+
+		pTemp->textureNames[0] = "_original.bmp";
+		pTemp->textureMixRatios[0] = 0.25f;
+
+		pTemp->textureNames[1] = "Aerographe albedo.bmp";
+		pTemp->textureMixRatios[2] = 0.35f;
+
+		pTemp->textureNames[3] = "depositphotos_14127078-Seamless-texture-surface-of-the.bmp";
+		pTemp->textureMixRatios[3] = 0.60f;
+
+		::g_vec_pMeshObjects.push_back( pTemp );
+	}//for ( int count = 0; count != 50; count++ )
+
+
 	// The "debug sphere" that replaces all of the other spheres for the lights, etc.
 	{// Add an object into the "scene"
 		::g_pDebugSphere = new cMeshObject(); 
@@ -165,6 +231,11 @@ void LoadObjectsIntoScene(void)
 
 		pTemp->meshName = "Cube_xyz_n_rgba_uv.ply";
 
+		
+		pTemp->textureNames[0] = "Brenda.bmp";
+		pTemp->textureMixRatios[0] = 1.0f;
+
+
 		pTemp->friendlyName = "Cube";		// as in Bugs Bunny
 
 		pTemp->textureMixRatios[0] = 0.0f;
@@ -233,6 +304,10 @@ void LoadObjectsIntoScene(void)
 		//pTemp->scale = 2.0f;
 		pTemp->scale = 1.0f / modelInfo.maxExtent;
 
+		pTemp->textureNames[3] = "Grass.bmp";
+		pTemp->textureMixRatios[3] = 1.0f;
+
+
 		pTemp->isWireframe = false;
 
 		::g_vec_pMeshObjects.push_back( pTemp );
@@ -247,6 +322,7 @@ void LoadObjectsIntoScene(void)
 								          205.0f/255.0f,
 									     49.0f/255.0f,
 									      1.0f );		// Transparency 'alpha'
+
 
 		pTemp->textureMixRatios[0] = 0.0f;
 		pTemp->textureMixRatios[1] = 1.0f;		// Grass
@@ -320,6 +396,9 @@ void LoadObjectsIntoScene(void)
 										248.0f/255.0f,
 											1.0f );		// Transparency 'alpha'
 
+			pCalf->specularHighlightColour = glm::vec3(1.0f, 1.0f, 1.0f );
+			pCalf->specularShininess = 100.0f;
+
 			pCalf->colourSource = cMeshObject::USE_OBJECT_COLOUR;
 
 			sModelDrawInfo modelInfo;
@@ -355,8 +434,9 @@ void LoadObjectsIntoScene(void)
 		pXWing->acceleration.z = 0.01f;
 
 
-		pXWing->textureMixRatios[0] = 0.0f;
-		pXWing->textureMixRatios[1] = 1.0f;
+
+		pXWing->textureNames[2] = "JellyBeans.bmp";
+		pXWing->textureMixRatios[2] = 1.00f;
 
 
 
@@ -381,6 +461,10 @@ void LoadObjectsIntoScene(void)
 
 		// Have a cow track with Luke...
 		{// Load a cow!!!
+
+			// This is the object with Brenda R's face. 
+			// I'm so very sorry...
+
 			cMeshObject* cLukesCow = new cMeshObject(); 
 			cLukesCow->meshName = "cow_xyz_n_rgba_uv.ply";
 			// Because this is added as a "child" of another object,
@@ -394,6 +478,7 @@ void LoadObjectsIntoScene(void)
 			cLukesCow->isWireframe = false;
 			//::g_vec_pMeshObjects.push_back( pTemp );
 
+			cLukesCow->setAlphaValue(0.5f);
 
 			cLukesCow->textureMixRatios[0] = 0.0f;
 			cLukesCow->textureMixRatios[1] = 0.0f;
@@ -466,6 +551,8 @@ void LoadObjectsIntoScene(void)
 
 		::g_vec_pMeshObjects.push_back( pTemp );
 	}
+
+
 
 
 	return;
