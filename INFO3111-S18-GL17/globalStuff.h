@@ -37,6 +37,9 @@ void LoadObjectsIntoScene(void);
 bool LoadModelTypes(GLint shadProgID, std::string &errors);
 bool LoadModelTypes(GLint shadProgID, std::vector<std::string> vecModelNames, std::string &errors);
 bool LoadModelTypes_PlyLoader(GLint shadProgID, std::vector<std::string> vecModelNames, std::string &errors);
+bool LoadModelTypes_PlyLoader_2( GLint shadProgID, 
+								 std::vector<cVAOManager::sLoadParamsINFO3111S2018> vecModelFilesToLoad, 
+								 std::string &errors);
 
 // If true, the spheres around the lights are there
 extern bool g_bTurnOnDebugLightSpheres;	// = false
@@ -96,5 +99,8 @@ void DrawDebugSphere( cShaderManager::cShaderProgram* pShaderProgram,
 extern float g_globalAmbientToDiffuseRatio;	// = 0.2f;
 
 extern cBasicTextureManager* g_pTextureManager;
+
+// Got this from here: https://stackoverflow.com/questions/686353/c-random-float-number-generation
+float g_getRandInRange(float LO, float HI);
 
 #endif

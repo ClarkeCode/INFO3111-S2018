@@ -23,6 +23,43 @@ bool cVAOManager::LoadModelInfoVAO_PlyFile5t( std::string fileName,
 }
 
 
+// This allows you to load multiple models. 
+// The file to load (and the errors) are passed through sLoadParamsINFO3111S2018.
+bool cVAOManager::LoadModelsInfoVAO_PlyFile5t( unsigned int shaderProgramID, 
+									           std::vector<sModelDrawInfo> &vecDrawInfo, 
+									           std::vector<cVAOManager::sLoadParamsINFO3111S2018> &vecModelsToLoad )
+{
+	bool bAllOK = true;
+
+	for ( std::vector<cVAOManager::sLoadParamsINFO3111S2018>::iterator itLP = vecModelsToLoad.begin();
+		  itLP != vecModelsToLoad.end(); itLP++ )
+	{
+		sModelDrawInfo drawInfo;
+		if ( ! this->m_LoadTheModel_PlyFile5t( itLP->modelFileToLoad, shaderProgramID, drawInfo, 
+			                                   itLP->loadErrors, (*itLP) ) )
+		{
+			this->m_AppendTextToLastError(itLP->loadErrors);
+			this->m_AppendTextToLastError("\n");
+			bAllOK = false;
+		}
+		else
+		{
+			// Return the draw info (to check errors, get stats, etc.)
+			if ( ! this->m_Load_ModelDrawInfo_IntoVAO( itLP->modelFileToLoad, drawInfo, shaderProgramID ) )
+			{
+				bAllOK = false;
+			}
+			else
+			{
+				vecDrawInfo.push_back(drawInfo);
+			}
+		}
+	}//for(vector<sLoadParamsINFO3111S2018>...
+
+	return bAllOK;
+}
+
+
 bool cVAOManager::m_LoadTheModel_PlyFile5t( std::string fileName, 
                                             unsigned int shaderProgramID, 
                                             sModelDrawInfo &drawInfo, 
@@ -49,26 +86,40 @@ bool cVAOManager::m_LoadTheModel_PlyFile5t( std::string fileName,
 		thePlyFile.normalizeTheModelBaby();
 	}//if (loadParams.Force_Normal_Regeneration...
 
-	if ( loadParams.Force_UV_Regeneration )
+	// NEW
+	if ( ( loadParams.GENERATE_UVs_IF_NOT_PRESENT && (!thePlyFile.bHasTextureCoordinatesInFile() ) ) ||
+		 ( loadParams.FORCE_UV_GENERATION ) )
 	{
-		// Here the "scale" is the UV repeat value.
-		// 1.0 --> UVs-STs go from 0.0 to 1.0
-		// 2.0 --> 0.0 to 2.0;
-		// 4.0 --> 0.0 to 4.0;
-		thePlyFile.GenTextureCoordsSpherical( CPlyFile5nt::enumTEXCOORDBIAS::POSITIVE_X, 
-											  CPlyFile5nt::enumTEXCOORDBIAS::POSITIVE_Y, 
-											  false,	// Based on normals
-											  1.0,		// Scale
-											  false );	// Faster
-	}
-	else if ( ( ! thePlyFile.bHasTextureCoordinatesInFile() ) && loadParams.ifAbsent_GenerateUVs )
-	{
-		thePlyFile.GenTextureCoordsSpherical( CPlyFile5nt::enumTEXCOORDBIAS::POSITIVE_X, 
-											  CPlyFile5nt::enumTEXCOORDBIAS::POSITIVE_Y, 
-											  false,	// Based on normals
-											  1.0,		// Scale
-											  false );	// Faster
-	}//if(loadParams.Force_UV_Regeneration...
+		// In case the texture generation is planar...
+		// (this option seems the 'safest', if it wasn't set)
+		CPlyFile5nt::enumTEXCOORDBIAS planarTextureBias = CPlyFile5nt::PLANAR_ON_WIDEST_AXES;
+
+		// Either we are generating UVs when absent, or forcing the generation
+		switch ( loadParams.textureCoordGenerationType )
+		{
+		case sLoadParamsINFO3111S2018::SPHERICAL_UV:
+			thePlyFile.GenTextureCoordsSpherical( CPlyFile5nt::enumTEXCOORDBIAS::POSITIVE_X, 
+												  CPlyFile5nt::enumTEXCOORDBIAS::POSITIVE_Y, 
+												  false,	// Based on normals
+												  1.0,		// Scale
+												  false );	// Faster
+			break;
+		case sLoadParamsINFO3111S2018::PLANAR_XY:
+			planarTextureBias = CPlyFile5nt::PLANAR_XY;
+		case sLoadParamsINFO3111S2018::PLANAR_XZ:
+			planarTextureBias = CPlyFile5nt::PLANAR_XZ;
+		case sLoadParamsINFO3111S2018::PLANAR_YZ:
+			planarTextureBias = CPlyFile5nt::PLANAR_YZ;
+		case sLoadParamsINFO3111S2018::PLANAR_ON_WIDEST_AXES:
+			planarTextureBias = CPlyFile5nt::PLANAR_ON_WIDEST_AXES;
+			thePlyFile.GenTextureCoordsLinear( planarTextureBias, loadParams.textureGenerationScale );
+			break;
+		}
+	}//if(generateUVs)
+
+		
+		
+
 	
 	drawInfo.meshName = fileName;
 
@@ -166,30 +217,8 @@ bool cVAOManager::LoadPlyThenSaveAsGDPFile( std::string plyFileName, std::string
 }
 
 
-std::string FILELOCAL_StripPath( std::string fileAndPath  )
-{
-	std::stringstream ssFileName;
 
-	// Scan until you get to a forward and reverse slash
-	bool bKeepScanning = true;
-	for ( std::string::reverse_iterator itChar = fileAndPath.rbegin();
-		  (itChar != fileAndPath.rend() && bKeepScanning); itChar++ )
-	{
-		if ( (*itChar == '/') || (*itChar == '\\') )
-		{
-			bKeepScanning = false;
-		}
-		else
-		{
-			ssFileName << *itChar;
-		}
-	}
 
-	std::string fileName = ssFileName.str();
-	std::reverse( fileName.begin(), fileName.end() );
-
-	return fileName;
-}
 
 // NOTE: This is NOT a great way to do this UNLESS
 //	you're sure that you'll only be using English... 
@@ -220,4 +249,29 @@ std::string FILELOCAL_Unicode_to_ASCII_BASIC(std::wstring UnicodeString)
 	}
 
 	return ssASCIIString.str();
+}
+
+std::string FILELOCAL_StripPath( std::string fileAndPath  )
+{
+	std::stringstream ssFileName;
+
+	// Scan until you get to a forward and reverse slash
+	bool bKeepScanning = true;
+	for ( std::string::reverse_iterator itChar = fileAndPath.rbegin();
+		  (itChar != fileAndPath.rend() && bKeepScanning); itChar++ )
+	{
+		if ( (*itChar == '/') || (*itChar == '\\') )
+		{
+			bKeepScanning = false;
+		}
+		else
+		{
+			ssFileName << *itChar;
+		}
+	}
+
+	std::string fileName = ssFileName.str();
+	std::reverse( fileName.begin(), fileName.end() );
+
+	return fileName;
 }

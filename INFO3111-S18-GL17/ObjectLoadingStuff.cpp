@@ -43,8 +43,8 @@ void LoadObjectsIntoScene(void)
 	vecAssNames.push_back("Asteroid_015.ply");
 	vecAssNames.push_back("Asteroid_016.ply");
 
-
-	for ( int count = 0; count != 150; count++ )
+	const unsigned int NUMBEROFASTEROIDS = 150;
+	for ( unsigned int count = 0; count != 150; count++ )
 	{// Add an object into the "scene"
 		cMeshObject* pTemp = new cMeshObject(); 
 		// Pick a random asteroid
@@ -60,8 +60,8 @@ void LoadObjectsIntoScene(void)
 								getRandInRange(-range, range), 
 								getRandInRange(-range, range) );
 
-		std::cout << pTemp->meshName << ":" 
-			<< pTemp->pos.x << ", " << pTemp->pos.y << ", " << pTemp->pos.z << std::endl;
+//		std::cout << pTemp->meshName << ":" 
+//			<< pTemp->pos.x << ", " << pTemp->pos.y << ", " << pTemp->pos.z << std::endl;
 		
 		pTemp->diffuseColour = glm::vec4( 244.0f/255.0f,  223.0f/255.0f,33.0f/255.0f, 1.0f );		// Transparency 'alpha'
 		sModelDrawInfo modelInfo;
@@ -81,7 +81,8 @@ void LoadObjectsIntoScene(void)
 		pTemp->textureMixRatios[3] = 0.60f;
 
 		::g_vec_pMeshObjects.push_back( pTemp );
-	}//for ( int count = 0; count != 50; count++ )
+	}//for(unsigned int count...
+	std::cout << "Placed " << NUMBEROFASTEROIDS << " asteroids in the scene." << std::endl;
 
 
 	// The "debug sphere" that replaces all of the other spheres for the lights, etc.
@@ -324,10 +325,9 @@ void LoadObjectsIntoScene(void)
 									      1.0f );		// Transparency 'alpha'
 
 
-		pTemp->textureMixRatios[0] = 0.0f;
-		pTemp->textureMixRatios[1] = 1.0f;		// Grass
-		pTemp->textureMixRatios[2] = 0.0f;
-		pTemp->textureMixRatios[3] = 0.0f;		// Select texture 3 (Brenda R.)
+		pTemp->textureNames[0] = "Grass.bmp";
+		pTemp->textureMixRatios[0] = 1.0f;
+
 
 		pTemp->ambientToDiffuseRatio = 0.2f;
 
@@ -358,6 +358,10 @@ void LoadObjectsIntoScene(void)
 													  modelInfo );
 		//pTemp->scale = 0.05f;
 		pTemp->scale = 1.0f / modelInfo.maxExtent;
+
+		pTemp->textureNames[0] = "Brenda.bmp";
+		pTemp->textureMixRatios[0] = 1.0f;
+
 
 		pTemp->isWireframe = false;
 
@@ -592,7 +596,7 @@ bool LoadModelTypes_PlyLoader(GLint shadProgID, std::vector<std::string> vecMode
 		sModelDrawInfo theModel;
 		cVAOManager::sLoadParamsINFO3111S2018 loadParams;
 		//
-		loadParams.Force_UV_Regeneration = true;
+		loadParams.textureCoordGenerationMode = cVAOManager::sLoadParamsINFO3111S2018::FORCE_UV_GENERATION;
 		// 
 		std::string plyLoadErrors;
 		//if ( ! ::g_pTheVAOManager->LoadModelIntoVAO( *itModelName, theModel, shadProgID ) )
@@ -619,6 +623,49 @@ bool LoadModelTypes_PlyLoader(GLint shadProgID, std::vector<std::string> vecMode
 	}// for ( ...iterator itModelName...
 
 	errors = ssError.str();
+
+	return bAllGood;
+}
+
+bool LoadModelTypes_PlyLoader_2( GLint shadProgID, 
+								 std::vector<cVAOManager::sLoadParamsINFO3111S2018> vecModelFilesToLoad, 
+								 std::string &errors )
+{
+	std::stringstream ssError;
+
+	std::cout << "Loading " << vecModelFilesToLoad.size() << " models...";
+
+	std::vector<sModelDrawInfo> vecModelInfo;
+	bool bAllGood = ::g_pTheVAOManager->LoadModelsInfoVAO_PlyFile5t( shadProgID, vecModelInfo, vecModelFilesToLoad );
+
+	std::cout << "done " << (bAllGood ? "OK" : "(there were errors)") << std::endl;
+
+	std::stringstream ssErrors;
+	unsigned int index = 0;
+	for ( ; index != vecModelFilesToLoad.size(); index++ )
+	{
+		cVAOManager::sLoadParamsINFO3111S2018 &loadParams = vecModelFilesToLoad[index];
+
+		if ( ! loadParams.bLoadedOK )
+		{
+			std::cout << loadParams.modelFileToLoad << " wasn't loaded." << std::endl;
+			ssErrors << loadParams.modelFileToLoad << " wasn't loaded." << std::endl;
+		}
+		else
+		{
+			std::cout 
+				<< "Loaded " << loadParams.modelFileToLoad << " OK: " << std::endl;
+			std::cout 
+				<< "\t" << vecModelInfo[index].numberOfVertices << " vertices, "
+				<< vecModelInfo[index].numberOfTriangles << " triangles, " << std::endl;
+			std::cout  
+				<< "\t" << "V.Buff.ID = " << vecModelInfo[index].VertexBufferID << ", "
+				<< "I.Buff.ID = " << vecModelInfo[index].IndexBufferID << ", "
+				<< "VAOID = " << vecModelInfo[index].VAO_ID << std::endl;
+		}//if(!loadParams.bLoadedOK
+	}//for(std::vector<cVAOManager::sLoadParamsINFO3111S2018>::iterator...
+
+	errors = ssErrors.str();
 
 	return bAllGood;
 }

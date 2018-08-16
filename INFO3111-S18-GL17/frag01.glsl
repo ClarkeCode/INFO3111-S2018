@@ -40,10 +40,14 @@ uniform sampler2D texture05;		// Grass
 uniform sampler2D texture06;
 uniform sampler2D texture07;		// Brenda R.
 
-uniform samplerCube mySexySkybox;
+// This is used for a skybox.
+// A 'cube map' is a set of 6 2D images, one for each
+//	side of a virtual cube. Unlike a 2D image, you need
+//	3 coordinates to look up the image. Often, you use
+//	the normal on the surface of the object as the lookup
+uniform samplerCube texCubeSkyboxTexture;
+uniform bool bSampleFromSkyboxTexture;
 
-//vec3 theColour = texture( texture01, vertTexUV.st ).rgb;
-//vec3 theColour = texture( mySexySkybox, meshNormal.xyz ).rgb;
 
 uniform float textureMix00;
 uniform float textureMix01;
@@ -112,6 +116,19 @@ void main()
 		outputColour.a = vertColourRGBA.a;			// Set transparency ('alpha transparency')
 	}
 
+	// Skybox? This doesn't have lighting, so we return immediately
+	if ( bSampleFromSkyboxTexture )
+	{
+		// A Cube Map needs 3 coords to lookup, so you don't use UV(or ST).
+		// Often, like this case, you use the vertex normal.
+		outputColour.rgba = texture(texCubeSkyboxTexture, vertNormal.xyz).rgba;
+		
+		// Alternatively, you could also add some sort of attenuation
+		//	to the skybox, to simulate "getting dark".
+		
+		return;
+	}
+	
 	
 	// "Sample" the colour of the texture at these texture coordinates
 	//uniform sampler2D texBrick;

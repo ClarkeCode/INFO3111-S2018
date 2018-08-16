@@ -326,7 +326,12 @@ int main(void)
 	
 	// Load objects into scene...
 
+//#define USE_OLDER_LOADER
+#define USE_NEWER_LOADER
+
+#ifdef USE_OLDER_LOADER
 	std::vector<std::string> vecModelFilesToLoad;
+
 	vecModelFilesToLoad.push_back("bun_zipper_res2_xyz_n_rgba_uv.ply");
 	vecModelFilesToLoad.push_back("cow_xyz_n_rgba_uv.ply");
 	vecModelFilesToLoad.push_back("ssj100_xyz_n_rgba_uv.ply");
@@ -367,7 +372,57 @@ int main(void)
 		std::cout << "There were errors loading the model files..." << std::endl;
 		std::cout << errors << std::endl;
 	}
+#endif //USE_OLDER_LOADER
+#ifdef USE_NEWER_LOADER
+	std::vector<cVAOManager::sLoadParamsINFO3111S2018> vecModelFilesToLoad;
 
+	typedef cVAOManager::sLoadParamsINFO3111S2018 LD;
+
+	LD terrain("CrappyTerrain_xyz_n_rgba_uv.ply");
+	terrain.textureCoordGenerationType = LD::PLANAR_ON_WIDEST_AXES;
+	terrain.textureCoordGenerationMode = LD::FORCE_UV_GENERATION;
+	terrain.textureGenerationScale = 64.0f;
+	vecModelFilesToLoad.push_back( terrain );
+
+	vecModelFilesToLoad.push_back( LD("bun_zipper_res2_xyz_n_rgba_uv.ply") );
+	vecModelFilesToLoad.push_back( LD("cow_xyz_n_rgba_uv.ply") );
+	vecModelFilesToLoad.push_back( LD("ssj100_xyz_n_rgba_uv.ply") );
+	vecModelFilesToLoad.push_back( LD("free_arena_ASCII_xyz_n_rgba_uv.ply") );
+	vecModelFilesToLoad.push_back( LD("isosphere_smooth_xyz_n_rgba_uv.ply") );
+	vecModelFilesToLoad.push_back( LD("X-Wing_Attack_(33569 faces)_xyz_n_rgba_uv.ply") );
+	vecModelFilesToLoad.push_back( LD("DockingBay_allOne_xyz_n_rgba_uv_quarter_size.ply") );
+	vecModelFilesToLoad.push_back( LD("Isoshphere_Small_InvertedNormals_xyz_n_rgba_uv.ply") );
+	vecModelFilesToLoad.push_back( LD("Cube_xyz_n_rgba_uv.ply") );
+
+	// These models are from the 2016 final exam:
+	// NOTE: Now that there's a "fancier" ply file loader, 
+	// it will load these files, even though they might not have UVs, normals, etc.
+	// Also note that there is a struct that sets the way that it generates
+	//	the "extra" vertex attributes: sLoadParamsINFO3111S2018
+	vecModelFilesToLoad.push_back( LD("Asteroid_001.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_002.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_003.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_004.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_005.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_006.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_007.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_008.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_009.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_010.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_011.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_012.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_013.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_014.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_015.ply") );
+	vecModelFilesToLoad.push_back( LD("Asteroid_016.ply") );
+
+	std::string errors;
+	if ( ! LoadModelTypes_PlyLoader_2( shadProgID, vecModelFilesToLoad, errors ) )
+	{
+		std::cout << "There were errors loading the model files..." << std::endl;
+		std::cout << errors << std::endl;
+	}
+#endif //USE_NEWER_LOADER
 
 
 	LoadObjectsIntoScene();

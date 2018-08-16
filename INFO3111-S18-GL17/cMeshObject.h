@@ -83,12 +83,12 @@ public:
 	std::vector< cMeshObject* > vec_pChildObjects;
 
 	//
-
-	static const int NUMBEROFMIXRATIOS = 8;
+	// Name changed to something more appropriate
+	static const int MAXNUMBEROFTEXTURES = 8;
 	// The name of the texture (COMING SOON!)
-	std::string textureNames[NUMBEROFMIXRATIOS];
+	std::string textureNames[MAXNUMBEROFTEXTURES];
 	// Set the value here to 1, the rest to 0 to "select" the texture
-	float textureMixRatios[NUMBEROFMIXRATIOS];
+	float textureMixRatios[MAXNUMBEROFTEXTURES];
 
 
 private:

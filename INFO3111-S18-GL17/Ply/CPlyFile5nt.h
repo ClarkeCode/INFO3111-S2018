@@ -155,11 +155,18 @@ public:
 
 	enum enumTEXCOORDBIAS
 	{
-		POSITIVE_X, POSITIVE_Y, POSITIVE_Z
+		// For spherical
+		POSITIVE_X, POSITIVE_Y, POSITIVE_Z, 
+		// For planar
+		PLANAR_XY, PLANAR_XZ, PLANAR_YZ,
+		PLANAR_ON_WIDEST_AXES
 	};
 
 	void GenTextureCoordsSpherical( enumTEXCOORDBIAS uBias, enumTEXCOORDBIAS vBias, bool basedOnNormals, float scale, bool fast );
 	
+	// Newer
+	void GenTextureCoordsLinear( enumTEXCOORDBIAS uBias, float scale );
+
 	unsigned int GetID(void);
 	// Added: March 14, 2012
 	bool bHasNormalsInFile(void);

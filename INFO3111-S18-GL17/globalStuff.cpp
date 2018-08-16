@@ -47,3 +47,9 @@ bool g_bDoEulerPhysicsUpdate = false;
 float g_globalAmbientToDiffuseRatio = 0.1f;	//0.2f;
 
 cBasicTextureManager* g_pTextureManager = NULL;
+
+// Got this from here: https://stackoverflow.com/questions/686353/c-random-float-number-generation
+float g_getRandInRange(float LO, float HI)
+{
+	return LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+}

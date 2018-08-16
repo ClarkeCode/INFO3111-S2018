@@ -263,8 +263,36 @@ void DrawObject( cMeshObject* pCurMesh,
 	return;
 }
 
+
+// Slight speed up by caching the sampler uniform locations
+// This is so we don't have to call 
+// pShaderProgram->getUniformID_From_Name() 8 times for
+//	every single object at every single call.
+namespace nsSamplerLocCache
+{
+	bool bUniformsLoaded = false;
+	GLint samplerUniformLocation[cMeshObject::MAXNUMBEROFTEXTURES] = {0};
+};
+
 void SetUpTextureBindingsPerObject( cShaderManager::cShaderProgram* pShaderProgram, cMeshObject* pCurMesh )
 {
+	// Alreay got the unifrom locations for the samplers? 
+	if ( ! nsSamplerLocCache::bUniformsLoaded )
+	{
+		// Nope. So do this (just once)
+		nsSamplerLocCache::samplerUniformLocation[0] = pShaderProgram->getUniformID_From_Name("texture00");
+		nsSamplerLocCache::samplerUniformLocation[1] = pShaderProgram->getUniformID_From_Name("texture01");
+		nsSamplerLocCache::samplerUniformLocation[2] = pShaderProgram->getUniformID_From_Name("texture02");
+		nsSamplerLocCache::samplerUniformLocation[3] = pShaderProgram->getUniformID_From_Name("texture03");
+		nsSamplerLocCache::samplerUniformLocation[4] = pShaderProgram->getUniformID_From_Name("texture04");
+		nsSamplerLocCache::samplerUniformLocation[5] = pShaderProgram->getUniformID_From_Name("texture05");
+		nsSamplerLocCache::samplerUniformLocation[6] = pShaderProgram->getUniformID_From_Name("texture06");
+		nsSamplerLocCache::samplerUniformLocation[7] = pShaderProgram->getUniformID_From_Name("texture07");
+
+		nsSamplerLocCache::bUniformsLoaded = true;
+	}//if(!nsSamplerLocCache::bUniformsLoaded)
+	
+
 	// Set the textures once per frame 
 	// ('cause Feeney just decided to do that)
 	// ************************************
@@ -282,7 +310,7 @@ void SetUpTextureBindingsPerObject( cShaderManager::cShaderProgram* pShaderProgr
 	//		pTemp->textureMixRatios[3] = 0.60f;
 
 	for ( unsigned int textureBindingUnitLocationIndex = 0;
-		  textureBindingUnitLocationIndex != cMeshObject::NUMBEROFMIXRATIOS;
+		  textureBindingUnitLocationIndex != cMeshObject::MAXNUMBEROFTEXTURES;
 		  textureBindingUnitLocationIndex++ )
 	{
 		std::string meshTexture = pCurMesh->textureNames[textureBindingUnitLocationIndex];
@@ -301,27 +329,35 @@ void SetUpTextureBindingsPerObject( cShaderManager::cShaderProgram* pShaderProgr
 		// Choose an active texture to bind to this unit
 		glBindTexture( GL_TEXTURE_2D, textureID );	// Selects 'texture'
 		
-		// use a switch would be faster...
-		switch( textureBindingUnitLocationIndex )
-		{
-		case 0:
-			glUniform1i( pShaderProgram->getUniformID_From_Name("texture00"), textureBindingUnitLocationIndex );
-			break;
-		case 1:
-			glUniform1i( pShaderProgram->getUniformID_From_Name("texture01"), textureBindingUnitLocationIndex );
-			break;
-		case 2:
-			glUniform1i( pShaderProgram->getUniformID_From_Name("texture02"), textureBindingUnitLocationIndex );
-			break;
-		case 3:
-			glUniform1i( pShaderProgram->getUniformID_From_Name("texture03"), textureBindingUnitLocationIndex );
-			break;
-		// ... and so on
+		// If we are looking up the uniform variable name, and were building 
+		//	up the name using, say, a stringstream, it would be quicker to use 
+		//	a switch statement...
+//		switch( textureBindingUnitLocationIndex )
+//		{
+//		case 0:
+//			glUniform1i( pShaderProgram->getUniformID_From_Name("texture00"), textureBindingUnitLocationIndex );
+//			break;
+//		case 1:
+//			glUniform1i( pShaderProgram->getUniformID_From_Name("texture01"), textureBindingUnitLocationIndex );
+//			break;
+//		case 2:
+//			glUniform1i( nsSamplerLocCache::samplerUniformLocation[2], textureBindingUnitLocationIndex );
+//			break;
+//		// ... and so on
+//		}
+		// Set the sampler to the "Texture UNIT"
 
-		}
-			// Set the sampler to the "Texture UNIT"
-
-	}
+		// But now, the lookup is done just once, and placed into an array in the 
+		//	sSamplerLocCache::samplerUniformLocation[] array.
+		// Because the index into that array is the same as the binding location, 
+		//	we can just pass this information directly. 
+		//
+		// To be clear, there is NOTHING WRONG with using the switch (as above), 
+		//	it's just once the values are cached, then there's no advantage to it.
+		// (like everything doesn't have to be a loop or an array, is my point)
+		glUniform1i( nsSamplerLocCache::samplerUniformLocation[textureBindingUnitLocationIndex], textureBindingUnitLocationIndex );
+	
+	}//for ( unsigned int textureBindingUnitLocationIndex = 0;
 
 	return;
 }
