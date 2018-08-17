@@ -810,12 +810,12 @@ void DrawDebugSphere( cShaderManager::cShaderProgram* pShaderProgram,
 	::g_pDebugSphere->bDontLightObject = true;
 	::g_pDebugSphere->bUseColourAlphaValue = true;
 	::g_pDebugSphere->isWireframe = true;
-	::g_pDebugSphere->colourSource = cMeshObject::USE_OBJECT_COLOUR;
 
 
 	// Draw centre of light (the position)
 	::g_pDebugSphere->scale = scale;
 	::g_pDebugSphere->diffuseColour = colour;
+	::g_pDebugSphere->colourSource = cMeshObject::USE_OBJECT_COLOUR;
 
 	DrawObject( ::g_pDebugSphere, pShaderProgram, ::g_pTheVAOManager, glm::mat4(1.0f) );
 

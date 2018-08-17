@@ -19,13 +19,16 @@ uniform vec4 objectSpecularColour;
 // This his how bright things are when outside of the light.
 uniform float globalAmbientToDiffuseRatio;		
 
-uniform vec4 meshColourRGBA; 		// Now a vec4!!
 uniform bool bUse_vColourRGBA_AlphaValue;		
 
 // Often the 4th value of the diffuse is being used, 
 // but we'll just explicity set it here...
 // Set this from 0 (transparent) to 1 (solid)
 uniform float alphaTransparency;
+
+// Same variable as in vertex shader
+uniform vec4 meshColourRGBA; 		
+
 
 
 const int NUMLIGHTS = 10;
@@ -97,19 +100,20 @@ void CalculateDiffuseAndSpecularContrib( uint lightIndex,
 
 void main()
 {
-	
-	if ( bDontLightObject )
-	{
-		outputColour = vertColourRGBA;
-		// early exit
-		return;	
-	}
-
 	// Assume object is black
 	outputColour.rgb = vec3(0.0f, 0.0f, 0.0f);	// Start with black 
 	
+	if ( bDontLightObject )  
+	{
+		outputColour = meshColourRGBA;
+		// early exit
+		return;	
+	}
+	
+
 	// Assume we are using the meshColour alpha value...
-	outputColour.a = meshColourRGBA.a;
+	outputColour.a = alphaTransparency;
+	
 	// ...unless we are using the 'per vertex' alpha values from the ply model
 	if ( bUse_vColourRGBA_AlphaValue )
 	{

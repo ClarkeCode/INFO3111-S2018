@@ -53,6 +53,7 @@ void main()
 	
 	vertTexUV = vTexUV;
 	
+	// Assume we're using the (overall) object colour
 	vertColourRGBA.rgb = meshColourRGBA.rgb;
 	
 	// By default, we use the 'whole object' 

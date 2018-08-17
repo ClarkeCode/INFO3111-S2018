@@ -99,7 +99,7 @@ void DrawObject( cMeshObject* pCurMesh,
 		case cMeshObject::USE_OBJECT_COLOUR:
 			glUniform1f( pShaderProg->getUniformID_From_Name("bUseVertexColour"), (float)GL_FALSE );
 			//glUniform1f( bUseVertexColour_UniLoc, GL_FALSE );
-			glUniform4f( pShaderProg->getUniformID_From_Name("meshColourRGBA"),			
+			glUniform4f( pShaderProg->getUniformID_From_Name("meshColourRGBA"),
 							pCurMesh->diffuseColour.x, 
 							pCurMesh->diffuseColour.y,
 							pCurMesh->diffuseColour.z,
@@ -137,9 +137,14 @@ void DrawObject( cMeshObject* pCurMesh,
 
 	// Use vertex (model) colours or overall (mesh 'colour') value for diffuse
 
-
-	glUniform1f( pShaderProg->getUniformID_From_Name("bDontLightObject"),
-					(pCurMesh->bDontLightObject ? (float)GL_TRUE : (float)GL_FALSE) );
+	if ( pCurMesh->bDontLightObject )
+	{
+		glUniform1f( pShaderProg->getUniformID_From_Name("bDontLightObject"), (float)GL_TRUE );
+	}
+	else
+	{
+		glUniform1f( pShaderProg->getUniformID_From_Name("bDontLightObject"), (float)GL_FALSE);
+	}
 	//glUniform1f( bDontLightObject_UniLoc,
 	//				(pCurMesh->bDontLightObject ? (float)GL_TRUE : (float)GL_FALSE) );
 
