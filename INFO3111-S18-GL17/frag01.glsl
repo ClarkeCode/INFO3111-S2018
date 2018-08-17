@@ -34,8 +34,8 @@ uniform vec4 meshColourRGBA;
 const int NUMLIGHTS = 10;
 
 
-uniform sampler2D texture00;		// Jellybean
-uniform sampler2D texture01;		// Grass
+uniform sampler2D texture00;		// Grass
+uniform sampler2D texture01;		// Jellybean
 uniform sampler2D texture02;
 uniform sampler2D texture03;		// Brenda R.
 uniform sampler2D texture04;		// Jellybean
@@ -52,10 +52,10 @@ uniform samplerCube texCubeSkyboxTexture;
 uniform bool bSampleFromSkyboxTexture;
 
 
-uniform float textureMix00;
+uniform float textureMix00;	// grass
 uniform float textureMix01;
 uniform float textureMix02;
-uniform float textureMix03;
+uniform float textureMix03;	// brenda
 uniform float textureMix04;
 uniform float textureMix05;
 uniform float textureMix06;
@@ -100,6 +100,21 @@ void CalculateDiffuseAndSpecularContrib( uint lightIndex,
 
 void main()
 {
+	// Skybox? This doesn't have lighting, so we return immediately
+	if ( bSampleFromSkyboxTexture )
+	{
+		// A Cube Map needs 3 coords to lookup, so you don't use UV(or ST).
+		// Often, like this case, you use the vertex normal.
+		outputColour.rgb = texture(texCubeSkyboxTexture, vertNormal.xyz).rgb;
+		
+		// Alternatively, you could also add some sort of attenuation
+		//	to the skybox, to simulate "getting dark".
+		outputColour.a = 1.0f;
+		//outputColour.rgb = vec3(1.0f, 0.0, 0.0f);
+		
+		return;
+	}
+	
 	// Assume object is black
 	outputColour.rgb = vec3(0.0f, 0.0f, 0.0f);	// Start with black 
 	
@@ -120,19 +135,7 @@ void main()
 		outputColour.a = vertColourRGBA.a;			// Set transparency ('alpha transparency')
 	}
 
-	// Skybox? This doesn't have lighting, so we return immediately
-	if ( bSampleFromSkyboxTexture )
-	{
-		// A Cube Map needs 3 coords to lookup, so you don't use UV(or ST).
-		// Often, like this case, you use the vertex normal.
-		outputColour.rgba = texture(texCubeSkyboxTexture, vertNormal.xyz).rgba;
-		
-		// Alternatively, you could also add some sort of attenuation
-		//	to the skybox, to simulate "getting dark".
-		
-		return;
-	}
-	
+
 	
 	// "Sample" the colour of the texture at these texture coordinates
 	//uniform sampler2D texBrick;
@@ -287,6 +290,14 @@ void main()
 //	// Copy the alpha value from the object
 //	outputColour.a = meshColourRGBA.a;
 	outputColour.a = alphaTransparency;
+	
+//	
+//	// Make the objects reflect the skybox (so the look a mirror)
+//	outputColour.rgb *= 0.5f;
+//	outputColour.rgb += (0.5f * texture(texCubeSkyboxTexture, vertNormal.xyz).rgb);
+	
+	
+	
 	
 	// Bump colour output as projector is dark
 	outputColour.rgb *= 1.2f;

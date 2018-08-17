@@ -14,7 +14,6 @@ uniform mat4 matProjection;
 
 uniform vec4 meshColourRGBA; 		// Now a vec4!!
 
-
 // glUniform1f()  pass in 0 or 1 
 uniform bool bUseVertexColour;		// 0 or 1 Really a float
 

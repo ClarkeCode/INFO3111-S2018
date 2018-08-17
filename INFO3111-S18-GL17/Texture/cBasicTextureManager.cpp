@@ -94,12 +94,12 @@ bool cBasicTextureManager::CreateCubeTextureFromBMPFiles(
 									std::string posZ_fileName, std::string negZ_fileName, 
 									bool bIsSeamless, std::string &errorString )
 {
-	std::string posX_fileName_FullPath = this->m_basePath + "/" + cubeMapName;
-	std::string negX_fileName_FullPath = this->m_basePath + "/" + cubeMapName;
-	std::string posY_fileName_FullPath = this->m_basePath + "/" + cubeMapName;
-	std::string negY_fileName_FullPath = this->m_basePath + "/" + cubeMapName;
-	std::string posZ_fileName_FullPath = this->m_basePath + "/" + cubeMapName;
-	std::string negZ_fileName_FullPath = this->m_basePath + "/" + cubeMapName;
+	std::string posX_fileName_FullPath = this->m_basePath + "/" + posX_fileName;
+	std::string negX_fileName_FullPath = this->m_basePath + "/" + negX_fileName;
+	std::string posY_fileName_FullPath = this->m_basePath + "/" + posY_fileName;
+	std::string negY_fileName_FullPath = this->m_basePath + "/" + negY_fileName;
+	std::string posZ_fileName_FullPath = this->m_basePath + "/" + posZ_fileName;
+	std::string negZ_fileName_FullPath = this->m_basePath + "/" + negZ_fileName;
 
 	GLenum errorEnum;
 	std::string errorDetails;

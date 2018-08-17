@@ -23,6 +23,43 @@ float getRandInRange(float LO, float HI)
 //std::vector< cMeshObject* > g_vec_pMeshObjects;
 void LoadObjectsIntoScene(void)
 {
+	{// Add an object into the "scene"
+		cMeshObject* pCornerRoad = new cMeshObject(); 
+		pCornerRoad->meshName = "Road-2-Lane-Corner_xyz_uv_100c100.ply";
+		pCornerRoad->friendlyName = "CornerRoad";
+		pCornerRoad->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
+		sModelDrawInfo modelInfo;
+		::g_pTheVAOManager->FindDrawInfoByModelName ( pCornerRoad->meshName, modelInfo );
+		pCornerRoad->scale = 10.0f / modelInfo.maxExtent;
+
+		// Matching texture is set, too
+		pCornerRoad->textureNames[0] = "Road-2-Lane-Corner-bmp.bmp";
+		pCornerRoad->textureMixRatios[0] = 1.0f;
+
+		::g_vec_pMeshObjects.push_back( pCornerRoad );
+	}		
+	
+	
+	{// Add an object into the "scene"
+		cMeshObject* pSkyBox = new cMeshObject(); 
+		pSkyBox->meshName = "isosphere_smooth_xyz_n_rgba_uv.ply";
+		//pSkyBox->meshName = "cow_xyz_n_rgba_uv.ply";
+		pSkyBox->friendlyName = "SkyBoxSpere";
+		pSkyBox->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
+		pSkyBox->diffuseColour = glm::vec4( 1.0f, 1.0f, 1.0f, 1.0f );
+		pSkyBox->colourSource = cMeshObject::USE_OBJECT_COLOUR;
+		// Get the "unit" scale from the VAOManager
+		sModelDrawInfo modelInfo;
+		::g_pTheVAOManager->FindDrawInfoByModelName ( pSkyBox->meshName, modelInfo );
+		// Make this sphere big enough to contain the 
+		//	entire scene (be careful about the far clipping plane)
+		pSkyBox->scale = 5000.0f / modelInfo.maxExtent;
+		pSkyBox->isWireframe = false;
+		//pSkyBox->bDontLightObject = true;
+		pSkyBox->bIsVisible = true;
+		pSkyBox->bIsSkyBoxObject = true;
+		::g_vec_pMeshObjects.push_back( pSkyBox );
+	}	
 
 	// Load a bunch of asteroids
 	std::vector<std::string> vecAssNames;
@@ -317,6 +354,7 @@ void LoadObjectsIntoScene(void)
 		cMeshObject* pTemp = new cMeshObject(); 
 
 		pTemp->meshName = "CrappyTerrain_xyz_n_rgba_uv.ply";
+		pTemp->friendlyName = "TheGround";
 
 		pTemp->pos = glm::vec3( 0.0f, -15.0f, 0.0f );
 		pTemp->diffuseColour = glm::vec4( 142.0f/255.0f, 

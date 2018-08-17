@@ -87,35 +87,38 @@ bool cVAOManager::m_LoadTheModel_PlyFile5t( std::string fileName,
 	}//if (loadParams.Force_Normal_Regeneration...
 
 	// NEW
-	if ( ( loadParams.GENERATE_UVs_IF_NOT_PRESENT && (!thePlyFile.bHasTextureCoordinatesInFile() ) ) ||
-		 ( loadParams.FORCE_UV_GENERATION ) )
+	if ( loadParams.textureCoordGenerationMode != sLoadParamsINFO3111S2018::DONT_GENERATE_UVs )
 	{
-		// In case the texture generation is planar...
-		// (this option seems the 'safest', if it wasn't set)
-		CPlyFile5nt::enumTEXCOORDBIAS planarTextureBias = CPlyFile5nt::PLANAR_ON_WIDEST_AXES;
-
-		// Either we are generating UVs when absent, or forcing the generation
-		switch ( loadParams.textureCoordGenerationType )
+		if ( ( loadParams.textureCoordGenerationMode == sLoadParamsINFO3111S2018::GENERATE_UVs_IF_NOT_PRESENT && (!thePlyFile.bHasTextureCoordinatesInFile() ) ) ||
+			 (  loadParams.textureCoordGenerationMode == sLoadParamsINFO3111S2018::FORCE_UV_GENERATION ) )
 		{
-		case sLoadParamsINFO3111S2018::SPHERICAL_UV:
-			thePlyFile.GenTextureCoordsSpherical( CPlyFile5nt::enumTEXCOORDBIAS::POSITIVE_X, 
-												  CPlyFile5nt::enumTEXCOORDBIAS::POSITIVE_Y, 
-												  false,	// Based on normals
-												  1.0,		// Scale
-												  false );	// Faster
-			break;
-		case sLoadParamsINFO3111S2018::PLANAR_XY:
-			planarTextureBias = CPlyFile5nt::PLANAR_XY;
-		case sLoadParamsINFO3111S2018::PLANAR_XZ:
-			planarTextureBias = CPlyFile5nt::PLANAR_XZ;
-		case sLoadParamsINFO3111S2018::PLANAR_YZ:
-			planarTextureBias = CPlyFile5nt::PLANAR_YZ;
-		case sLoadParamsINFO3111S2018::PLANAR_ON_WIDEST_AXES:
-			planarTextureBias = CPlyFile5nt::PLANAR_ON_WIDEST_AXES;
-			thePlyFile.GenTextureCoordsLinear( planarTextureBias, loadParams.textureGenerationScale );
-			break;
-		}
-	}//if(generateUVs)
+			// In case the texture generation is planar...
+			// (this option seems the 'safest', if it wasn't set)
+			CPlyFile5nt::enumTEXCOORDBIAS planarTextureBias = CPlyFile5nt::PLANAR_ON_WIDEST_AXES;
+
+			// Either we are generating UVs when absent, or forcing the generation
+			switch ( loadParams.textureCoordGenerationType )
+			{
+			case sLoadParamsINFO3111S2018::SPHERICAL_UV:
+				thePlyFile.GenTextureCoordsSpherical( CPlyFile5nt::enumTEXCOORDBIAS::POSITIVE_X, 
+													  CPlyFile5nt::enumTEXCOORDBIAS::POSITIVE_Y, 
+													  false,	// Based on normals
+													  1.0,		// Scale
+													  false );	// Faster
+				break;
+			case sLoadParamsINFO3111S2018::PLANAR_XY:
+				planarTextureBias = CPlyFile5nt::PLANAR_XY;
+			case sLoadParamsINFO3111S2018::PLANAR_XZ:
+				planarTextureBias = CPlyFile5nt::PLANAR_XZ;
+			case sLoadParamsINFO3111S2018::PLANAR_YZ:
+				planarTextureBias = CPlyFile5nt::PLANAR_YZ;
+			case sLoadParamsINFO3111S2018::PLANAR_ON_WIDEST_AXES:
+				planarTextureBias = CPlyFile5nt::PLANAR_ON_WIDEST_AXES;
+				thePlyFile.GenTextureCoordsLinear( planarTextureBias, loadParams.textureGenerationScale );
+				break;
+			}
+		}//if(generateUVs)
+	}//if ( ! loadParams.DONT_GENERATE_UVs )
 
 		
 		

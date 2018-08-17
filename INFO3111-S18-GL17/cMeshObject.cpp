@@ -45,6 +45,8 @@ cMeshObject::cMeshObject()
 	this->textureMixRatios[7] = 0.0f;
 	// ...and so on...
 
+	this->bIsSkyBoxObject = false;
+
 	return;
 }
 

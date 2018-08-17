@@ -163,6 +163,22 @@ void DrawObject( cMeshObject* pCurMesh,
 		glEnable( GL_CULL_FACE );
 	}
 
+	if ( pCurMesh->bIsSkyBoxObject )
+	{
+		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+		glDisable( GL_CULL_FACE );
+		glUniform1f( pShaderProg->getUniformID_From_Name("bSampleFromSkyboxTexture"),
+					(float)GL_TRUE );
+	}
+	else
+	{
+		glUniform1f( pShaderProg->getUniformID_From_Name("bSampleFromSkyboxTexture"),
+					(float)GL_FALSE );
+		glEnable( GL_CULL_FACE );
+	}
+
+
+
 
 	glUniformMatrix4fv( pShaderProg->getUniformID_From_Name("matModel"),	//matModel_UniLoc, 
 						1, 

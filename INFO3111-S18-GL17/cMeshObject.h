@@ -91,6 +91,10 @@ public:
 	float textureMixRatios[MAXNUMBEROFTEXTURES];
 
 
+	// Good enought for Rock-n-Roll
+	bool bIsSkyBoxObject;	
+
+
 private:
 	void m_AssignUniqueID(void);
 	static unsigned int m_nextID;	// = 1000

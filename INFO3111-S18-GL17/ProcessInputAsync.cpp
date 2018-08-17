@@ -4,7 +4,7 @@
 
 void ProcessInputAsync( glm::vec3 &cameraEye, glm::vec3 &cameraTarget, GLFWwindow* &window )
 {
-	float cameraSpeed = 0.05f; 
+	float cameraSpeed = 0.5f; 
 
 	int state = glfwGetKey(window, GLFW_KEY_D);
 	if (state == GLFW_PRESS) { cameraEye.x += cameraSpeed; }
