@@ -121,6 +121,30 @@ void DrawObject( cMeshObject* pCurMesh,
 
 	}//switch ( pCurMesh->colourSource )
 
+
+	// STARTOF: OPTIONAL vertex colour mode
+	if ( pCurMesh->bEnableVertexSourceMixing )
+	{
+		glUniform1f( pShaderProg->getUniformID_From_Name("bEnableVertexSourceMixing"), (GLfloat)GL_TRUE );
+			
+		glUniform1f( pShaderProg->getUniformID_From_Name("VCS_FromVertex_Mix"), pCurMesh->fVCS_FromVertex_Mix );
+		glUniform1f( pShaderProg->getUniformID_From_Name("VCS_FromMesh_Mix"), pCurMesh->fVCS_FromMesh_Mix );
+		if ( pCurMesh->fVCS_FromMesh_Mix > 0.0f )
+		{	// Set the mesh colour if it's being used
+			glUniform4f( pShaderProg->getUniformID_From_Name("meshColourRGBA"),			
+							pCurMesh->diffuseColour.x, 
+							pCurMesh->diffuseColour.y,
+							pCurMesh->diffuseColour.z,
+							pCurMesh->diffuseColour.a );
+		}
+		glUniform1f( pShaderProg->getUniformID_From_Name("VCS_FromTexture_Mix"), pCurMesh->fVCS_FromTexture_Mix);
+	}
+	else
+	{
+		glUniform1f( pShaderProg->getUniformID_From_Name("bEnableVertexSourceMixing"), (GLfloat)GL_FALSE );
+	}
+	// ENDOF: optional vertex colour mode
+
 	// Alpha (transparency) taken from vertex values or mesh 'colour' value?
 	glUniform1f( pShaderProg->getUniformID_From_Name("bUse_vColourRGBA_AlphaValue"),
 					(pCurMesh->bUseColourAlphaValue ? (float)GL_TRUE : (float)GL_FALSE) );
@@ -424,6 +448,30 @@ void DrawObject_ExplicitModelMatrix( cMeshObject* pCurMesh,
 			break;
 
 	}//switch ( pCurMesh->colourSource )
+
+	// STARTOF: OPTIONAL vertex colour mode
+	if ( pCurMesh->bEnableVertexSourceMixing )
+	{
+		glUniform1f( pShaderProg->getUniformID_From_Name("bEnableVertexSourceMixing"), (GLfloat)GL_TRUE );
+			
+		glUniform1f( pShaderProg->getUniformID_From_Name("VCS_FromVertex_Mix"), pCurMesh->fVCS_FromVertex_Mix );
+		glUniform1f( pShaderProg->getUniformID_From_Name("VCS_FromMesh_Mix"), pCurMesh->fVCS_FromMesh_Mix );
+		if ( pCurMesh->fVCS_FromMesh_Mix > 0.0f )
+		{	// Set the mesh colour if it's being used
+			glUniform4f( pShaderProg->getUniformID_From_Name("meshColourRGBA"),			
+							pCurMesh->diffuseColour.x, 
+							pCurMesh->diffuseColour.y,
+							pCurMesh->diffuseColour.z,
+							pCurMesh->diffuseColour.a );
+		}
+		glUniform1f( pShaderProg->getUniformID_From_Name("VCS_FromTexture_Mix"), pCurMesh->fVCS_FromTexture_Mix);
+	}
+	else
+	{
+		glUniform1f( pShaderProg->getUniformID_From_Name("bEnableVertexSourceMixing"), (GLfloat)GL_FALSE );
+	}
+	// ENDOF: optional vertex colour mode
+
 
 	// Alpha (transparency) taken from vertex values or mesh 'colour' value?
 	glUniform1f( pShaderProg->getUniformID_From_Name("bUse_vColourRGBA_AlphaValue"),

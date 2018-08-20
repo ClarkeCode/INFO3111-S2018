@@ -22,7 +22,11 @@ float getRandInRange(float LO, float HI)
 
 //std::vector< cMeshObject* > g_vec_pMeshObjects;
 void LoadObjectsIntoScene(void)
-{
+{	
+
+	// Helpful define to shorten typing:
+	#define CH CGLColourHelper::getInstance()
+
 	{// Add an object into the "scene"
 		cMeshObject* pCornerRoad = new cMeshObject(); 
 		pCornerRoad->meshName = "Road-2-Lane-Corner_xyz_uv_100c100.ply";
@@ -357,10 +361,26 @@ void LoadObjectsIntoScene(void)
 		pTemp->friendlyName = "TheGround";
 
 		pTemp->pos = glm::vec3( 0.0f, -15.0f, 0.0f );
-		pTemp->diffuseColour = glm::vec4( 142.0f/255.0f, 
-								          205.0f/255.0f,
-									     49.0f/255.0f,
-									      1.0f );		// Transparency 'alpha'
+		//pTemp->diffuseColour = glm::vec4( 142.0f/255.0f, 205.0f/255.0f, 49.0f/255.0f, 1.0f );
+		// "Medium Sea Green": 60,179,113
+		pTemp->diffuseColour = glm::vec4( CH->getColourRGB(CGLColourHelper::SEA_GREEN), 1.0f );
+
+		// ********************************************
+		// OPTIONAL "vertex colour source" mode
+		pTemp->bEnableVertexSourceMixing = true;
+		pTemp->fVCS_FromVertex_Mix = 1.0f;		// <-----**** SHOW VERTEX (ply file) COLOURS
+		pTemp->fVCS_FromMesh_Mix = 0.0f;
+		pTemp->fVCS_FromTexture_Mix = 0.0f;
+		// ********************************************
+
+		// ********************************************
+//		// This setting will make the object show texture colours, which is the "default"
+//		// (i.e. like the code was on Friday, August 17th)
+//		pTemp->bEnableVertexSourceMixing = true;
+//		pTemp->fVCS_FromVertex_Mix = 0.0f;
+//		pTemp->fVCS_FromMesh_Mix = 0.0f;
+//		pTemp->fVCS_FromTexture_Mix = 1.0f;		// <-----****
+//		// ********************************************
 
 
 		pTemp->textureNames[0] = "Grass.bmp";
@@ -373,8 +393,9 @@ void LoadObjectsIntoScene(void)
 		pTemp->specularShininess = 1.0f;
 
 		pTemp->scale = 1.0f;
-		pTemp->isWireframe = false;
+
 		//pTemp->bDontLightObject = true;
+		//pTemp->isWireframe = true;
 
 		pTemp->colourSource = cMeshObject::USE_VERTEX_COLOURS;
 
@@ -595,6 +616,9 @@ void LoadObjectsIntoScene(void)
 	}
 
 
+	// Helpful define to shorten typing:
+	//#define CH CGLColourHelper::getInstance() 
+	#undef CH 
 
 
 	return;

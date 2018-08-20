@@ -91,8 +91,16 @@ public:
 	float textureMixRatios[MAXNUMBEROFTEXTURES];
 
 
-	// Good enought for Rock-n-Roll
+	// Good enough for Rock-n-Roll
 	bool bIsSkyBoxObject;	
+
+	// A number of students wanted to be able to use the 
+	//	original vertex (model) colours instead of just the 
+	//	texture values, so this allows this:
+	bool bEnableVertexSourceMixing;	// = false;
+	float fVCS_FromVertex_Mix;		// matches: uniform float VCS_FromVertex_Mix
+	float fVCS_FromMesh_Mix;		// matches: uniform float VCS_FromMesh_Mix
+	float fVCS_FromTexture_Mix;		// matches: VCS_FromTexture_Mix
 
 
 private:

@@ -29,7 +29,7 @@ cMeshObject::cMeshObject()
 
 	this->colourSource = cMeshObject::USE_VERTEX_COLOURS;
 
-	this->bUseColourAlphaValue = true;
+	this->bUseColourAlphaValue = false;
 
 
 	this->velocity = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -46,6 +46,13 @@ cMeshObject::cMeshObject()
 	// ...and so on...
 
 	this->bIsSkyBoxObject = false;
+
+
+	this->bEnableVertexSourceMixing = false;
+	this->fVCS_FromVertex_Mix = 0.0f;		// matches: uniform float VCS_FromVertex_Mix
+	this->fVCS_FromMesh_Mix = 0.0f;			// matches: uniform float VCS_FromMesh_Mix
+	this->fVCS_FromTexture_Mix = 1.0f;		// matches: VCS_FromTexture_Mix
+
 
 	return;
 }

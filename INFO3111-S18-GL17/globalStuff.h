@@ -103,4 +103,9 @@ extern cBasicTextureManager* g_pTextureManager;
 // Got this from here: https://stackoverflow.com/questions/686353/c-random-float-number-generation
 float g_getRandInRange(float LO, float HI);
 
+
+// This is set in the shader, at the start of the scene, just in case.
+// (Note that it is overriden by the cMeshObject)
+extern bool g_bGlobalDefault_EnableVertexSourceMixing;		// = false
+
 #endif

@@ -218,6 +218,23 @@ int main(void)
 	pShader->LoadUniformLocation( "bSampleFromSkyboxTexture" );
 	pShader->LoadUniformLocation( "texCubeSkyboxTexture" );
 
+	// These are for the OPTIONAL 'vertex colour source' mix.
+	// If the 1st uniform is FALSE (which is default, and also set in the draw)
+	// then the code behaves as it did at the end of the Friday, August 17th class. 
+	//
+	// If this is ENABLED, then the following uniforms are ignored:
+	// - bUseVertexColour
+	// It also means that the cMeshObject "eColourSource colourSource" works differently:
+	// - While the "out vec4 vertColourRGBA" from the vertex shader is still being set, 
+	//   there is an additional vertOriginalVertexColourRGBA being passed, so you 
+	//   still have access to the ORIGINAL vertex (model) colour, if you want. 
+	// 
+	// cMeshObject now has corresponding variables to these, too.
+	pShader->LoadUniformLocation( "bEnableVertexSourceMixing" );
+	pShader->LoadUniformLocation( "VCS_FromVertex_Mix" );
+	pShader->LoadUniformLocation( "VCS_FromMesh_Mix" );
+	pShader->LoadUniformLocation( "VCS_FromTexture_Mix" );
+
 
 	// The light values...
 	//SetUpTheLights(shadProgID);
@@ -340,12 +357,12 @@ int main(void)
 		//								bool bIsSeamless, std::string &errorString );
 	std::string errorString;
 	if ( ! ::g_pTextureManager->CreateCubeTextureFromBMPFiles( "Sky", 
-					"TropicalSunnyDayRight2048.bmp", 
-					"TropicalSunnyDayLeft2048.bmp", 
+					"TropicalSunnyDayLeft2048_rot_180.bmp",		// "TropicalSunnyDayRight2048.bmp", 
+					"TropicalSunnyDayRight2048_rot_180.bmp",	// "TropicalSunnyDayLeft2048.bmp"
 					"TropicalSunnyDayUp2048.bmp",
 					"TropicalSunnyDayDown2048.bmp",
-					"TropicalSunnyDayBack2048.bmp", 
-					"TropicalSunnyDayFront2048.bmp", 
+					"TropicalSunnyDayBack2048_rot_180.bmp",	// "TropicalSunnyDayBack2048.bmp"
+					"TropicalSunnyDayFront2048_rot_180.bmp",		// "TropicalSunnyDayFront2048.bmp"
 					true, errorString ) )
 	{
 		std::cout << "Didn't load the cube map" << std::endl;
@@ -412,17 +429,16 @@ int main(void)
 
 	typedef cVAOManager::sLoadParamsINFO3111S2018 LD;
 
-	LD cornerRoad("Road-2-Lane-Corner_xyz_uv_100c100.ply");
-	// DON'T overwrite the UV coordinates
-	//cornerRoad.textureCoordGenerationMode = LD::DONT_GENERATE_UVs;
-	vecModelFilesToLoad.push_back( cornerRoad) ;
-
-
 	LD terrain("CrappyTerrain_xyz_n_rgba_uv.ply");
 	terrain.textureCoordGenerationType = LD::PLANAR_ON_WIDEST_AXES;
 	terrain.textureCoordGenerationMode = LD::FORCE_UV_GENERATION;
 	terrain.textureGenerationScale = 8.0f;
 	vecModelFilesToLoad.push_back( terrain );
+
+	LD cornerRoad("Road-2-Lane-Corner_xyz_uv_100c100.ply");
+	// DON'T overwrite the UV coordinates
+	//cornerRoad.textureCoordGenerationMode = LD::DONT_GENERATE_UVs;
+	vecModelFilesToLoad.push_back( cornerRoad) ;
 
 	vecModelFilesToLoad.push_back( LD("bun_zipper_res2_xyz_n_rgba_uv.ply") );
 	vecModelFilesToLoad.push_back( LD("cow_xyz_n_rgba_uv.ply") );
@@ -433,6 +449,7 @@ int main(void)
 	vecModelFilesToLoad.push_back( LD("DockingBay_allOne_xyz_n_rgba_uv_quarter_size.ply") );
 	vecModelFilesToLoad.push_back( LD("Isoshphere_Small_InvertedNormals_xyz_n_rgba_uv.ply") );
 	vecModelFilesToLoad.push_back( LD("Cube_xyz_n_rgba_uv.ply") );
+
 
 	// These models are from the 2016 final exam:
 	// NOTE: Now that there's a "fancier" ply file loader, 
@@ -490,6 +507,14 @@ int main(void)
 	// Used for physics integration update
 	double globalLastTimeStamp = glfwGetTime();
 
+
+
+
+//    ___                    ___                    _               
+//   |   \ _ _ __ ___ __ __ / __| __ ___ _ _  ___  | |___  ___ _ __ 
+//   | |) | '_/ _` \ V  V / \__ \/ _/ -_) ' \/ -_) | / _ \/ _ \ '_ \
+//   |___/|_| \__,_|\_/\_/  |___/\__\___|_||_\___| |_\___/\___/ .__/
+//                                                            |_|   
 	while (!glfwWindowShouldClose(::g_window))
 	{
 
@@ -512,7 +537,9 @@ int main(void)
 //		HACK_EXAMPLE_Update_Spot_Angle_OverTime();
 
 
-
+		// Set the optional "vertex colour source" mode to "off" by default.
+		glUniform1f( pShader->getUniformID_From_Name("bEnableVertexSourceMixing"), 
+					 (GLfloat)::g_bGlobalDefault_EnableVertexSourceMixing );
 
 
 		//    ___                    ___ _           _         _   _          _      _            

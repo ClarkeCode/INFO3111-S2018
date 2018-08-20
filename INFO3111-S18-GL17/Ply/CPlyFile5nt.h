@@ -258,7 +258,6 @@ private:
 		bool bIsHeader_XYZ_nXYZ_ucharRGB(void);		// Added June 2016
 		bool bIsHeader_XYZ_nXYZ_ucharRGBA(void);	// Added June 2016
 
-
 		inline bool bIsThisMachineIsBigEndian(void);	// Motorola, PowerPC often big endian - everyone else (Intel) is little
 
 		int totalProperties;
@@ -455,6 +454,8 @@ private:
 		virtual bool ProcessNextVertex( PlyVertex &vertex, char* pData, unsigned int &curIndex, const unsigned int &arraySize );
 		CPlyFile5nt::CDataReader reader;
 	};
+	
+
 
 	class IElementReader
 	{

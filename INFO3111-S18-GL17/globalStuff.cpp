@@ -53,3 +53,8 @@ float g_getRandInRange(float LO, float HI)
 {
 	return LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
 }
+
+// This is set in the shader, at the start of the scene, just in case.
+// (Note that it is overriden by the cMeshObject)
+bool g_bGlobalDefault_EnableVertexSourceMixing = false;
+

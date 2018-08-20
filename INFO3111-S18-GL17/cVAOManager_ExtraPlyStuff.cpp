@@ -169,7 +169,14 @@ bool cVAOManager::m_LoadTheModel_PlyFile5t( std::string fileName,
 		drawInfo.pVertices[vertIndex].u2 = 0.0f;
 		drawInfo.pVertices[vertIndex].v2 = 0.0f;
 		
-		if ( ! thePlyFile.bHasRGBAColoursInFile() ) 
+		if ( thePlyFile.bHasRGBAColoursInFile() ) 
+		{
+			drawInfo.pVertices[vertIndex].red = curVertex.red;
+			drawInfo.pVertices[vertIndex].green = curVertex.green;
+			drawInfo.pVertices[vertIndex].blue = curVertex.blue;
+			drawInfo.pVertices[vertIndex].alpha = curVertex.alpha;
+		}
+		else
 		{
 			if ( loadParams.ifAbsent_GenerateRGB )
 			{
