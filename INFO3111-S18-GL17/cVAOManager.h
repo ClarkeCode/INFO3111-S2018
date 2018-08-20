@@ -6,6 +6,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 // The vertex structure 
 //	that's ON THE GPU (eventually) 
@@ -71,18 +72,57 @@ public:
 	struct sLoadParamsINFO3111S2018
 	{
 		// Default is generate everything if not present
-		sLoadParamsINFO3111S2018() : 
-			ifAbsent_GenerateUVs(true),		Force_Normal_Regeneration(false),
-			ifAbsent_GenerateNormals(true),	Force_UV_Regeneration(false),
-			ifAbsent_GenerateRGB(true), RGB_red(1.0f), RGB_green(1.0f), RGB_blue(1.0f),
-			ifAbsent_GenerateAlpha(true), RGB_alpha(1.0f)
-		{};
+		sLoadParamsINFO3111S2018()
+		{
+			this->Clear();
+			return;
+		};
+		sLoadParamsINFO3111S2018(std::string modelFile)
+		{
+			this->Clear();
+			this->modelFileToLoad = modelFile;
+			return;
+		};
+		void Clear(void)
+		{
+			this->ifAbsent_GenerateNormals = true;
+			this->Force_Normal_Regeneration = false;
+			this->textureCoordGenerationMode = sLoadParamsINFO3111S2018::GENERATE_UVs_IF_NOT_PRESENT;
+			this->textureCoordGenerationType = sLoadParamsINFO3111S2018::SPHERICAL_UV;
+			this->textureGenerationScale = 1.0f;
+			this->ifAbsent_GenerateRGB = true;
+			this->RGB_red = 1.0f;
+			this->RGB_green = 1.0f;
+			this->RGB_blue = 1.0f;
+			this->ifAbsent_GenerateAlpha = true;
+			this->RGB_alpha = 1.0f;
+			this->bLoadedOK = true;
+			return;
+		}
+		// Added.
+		std::string modelFileToLoad;
+		std::string loadErrors;			// Holds loading errors (if any)
+		bool bLoadedOK;					// true if it's in the VAO
 
 		bool ifAbsent_GenerateNormals;
 		bool Force_Normal_Regeneration;
 
-		bool ifAbsent_GenerateUVs;
-		bool Force_UV_Regeneration;
+		enum eUVGenerationMode
+		{
+			DONT_GENERATE_UVs,
+			FORCE_UV_GENERATION,
+			GENERATE_UVs_IF_NOT_PRESENT		// Default
+		};
+		eUVGenerationMode textureCoordGenerationMode;	// = GENERATE_UVs_IF_NOT_PRESENT
+
+		enum eUVGenerationType
+		{
+			SPHERICAL_UV,		// Default
+			PLANAR_XY, PLANAR_XZ, PLANAR_YZ,
+			PLANAR_ON_WIDEST_AXES	// If object is 'flat', it will pick that planar mode
+		};
+		eUVGenerationType textureCoordGenerationType;		// = SPHERICAL_UV
+		float textureGenerationScale;		// default is 1.0 (so 0.0 to 1.0)
 
 		bool ifAbsent_GenerateRGB;
 		bool ifAbsent_GenerateAlpha;
@@ -91,11 +131,20 @@ public:
 		float RGB_blue;
 		float RGB_alpha;
 	};
+
 	bool LoadModelInfoVAO_PlyFile5t( std::string fileName, 
 									 unsigned int shaderProgramID, 
 									 sModelDrawInfo &drawInfo, 
 									 std::string &errors,
 									 sLoadParamsINFO3111S2018 loadParams = sLoadParamsINFO3111S2018() );
+	// This allows you to load multiple models. 
+	// The file to load (and the errors) are passed through sLoadParamsINFO3111S2018.
+	// NOTE: Will return false if ANY file didn't load. 
+	// (If that's the case, then check errors in the sLoadParamsINFO3111S2018 vector.)
+	bool LoadModelsInfoVAO_PlyFile5t( unsigned int shaderProgramID, 
+									  std::vector<sModelDrawInfo> &vecDrawInfo, 
+									  std::vector<sLoadParamsINFO3111S2018> &vecModelsToLoad );
+
 	bool LoadPlyThenSaveAsGDPFile( std::string plyFileName, std::string GDPFileName );
 
 	// We don't want to return an int, likely

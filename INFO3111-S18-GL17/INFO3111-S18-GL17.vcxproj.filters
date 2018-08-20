@@ -47,6 +47,9 @@
     <ClCompile Include="Texture\CTextureFromBMP.cpp">
       <Filter>Texture</Filter>
     </ClCompile>
+    <ClCompile Include="Ply\CPlyFile5nt_planarUV.cpp">
+      <Filter>Ply</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cMeshObject.h" />

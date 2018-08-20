@@ -37,6 +37,9 @@ void LoadObjectsIntoScene(void);
 bool LoadModelTypes(GLint shadProgID, std::string &errors);
 bool LoadModelTypes(GLint shadProgID, std::vector<std::string> vecModelNames, std::string &errors);
 bool LoadModelTypes_PlyLoader(GLint shadProgID, std::vector<std::string> vecModelNames, std::string &errors);
+bool LoadModelTypes_PlyLoader_2( GLint shadProgID, 
+								 std::vector<cVAOManager::sLoadParamsINFO3111S2018> vecModelFilesToLoad, 
+								 std::string &errors);
 
 // If true, the spheres around the lights are there
 extern bool g_bTurnOnDebugLightSpheres;	// = false
@@ -97,58 +100,12 @@ extern float g_globalAmbientToDiffuseRatio;	// = 0.2f;
 
 extern cBasicTextureManager* g_pTextureManager;
 
-
-/*
-	______      _               _     _____           _                  
-	| ___ \    | |             | |   /  __ \         | |                 
-	| |_/ /___ | |__   ___ _ __| |_  | /  \/_   _ ___| |_ ___  _ __ ___  
-	|    // _ \| '_ \ / _ \ '__| __| | |   | | | / __| __/ _ \| '_ ` _ \ 
-	| |\ \ (_) | |_) |  __/ |  | |_  | \__/\ |_| \__ \ || (_) | | | | | |
-	\_| \_\___/|_.__/ \___|_|   \__|  \____/\__,_|___/\__\___/|_| |_| |_|
-
-	Here lies my global-level changes
-*/
-enum e_edit_mode { E_EDIT_CAMERA, E_EDIT_MODEL, E_EDIT_LIGHT };
-enum e_edit_sub_mode { E_CAMERA_RELATIVE, E_CAMERA_FIXED_TARGET, E_CAMERA_FIXED_EYE,
-						E_LIGHT_POSITION, E_LIGHT_DIRECTION,
-						E_NO_SUB_MODE
-};
-extern e_edit_mode g_editMode;// = E_EDIT_CAMERA;
-extern e_edit_sub_mode g_editSubMode; //E_CAMERA_RELATIVE
-
-void g_setSubModeToDefault();
-void g_incrementEditMode();
-void g_incrementSubMode();
+// Got this from here: https://stackoverflow.com/questions/686353/c-random-float-number-generation
+float g_getRandInRange(float LO, float HI);
 
 
-struct myCamera {
-	float cam_movement_speed, cam_view_distance;
-	glm::vec3 cam_eye_position, cam_target_position;
-	bool isTargetPosLocked;
-	bool isEyePosLocked;
+// This is set in the shader, at the start of the scene, just in case.
+// (Note that it is overriden by the cMeshObject)
+extern bool g_bGlobalDefault_EnableVertexSourceMixing;		// = false
 
-	static inline glm::vec3 getModelPosByFName(std::string s) {
-		return g_pFindObjectByFriendlyName(s)->pos;
-	}
-	inline void lookAtModelByFName(std::string s) {
-		cam_target_position = getModelPosByFName(s);
-	}
-	inline void lookAtModelByPointer(cMeshObject* p) {
-		cam_target_position = p->pos;
-	}
-};
-
-extern myCamera g_myCamera;
-
-
-
-void debug_CopyToClipboard(std::string s);
-std::string debug_vec3ToString(glm::vec3 v);
-std::string debug_vec4ToString(glm::vec4 v);
-
-////Debug serialize
-std::string debug_serializeCMeshObjectToString(cMeshObject * cMesh);
-
-
-extern unsigned int g_SelectedModelID; //=0; 
 #endif

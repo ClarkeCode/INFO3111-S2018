@@ -17,6 +17,29 @@ uniform vec4 meshColourRGBA; 		// Now a vec4!!
 // glUniform1f()  pass in 0 or 1 
 uniform bool bUseVertexColour;		// 0 or 1 Really a float
 
+// *************************************************************
+// This is the OPTIONAL vertex colour source mixing code, 
+// so that you can choose the vertex colour from:
+// - the vertex (i.e. from the model file)
+// - the meshColourRGBA uniform
+// - the texture
+// 
+// Since they are 3 floats that 'mix' together, you 
+// can combine all 3 sources, if you want. 
+// (ensure that they sum to 1.0 or it'll look odd)
+// 
+// NOTE: Setting this bool uniform ENABLES this!
+// (so if you IGNORE it, it behaves like it did before)
+// ALSO NOTE: If enabled, you must set at least one of these
+//	to 1.0, or might get no colour at all (black screen).
+// 
+uniform bool bEnableVertexSourceMixing;
+// ("VCS" stort for "Vertex Colour Source")
+uniform float VCS_FromVertex_Mix;
+uniform float VCS_FromMesh_Mix;
+uniform float VCS_FromTexture_Mix;		// cMeshObject sets this to 1.0 by default
+// *************************************************************
+
 // If true, the A value in vColourRGBA
 // will be used as the 'a' value for the colour
 uniform bool bUse_vColourRGBA_AlphaValue;		
@@ -26,6 +49,7 @@ out vec4 vertColourRGBA;
 out vec4 vertWorldPosXYZ;
 out vec4 vertNormal;
 out vec4 vertTexUV;
+out vec4 vertOriginalVertexColourRGBA;
 
 
 void main()
@@ -46,12 +70,13 @@ void main()
 
 	// Calculate the "rotation only" transformation for the normals;
 	// NO scale
-	// NO tranlations (moves)
+	// NO tranlations (moves)sq
 	// ONLY rotation
 	vertNormal = inverse(transpose(matModel)) * normalize(vNormal);
 	
 	vertTexUV = vTexUV;
 	
+	// Assume we're using the (overall) object colour
 	vertColourRGBA.rgb = meshColourRGBA.rgb;
 	
 	// By default, we use the 'whole object' 
@@ -68,4 +93,7 @@ void main()
 	{
 		vertColourRGBA.a = vColourRGBA.a;
 	}
+	
+	// Copy the ORIGINAL vertex colour in case we want that
+	vertOriginalVertexColourRGBA = vColourRGBA;
 };

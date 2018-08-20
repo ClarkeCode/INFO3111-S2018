@@ -155,11 +155,18 @@ public:
 
 	enum enumTEXCOORDBIAS
 	{
-		POSITIVE_X, POSITIVE_Y, POSITIVE_Z
+		// For spherical
+		POSITIVE_X, POSITIVE_Y, POSITIVE_Z, 
+		// For planar
+		PLANAR_XY, PLANAR_XZ, PLANAR_YZ,
+		PLANAR_ON_WIDEST_AXES
 	};
 
 	void GenTextureCoordsSpherical( enumTEXCOORDBIAS uBias, enumTEXCOORDBIAS vBias, bool basedOnNormals, float scale, bool fast );
 	
+	// Newer
+	void GenTextureCoordsLinear( enumTEXCOORDBIAS uBias, float scale );
+
 	unsigned int GetID(void);
 	// Added: March 14, 2012
 	bool bHasNormalsInFile(void);
@@ -250,7 +257,6 @@ private:
 		bool bIsHeader_XYZ_nXYZ_ucharRGBA_vertUV(void);
 		bool bIsHeader_XYZ_nXYZ_ucharRGB(void);		// Added June 2016
 		bool bIsHeader_XYZ_nXYZ_ucharRGBA(void);	// Added June 2016
-
 
 		inline bool bIsThisMachineIsBigEndian(void);	// Motorola, PowerPC often big endian - everyone else (Intel) is little
 
@@ -448,6 +454,8 @@ private:
 		virtual bool ProcessNextVertex( PlyVertex &vertex, char* pData, unsigned int &curIndex, const unsigned int &arraySize );
 		CPlyFile5nt::CDataReader reader;
 	};
+	
+
 
 	class IElementReader
 	{

@@ -54,6 +54,18 @@ public:
 	//	'overall' transparency value (like for the entire object)
 	bool bUseColourAlphaValue;	// = true
 
+	// Our shader uses the a or w (4th component) value of the diffuse
+	// to set the "alpha" value in the shader. 
+	// It's passed to the meshColourRGBA uniform.
+	void setAlphaValue( float alpha_0_to_1 )
+	{
+		this->diffuseColour.a = alpha_0_to_1;
+	}
+	float getAlphaValue(void)
+	{
+		return this->diffuseColour.a;
+	}
+
 	const unsigned int uniqueID = 0;
 
 	bool bIsVisible; 
@@ -69,6 +81,27 @@ public:
 	// Objects connected to this object
 	// (they will move and rotate and scale with this object)
 	std::vector< cMeshObject* > vec_pChildObjects;
+
+	//
+	// Name changed to something more appropriate
+	static const int MAXNUMBEROFTEXTURES = 8;
+	// The name of the texture (COMING SOON!)
+	std::string textureNames[MAXNUMBEROFTEXTURES];
+	// Set the value here to 1, the rest to 0 to "select" the texture
+	float textureMixRatios[MAXNUMBEROFTEXTURES];
+
+
+	// Good enough for Rock-n-Roll
+	bool bIsSkyBoxObject;	
+
+	// A number of students wanted to be able to use the 
+	//	original vertex (model) colours instead of just the 
+	//	texture values, so this allows this:
+	bool bEnableVertexSourceMixing;	// = false;
+	float fVCS_FromVertex_Mix;		// matches: uniform float VCS_FromVertex_Mix
+	float fVCS_FromMesh_Mix;		// matches: uniform float VCS_FromMesh_Mix
+	float fVCS_FromTexture_Mix;		// matches: VCS_FromTexture_Mix
+
 
 private:
 	void m_AssignUniqueID(void);

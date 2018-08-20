@@ -2,10 +2,11 @@
 // FRAGMENT SHADER
 
 // From the vertex shader:
-in vec4 vertColourRGBA;
+in vec4 vertColourRGBA;			
 in vec4 vertWorldPosXYZ;
 in vec4 vertNormal;
 in vec4 vertTexUV;	
+in vec4 vertOriginalVertexColourRGBA;
 
 uniform bool bDontLightObject;
 
@@ -19,13 +20,68 @@ uniform vec4 objectSpecularColour;
 // This his how bright things are when outside of the light.
 uniform float globalAmbientToDiffuseRatio;		
 
+uniform bool bUse_vColourRGBA_AlphaValue;		
+
+// Often the 4th value of the diffuse is being used, 
+// but we'll just explicity set it here...
+// Set this from 0 (transparent) to 1 (solid)
+uniform float alphaTransparency;
+
+// Same variable as in vertex shader
+uniform vec4 meshColourRGBA; 		
+
+// *************************************************************
+// This is the OPTIONAL vertex colour source mixing code, 
+// so that you can choose the vertex colour from:
+// - the vertex (i.e. from the model file)
+// - the meshColourRGBA uniform
+// - the texture
+// 
+// Since they are 3 floats that 'mix' together, you 
+// can combine all 3 sources, if you want. 
+// (ensure that they sum to 1.0 or it'll look odd)
+// 
+// NOTE: Setting this bool uniform ENABLES this!
+// (so if you IGNORE it, it behaves like it did before)
+// ALSO NOTE: If enabled, you must set at least one of these
+//	to 1.0, or you'll get a BLACK SCREEN (i.e. NO colour)
+// 
+uniform bool bEnableVertexSourceMixing;
+// ("VCS" stort for "Vertex Colour Source")
+uniform float VCS_FromVertex_Mix;
+uniform float VCS_FromMesh_Mix;
+uniform float VCS_FromTexture_Mix;
+// *************************************************************
+
 const int NUMLIGHTS = 10;
 
 
-//uniform sampler2D texCuteBunnyTexure;
-//uniform sampler2D texBrick;
-//uniform sampler2D texObama;
-//uniform samplerCube mySexySkyBox;
+uniform sampler2D texture00;		// Grass
+uniform sampler2D texture01;		// Jellybean
+uniform sampler2D texture02;
+uniform sampler2D texture03;		// Brenda R.
+uniform sampler2D texture04;		// Jellybean
+uniform sampler2D texture05;		// Grass
+uniform sampler2D texture06;
+uniform sampler2D texture07;		// Brenda R.
+
+// This is used for a skybox.
+// A 'cube map' is a set of 6 2D images, one for each
+//	side of a virtual cube. Unlike a 2D image, you need
+//	3 coordinates to look up the image. Often, you use
+//	the normal on the surface of the object as the lookup
+uniform samplerCube texCubeSkyboxTexture;
+uniform bool bSampleFromSkyboxTexture;
+
+
+uniform float textureMix00;	// grass
+uniform float textureMix01;
+uniform float textureMix02;
+uniform float textureMix03;	// brenda
+uniform float textureMix04;
+uniform float textureMix05;
+uniform float textureMix06;
+uniform float textureMix07;
 
 
 struct sLight
@@ -51,6 +107,8 @@ uniform sLight theLights[NUMLIGHTS];
 
 uniform vec3 eyeLocation;		// Camera location IN WORLD
 
+// Going to the frame buffer (back buffer)
+// (aka "the screen")  RGBA
 out vec4 outputColour;
 
 vec3 CalculateDirectionalLightContrib( uint lightIndex, vec3 vertWorldNormal );
@@ -64,18 +122,94 @@ void CalculateDiffuseAndSpecularContrib( uint lightIndex,
 
 void main()
 {
-	
-	if ( bDontLightObject )
+	// Skybox? This doesn't have lighting, and we only sample cube map, so we return immediately
+	if ( bSampleFromSkyboxTexture )
 	{
-		outputColour = vertColourRGBA;
-		// early exit
-		return;	
+		// A Cube Map needs 3 coords to lookup, so you don't use UV(or ST).
+		// Often, like this case, you use the vertex normal.
+		outputColour.rgb = texture(texCubeSkyboxTexture, vertNormal.xyz).rgb;
+		
+		// Alternatively, you could also add some sort of attenuation
+		//	to the skybox, to simulate "getting dark".
+		outputColour.a = 1.0f;
+		//outputColour.rgb = vec3(1.0f, 0.0, 0.0f);
+		
+		return;
+	}
+	
+	// Assume object is black
+	outputColour.rgba = vec4(0.0f, 0.0f, 0.0f, alphaTransparency);	// Start with black 
+	
+
+	// ...unless we are using the 'per vertex' alpha values from the ply model
+	if ( bUse_vColourRGBA_AlphaValue )
+	{
+		outputColour.a = vertColourRGBA.a;			// Set transparency ('alpha transparency')
 	}
 
-	// Assume object is black
-	outputColour.rgb = vec3(0.0f, 0.0f, 0.0f);	// Start with black 
 	
-	outputColour.a = vertColourRGBA.a;			// Set transparency ('alpha transparency')
+	
+	// Calculate the texture colour of the object
+	// "Sample" the colour of the texture at these texture coordinates
+	//uniform sampler2D texBrick;
+	vec3 texture00_SampleRGB = texture(texture00, vertTexUV.st).rgb;
+	vec3 texture01_SampleRGB = texture(texture01, vertTexUV.st).rgb;
+	vec3 texture02_SampleRGB = texture(texture02, vertTexUV.st).rgb;
+	vec3 texture03_SampleRGB = texture(texture03, vertTexUV.st).rgb;
+	vec3 texture04_SampleRGB = texture(texture04, vertTexUV.st).rgb;
+	vec3 texture05_SampleRGB = texture(texture05, vertTexUV.st).rgb;
+	vec3 texture06_SampleRGB = texture(texture06, vertTexUV.st).rgb;
+	vec3 texture07_SampleRGB = texture(texture07, vertTexUV.st).rgb;
+
+
+	// Why is he doing this?
+	vec3 textureSampleRGB = 
+			( textureMix00 * texture00_SampleRGB )		// 0
+		  + ( textureMix01 * texture01_SampleRGB )		// 0 
+		  + ( textureMix02 * texture02_SampleRGB )		// 0 
+		  + ( textureMix03 * texture03_SampleRGB )		// 0
+		  + ( textureMix04 * texture04_SampleRGB )		// 0 
+		  + ( textureMix05 * texture05_SampleRGB )		// 1   chooses this texture
+		  + ( textureMix06 * texture06_SampleRGB )		// 0 
+		  + ( textureMix07 * texture07_SampleRGB );		// 0
+	// **********************************************************************
+		  
+	
+	// Assume colour is coming from the texture...
+	vec3 meshMaterialDiffuse = textureSampleRGB.rgb;
+	
+	/// ALTERNATIVE mixing of vertex colours
+	// (if this is FALSE, by default, then this isn't being used)
+	if ( bEnableVertexSourceMixing == true )
+	{
+		meshMaterialDiffuse.rgb = ( VCS_FromVertex_Mix * vertOriginalVertexColourRGBA.rgb ) 
+		                        + ( VCS_FromMesh_Mix * meshColourRGBA.rgb )
+		                        + ( VCS_FromTexture_Mix * textureSampleRGB.rgb );
+		
+
+		// Clamp in case we go above 1.0
+		meshMaterialDiffuse = clamp( meshMaterialDiffuse.rgb, vec3(0.0f), vec3(1.0) );
+		
+	}//if ( bEnableVertexSourceMixing )
+	
+	
+	
+	if ( bDontLightObject )  
+	{
+		if ( bEnableVertexSourceMixing == true )
+		{
+			outputColour.rgb = meshMaterialDiffuse.rgb;
+		}
+		else 
+		{	
+			outputColour.rgb = meshColourRGBA.rgb;
+		}
+		// early exit
+		return;	
+	}//if ( bDontLightObject )  
+	
+
+	
 	
 	for ( int lightIndex = 0; lightIndex != NUMLIGHTS; lightIndex++ )
 	{
@@ -92,7 +226,7 @@ void main()
 		if ( theLights[lightIndex].AttenAndType.w == 2.0f )
 		{
 			vec3 lightContrib = CalculateDirectionalLightContrib( lightIndex, normalize(vertNormal.xyz) );
-			outputColour.rgb += ( vertColourRGBA.rgb * lightContrib );												 
+			outputColour.rgb += ( meshMaterialDiffuse.rgb * lightContrib );												 
 			continue;
 		}//if ( theLights[lightIndex]. )
 	
@@ -179,7 +313,11 @@ void main()
 		// Sample the texture to get the colour:
 
 		
-		outputColour.rgb += (vertColourRGBA.rgb * lightDiffuseContrib.rgb)
+//		outputColour.rgb += (vertColourRGBA.rgb * lightDiffuseContrib.rgb)
+//		                     + lightSpecularContrib.rgb;
+		
+		// textureSampleRGB is sampled BEFORE the light for loop
+		outputColour.rgb += (meshMaterialDiffuse * lightDiffuseContrib.rgb)
 		                     + lightSpecularContrib.rgb;
 									
 	}// for ( int index = 0
@@ -188,7 +326,8 @@ void main()
 	// Calculate the global ambient (i.e. no matter how many lights, this will be the same)
 	// (So we are adding the ambient 'light' to the object, simulating the light
 	//  that's just 'around' the scene, but not being directly lit.)
-	vec3 ambientObjectColour = (globalAmbientToDiffuseRatio * vertColourRGBA.rgb);
+	vec3 ambientObjectColour = ( globalAmbientToDiffuseRatio 
+	                             * meshMaterialDiffuse );
 	                               
 	// Another simplification: if the colour is darker than 
 	//  the ambient, pick the ambient colour. 
@@ -197,8 +336,12 @@ void main()
 	
 	outputColour.rgb = clamp( outputColour.rgb, vec3(0.0f,0.0f,0.0f), vec3(1.0f,1.0f,1.0f) );
 
+	outputColour.a = alphaTransparency;
+	
+	
+	
 	// Bump colour output as projector is dark
-	outputColour.rgb *= 1.2f;
+	//outputColour.rgb *= 1.2f;
 	
 };
 
