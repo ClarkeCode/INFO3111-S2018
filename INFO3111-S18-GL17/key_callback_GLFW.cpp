@@ -16,7 +16,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		SaveMeshInfoToFile();
 	}
 	if ((key == GLFW_KEY_F3) && (action == GLFW_PRESS)) {
-		LoadMeshInfoFromFile();
+		ClearLoadMesh();
 	}
 
 	if ((key == GLFW_KEY_F8) && (action == GLFW_PRESS)) {
@@ -24,41 +24,34 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 	if ((key == GLFW_KEY_F9) && (action == GLFW_PRESS)) {
 		//::g_myCamera.lookAtModelByFName("Cow1");
-		::g_myCamera.cam_eye_position = glm::vec3(0.63f, 3.1f, 7.1f);
+		//::g_myCamera.cam_eye_position = glm::vec3(0.63f, 3.1f, 7.1f);
 	}
 	if ((key == GLFW_KEY_F10) && (action == GLFW_PRESS)) {
-		::g_myCamera.lookAtModelByFName("Cow1");
+		//::g_myCamera.lookAtModelByFName("Cow1");
 	}
 	if ((key == GLFW_KEY_F11) && (action == GLFW_PRESS)) {
-		::g_myCamera.lookAtModelByFName("Moon");
-		::g_myCamera.cam_target_position.y /= 3.0f;
+		//::g_myCamera.lookAtModelByFName("Moon");
+		//::g_myCamera.cam_target_position.y /= 3.0f;
 	}
 
 	// Is the shift key pressed at the same time?
 	if ( mods == GLFW_MOD_SHIFT )	// ONLY shift and nothing else
 	{
 		if ( ( key == GLFW_KEY_L) && (action == GLFW_PRESS) )
-		{
-			::g_bTurnOnDebugLightSpheres =  ! ::g_bTurnOnDebugLightSpheres;
-		}
+		{ ::g_bTurnOnDebugLightSpheres =  ! ::g_bTurnOnDebugLightSpheres; }
 
 		// Select the next light:
-		if ( ( key == GLFW_KEY_9 ) && ( action == GLFW_PRESS ) )
-		{
-			::g_SelectedLightID--;
+		if ( ( key == GLFW_KEY_9 ) && ( action == GLFW_PRESS ) ) {
+			if (::g_SelectedLightID > 0 ) ::g_SelectedLightID--;
 		}
-		if ( ( key == GLFW_KEY_0 ) && ( action == GLFW_PRESS ) )
-		{
+		if ( ( key == GLFW_KEY_0 ) && ( action == GLFW_PRESS ) ) {
 			::g_SelectedLightID++;
 		}
 		//Check for wrap around...
-		if ( ::g_SelectedLightID >= NUMLIGHTS )
-		{
-			::g_SelectedLightID = NUMLIGHTS - 1;
-		}
+		if ( ::g_SelectedLightID >= NUMLIGHTS ) { ::g_SelectedLightID = NUMLIGHTS - 1; }
 
 		if ((key == GLFW_KEY_LEFT_BRACKET) && (action == GLFW_PRESS)) {
-			::g_SelectedModelID = ::g_SelectedModelID == 0 ? ::g_vec_pMeshObjects.size() - 1 : ::g_SelectedModelID - 1;
+			::g_SelectedModelID = ::g_SelectedModelID == 0 ? (unsigned int)::g_vec_pMeshObjects.size()-1 : (unsigned int)::g_SelectedModelID - 1;
 		}
 		if ((key == GLFW_KEY_RIGHT_BRACKET) && (action == GLFW_PRESS)) {
 			::g_SelectedModelID = ::g_SelectedModelID >= g_vec_pMeshObjects.size() ? 0 : ::g_SelectedModelID + 1;

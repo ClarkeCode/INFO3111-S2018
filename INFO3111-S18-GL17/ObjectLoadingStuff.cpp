@@ -72,9 +72,8 @@ std::string partialMeshSerialize (cMeshObject* curMesh) {
 
 void SaveMeshInfoToFile () {
 	using namespace std;
-	string fileName = "MeshInfo.txt";
 	std::ofstream myFile;
-	myFile.open(fileName);
+	myFile.open(g_meshInfoFileName);
 	if (!myFile.is_open()) { std::cout << "Error saving mesh info" << std::endl; return; };
 
 	string(*stringifyVec3)(glm::vec3 const&) = [](glm::vec3 const& get) -> string {
@@ -95,23 +94,22 @@ void SaveMeshInfoToFile () {
 		for (cMeshObject* child : curMesh->vec_pChildObjects) {
 			myFile << "MESHSTART DEPENDANT " << (curMesh->friendlyName == "" ? "NONAME" : curMesh->friendlyName) << endl;
 			myFile << "FNAME " << (child->friendlyName == "" ? "" + child->uniqueID : child->friendlyName) << endl;
-			glm::vec3 relPos = curMesh->pos - child->pos;
-			myFile << "RELPOSITION " << stringifyVec3(relPos) << endl;
-			myFile << partialMeshSerialize(curMesh) << endl;
+			//glm::vec3 relPos = curMesh->pos + child->pos;
+			myFile << "RELPOSITION " << stringifyVec3(child->pos) << endl;
+			myFile << partialMeshSerialize(child) << endl;
 			myFile << "MESHEND" << endl << endl;
 			modelsSaved++;
 		}
 	}
 	myFile.close();
 	cout << "Saved information of " << modelsSaved << " object meshes in " << glfwGetTime() - timer << " seconds ";
-	cout << "to file '" << fileName << "'" << endl;
+	cout << "to file '" << g_meshInfoFileName << "'" << endl;
 }
 
 void LoadMeshInfoFromFile () {
 	using namespace std;
-	string fileName = "MeshInfo.txt";
 	ifstream myFile;
-	myFile.open(fileName);
+	myFile.open(g_meshInfoFileName);
 	if (!myFile.is_open()) { std::cout << "Error saving mesh info" << std::endl; return; };
 
 	glm::vec3(*unloadVec3)(stringstream& ss) = [](stringstream& ss) -> glm::vec3 {
@@ -123,7 +121,7 @@ void LoadMeshInfoFromFile () {
 
 	double timer = glfwGetTime();
 	int modelsLoaded = 0;
-	cout << "Loading information from file '" << fileName << "': ";
+	cout << "Loading information from file '" << g_meshInfoFileName << "': ";
 
 	cMeshObject* curMesh;
 	string tempLine;
@@ -153,8 +151,12 @@ void LoadMeshInfoFromFile () {
 		}
 		if (id == "FNAME") { ss >> curMesh->friendlyName; }
 		if (id == "POSITION") { curMesh->pos = unloadVec3(ss); }
-		if (id == "RELPOSITION") { curMesh->pos = g_pFindObjectByFriendlyName(dependantName)->pos + unloadVec3(ss); }
-		if (id == "MESHNAME") { ss >> curMesh->meshName; }
+		if (id == "RELPOSITION") { curMesh->pos = //g_pFindObjectByFriendlyName(dependantName)->pos + 
+			unloadVec3(ss); }
+		if (id == "MESHNAME") { //ss >> 
+			string remainder = ss.str();
+			curMesh->meshName = remainder.erase(0,9); 
+		}
 		if (id == "TRUESCALE") {
 			sModelDrawInfo modelInfo;
 			::g_pTheVAOManager->FindDrawInfoByModelName(curMesh->meshName, modelInfo);
@@ -188,13 +190,19 @@ void LoadMeshInfoFromFile () {
 		if (id == "VERTEXSOURCEMIXING") { ss >> curMesh->bEnableVertexSourceMixing >> curMesh->fVCS_FromVertex_Mix >> curMesh->fVCS_FromMesh_Mix >> curMesh->fVCS_FromTexture_Mix; }
 
 		if (id == "MESHEND") {
+			if (isDependant) { g_pFindObjectByFriendlyName(dependantName)->vec_pChildObjects.push_back(curMesh); }
+			else			 { ::g_vec_pMeshObjects.push_back(curMesh); }
 			isDependant = false;
 			dependantName = "";
-			::g_vec_pMeshObjects.push_back(curMesh);
 			modelsLoaded++;
 		}
 	}
 	cout << modelsLoaded << " objects in " << glfwGetTime() - timer << " seconds" << endl;
+}
+
+void ClearLoadMesh() {
+	g_vec_pMeshObjects.clear();
+	LoadMeshInfoFromFile();
 }
 
 //std::vector< cMeshObject* > g_vec_pMeshObjects;
@@ -608,7 +616,7 @@ void LoadObjectsIntoScene(void)
 		cMeshObject* pCow = new cMeshObject(); 
 
 		pCow->meshName = "cow_xyz_n_rgba_uv.ply";
-		pCow->friendlyName = "Cow, with calf";
+		pCow->friendlyName = "Cow_with_calf";
 
 		pCow->pos = glm::vec3( 2.0f, 1.0f, 0.0f );
 		pCow->diffuseColour = glm::vec4( 142.0f/255.0f,	
@@ -707,10 +715,11 @@ void LoadObjectsIntoScene(void)
 
 			cMeshObject* cLukesCow = new cMeshObject(); 
 			cLukesCow->meshName = "cow_xyz_n_rgba_uv.ply";
+			cLukesCow->friendlyName = "lukesCow";
 			// Because this is added as a "child" of another object,
 			//  this location is RELATIVE to the 'parent' object
 			cLukesCow->pos = glm::vec3( 1.0f, 0.0f, 0.0f );
-			cLukesCow->diffuseColour = glm::vec4( 1.0f, 0.0f, 0.0f, 1.0f );
+			cLukesCow->diffuseColour = glm::vec4( 1.0f, 0.0f, 0.0f, 0.5f );
 			cLukesCow->colourSource = cMeshObject::USE_VERTEX_COLOURS;
 			sModelDrawInfo modelInfo;
 			::g_pTheVAOManager->FindDrawInfoByModelName ( cLukesCow->meshName, modelInfo );
@@ -718,7 +727,7 @@ void LoadObjectsIntoScene(void)
 			cLukesCow->isWireframe = false;
 			//::g_vec_pMeshObjects.push_back( pTemp );
 
-			cLukesCow->setAlphaValue(0.5f);
+			//cLukesCow->setAlphaValue(0.5f);
 
 			cLukesCow->textureMixRatios[0] = 0.0f;
 			cLukesCow->textureMixRatios[1] = 0.0f;
@@ -736,7 +745,7 @@ void LoadObjectsIntoScene(void)
 		cMeshObject* pTemp = new cMeshObject(); 
 
 		pTemp->meshName = "ssj100_xyz_n_rgba_uv.ply";
-
+		pTemp->friendlyName = "plane";
 		// 2 * PI   
 		// 1 PI = 180
 		// 0.5 = 90 
@@ -769,6 +778,7 @@ void LoadObjectsIntoScene(void)
 		cMeshObject* pTemp = new cMeshObject(); 
 
 		pTemp->meshName = "free_arena_ASCII_xyz_n_rgba_uv.ply";
+		pTemp->friendlyName = "arena";
 
 		pTemp->pos = glm::vec3( 0.0f, 0.0f, 0.0f );
 		pTemp->diffuseColour = glm::vec4( 244.0f/255.0f,  

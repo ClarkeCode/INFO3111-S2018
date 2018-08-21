@@ -131,39 +131,57 @@ void ProcessInputAsync( glm::vec3 &cameraEye, glm::vec3 &cameraTarget, GLFWwindo
 	cMeshObject * curMesh = ::g_vec_pMeshObjects[::g_SelectedModelID];
 	float modelMovespeed = cameraSpeed / 3.0f;
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS) {
 			curMesh->pos.x += modelMovespeed;
+			//for (cMeshObject* child : curMesh->vec_pChildObjects)
+			//	child->pos.x += modelMovespeed;
+		}
 		else
 			curMesh->orientation.x += 0.05f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS) {
 			curMesh->pos.x -= modelMovespeed;
+			//for (cMeshObject* child : curMesh->vec_pChildObjects)
+			//	child->pos.x -= modelMovespeed;
+		}
 		else
 			curMesh->orientation.x -= 0.05f;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS) {
 			curMesh->pos.z += modelMovespeed;
+			//for (cMeshObject* child : curMesh->vec_pChildObjects)
+			//	child->pos.z += modelMovespeed;
+		}
 		else
 			curMesh->orientation.z += 0.05f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS) {
 			curMesh->pos.z -= modelMovespeed;
+			//for (cMeshObject* child : curMesh->vec_pChildObjects)
+			//	child->pos.z -= modelMovespeed;
+		}
 		else
 			curMesh->orientation.z -= 0.05f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS) {
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS) {
 			curMesh->pos.y += modelMovespeed;
+			//for (cMeshObject* child : curMesh->vec_pChildObjects)
+			//	child->pos.y += modelMovespeed;
+		}
 		else
 			curMesh->orientation.y += 0.05f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS) {
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS) {
 			curMesh->pos.y -= modelMovespeed;
+			//for (cMeshObject* child : curMesh->vec_pChildObjects)
+			//	child->pos.y -= modelMovespeed;
+		}
 		else
 			curMesh->orientation.y -= 0.05f;
 	}

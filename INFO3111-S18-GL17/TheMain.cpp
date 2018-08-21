@@ -484,6 +484,7 @@ int main(void)
 
 
 	LoadObjectsIntoScene();
+	ClearLoadMesh();
 
 	// Print out the GL version
 	std::cout << glGetString( GL_VERSION ) << std::endl;

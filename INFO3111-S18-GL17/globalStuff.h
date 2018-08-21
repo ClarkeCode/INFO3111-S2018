@@ -168,6 +168,8 @@ std::string debug_serializeCMeshObjectToString(cMeshObject * cMesh);
 
 extern unsigned int g_SelectedModelID; //=0; 
 
+const std::string g_meshInfoFileName = "MeshInfo.txt";
 void SaveMeshInfoToFile();
 void LoadMeshInfoFromFile();
+void ClearLoadMesh();
 #endif
