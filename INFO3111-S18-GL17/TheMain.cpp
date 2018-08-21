@@ -47,27 +47,10 @@ unsigned int g_NumberOfTriangles = 0;		// From file
 bool LoadModelTypes(GLint shaderID, std::string &errors);
 
 
-//void LoadObjectsIntoScene(void);
-
 cShaderManager* g_pTheShaderManager = 0;	// NULL, 0, nullptr
 
 cVAOManager* g_pTheVAOManager = 0;
 
-// When true, the DoPhysicsUpdate is called.
-//bool g_bDoEulerPhysicsUpdate = false;		
-
-
-// Moved
-//struct sLight
-
-
-// moved
-//const unsigned int NUMLIGHTS = 3;
-//std::vector<sLight> g_vecLights;
-
-// These functions happen in the cLightManager class, now
-//void SetUpTheLights(GLint shaderProgID);
-//void CopyLightInfoToShader( unsigned int numberOfLightsToCopy );
 
 //void DrawDebugLightSpheres(void);
 void DrawDebugLightSpheres(cShaderManager::cShaderProgram* pShaderProgram);
@@ -76,9 +59,7 @@ void DrawDebugLightSpheres2(cShaderManager::cShaderProgram* pShaderProgram);
 // This will draw a line of spheres, to indicate the direction and 'size' of the spot
 void DrawDebugSpotLightSpheres(cShaderManager::cShaderProgram* pShaderProgram);
 
-//// A more general draw sphere
-//void DrawDebugSphere( cShaderManager::cShaderProgram* pShaderProgram, 
-//					  glm::vec3 position, glm::vec4 colour, float scale);
+
 
 // NOTE: This is for the CUBE MAP (skybox) NOT the 2d textures...
 void SetUpCubeMapTextureBinding( GLint shaderID );
@@ -88,16 +69,6 @@ static void error_callback(int error, const char* description)
 {
 	fprintf(stderr, "Error: %s\n", description);
 }
-
-// Moved
-//static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-
-
-//// Processes input (defined below)
-//void ProcessInput( glm::vec3 &cameraEye, 
-//                   glm::vec3 &cameraTarget, 
-//                   GLFWwindow* &window );
-
 
 void HACK_EXAMPLE_Update_Spot_Angle_OverTime(void);
 
@@ -165,18 +136,6 @@ int main(void)
 
 	::g_pTheShaderManager->useShaderProgram(shadProgID);
 
-	//mvp_location = glGetUniformLocation(shadProgID, "MVP");		// program
-
-//	GLint matModel_UniLoc = glGetUniformLocation(shadProgID, "matModel");
-//	GLint matView_Uniloc = glGetUniformLocation(shadProgID, "matView");
-//	GLint matProj_Uniloc = glGetUniformLocation(shadProgID, "matProjection");
-
-	// If it returns -1, then it didn't find it.
-//	GLint meshColourRGBA_UniLoc = glGetUniformLocation(shadProgID, "meshColourRGBA");
-//	GLint bUse_vColourRGBA_AlphaValue_UniLoc = glGetUniformLocation(shadProgID, "bUse_vColourRGBA_AlphaValue");
-//	GLint bUseVertexColour_UniLoc = glGetUniformLocation(shadProgID, "bUseVertexColour");
-
-//	GLint bDontLightObject_UniLoc = glGetUniformLocation(shadProgID, "bDontLightObject" );
 	
 	// Shader uniform variables
 	// Get the shader by name (so we can load the unforms)
@@ -585,29 +544,6 @@ int main(void)
 		
 
 
-		//    ___          _                                      _   
-		//   | _ ) __ _ __(_)__   _ __  _____ _____ _ __  ___ _ _| |_ 
-		//   | _ \/ _` (_-< / _| | '  \/ _ \ V / -_) '  \/ -_) ' \  _|
-		//   |___/\__,_/__/_\__| |_|_|_\___/\_/\___|_|_|_\___|_||_\__|
-		//                                                            
-		//if ( pBunny )
-		//{
-		//	//pBunny->pos.y += 0.01f;		// contin. motion
-
-		//	double currentTime = glfwGetTime();
-		//	const double TIME_WE_SHOULD_WAIT = 0.5;		// 500 ms
-
-		//	// How much time has passed? 
-		//	if ( (currentTime - lastTime) > TIME_WE_SHOULD_WAIT )
-		//	{
-		//		// Do the thing
-		//		pBunny->pos.y += 0.01f;
-		//		lastTime = glfwGetTime();		// "reset" the "last" time
-
-		//	}//if ( (currentTime..
-
-		//}//if ( pBunny )
-
 
 		float ratio;
 		int width, height;
@@ -637,13 +573,6 @@ int main(void)
 		// Deal with the keyboard, etc.
 		ProcessInputAsync( cameraEye, cameraTarget, ::g_window );
 
-
-
-
-		//matView = glm::lookAt( cameraEye,		// position (3d space)
-		//					   cameraTarget,	// looking at
-		//					   upVector );		// Up vector
-
 		// Look at Luke's ship
 		cMeshObject* pLuke = ::g_pFindObjectByFriendlyName("Luke");
 		cMeshObject* pBugs = ::g_pFindObjectByFriendlyName("Bugs");
@@ -667,25 +596,8 @@ int main(void)
 		//CopyLightInfoToShader(NUMLIGHTS);
 		::g_pLightManager->CopyLightInfoToShader();
 
-		// **************************************
-		// MOVED: if ( ::g_bTurnOnDebugLightSpheres )
-		//DrawDebugLightSpheres(pShaderProgram);
 		DrawDebugLightSpheres2(pShaderProgram);
 
-		//DrawDebugSphere( pShaderProgram, 
-		//				 glm::vec3(0.0f, 1.0f, 0.0f), 
-		//				 glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), 
-		//				 0.1f );
-		//DrawDebugSphere( pShaderProgram, 
-		//				 glm::vec3(0.0f, 1.0f, 0.0f), 
-		//				 glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), 
-		//				 0.3f );
-
-
-		// Set the textures in the shader.
-//		SetUpTextureBindings( pShader->ID );
-
-//		SetUpCubeMapTextureBinding( pShader->ID );
 
 		// Fancy textrue thingy
 		cMeshObject* pTerrain = ::g_pFindObjectByFriendlyName("TheGround");
