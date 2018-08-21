@@ -107,7 +107,7 @@ void SaveMeshInfoToFile () {
 	cout << "to file '" << fileName << "'" << endl;
 }
 
-void LoadMeshInfoToFile () {
+void LoadMeshInfoFromFile () {
 	using namespace std;
 	string fileName = "MeshInfo.txt";
 	ifstream myFile;
@@ -120,6 +120,10 @@ void LoadMeshInfoToFile () {
 	glm::vec4(*unloadVec4)(stringstream& ss) = [](stringstream& ss) -> glm::vec4 {
 		float a, b, c, d; ss >> a >> b >> c >> d; return glm::vec4(a, b, c, d);
 	};
+
+	double timer = glfwGetTime();
+	int modelsLoaded = 0;
+	cout << "Loading information from file '" << fileName << "': ";
 
 	cMeshObject* curMesh;
 	string tempLine;
@@ -187,8 +191,10 @@ void LoadMeshInfoToFile () {
 			isDependant = false;
 			dependantName = "";
 			::g_vec_pMeshObjects.push_back(curMesh);
+			modelsLoaded++;
 		}
 	}
+	cout << modelsLoaded << " objects in " << glfwGetTime() - timer << " seconds" << endl;
 }
 
 //std::vector< cMeshObject* > g_vec_pMeshObjects;

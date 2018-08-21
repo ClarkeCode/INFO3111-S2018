@@ -15,6 +15,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if ((key == GLFW_KEY_F2) && (action == GLFW_PRESS)) {
 		SaveMeshInfoToFile();
 	}
+	if ((key == GLFW_KEY_F3) && (action == GLFW_PRESS)) {
+		LoadMeshInfoFromFile();
+	}
 
 	if ((key == GLFW_KEY_F8) && (action == GLFW_PRESS)) {
 		//::g_myCamera.lookAtModelByFName("Cow1");
