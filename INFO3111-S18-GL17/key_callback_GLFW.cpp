@@ -12,6 +12,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if ((key == GLFW_KEY_F1) && (action == GLFW_PRESS)) {
 		::debug_CopyToClipboard(::debug_serializeCMeshObjectToString(::g_vec_pMeshObjects[::g_SelectedModelID]));
 	}
+	if ((key == GLFW_KEY_F2) && (action == GLFW_PRESS)) {
+		SaveMeshInfoToFile();
+	}
 
 	if ((key == GLFW_KEY_F8) && (action == GLFW_PRESS)) {
 		//::g_myCamera.lookAtModelByFName("Cow1");

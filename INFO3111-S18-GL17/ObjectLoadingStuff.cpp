@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <sstream>
 #include <iostream>
+#include <fstream>
 
 //extern std::vector< cMeshObject* > g_vec_pMeshObjects;
 //
@@ -19,6 +20,176 @@ float getRandInRange(float LO, float HI)
 	return LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
 }
 
+std::string partialMeshSerialize (cMeshObject* curMesh) {
+	using namespace std;
+	stringstream ss;
+	string(*stringifyVec3)(glm::vec3 const&) = [](glm::vec3 const& get) -> string {
+		stringstream ss; 
+		ss << get.x << " " << get.y << " " << get.z;
+		return ss.str();
+	};
+	string(*stringifyVec4)(glm::vec4 const&) = [](glm::vec4 const& get) -> string {
+		stringstream ss;
+		ss << get.x << " " << get.y << " " << get.z << " "<< get.w;
+		return ss.str();
+	};
+
+	ss << "MESHNAME " << curMesh->meshName << endl;
+	sModelDrawInfo modelInfo;
+	::g_pTheVAOManager->FindDrawInfoByModelName(curMesh->meshName, modelInfo);
+	//pCornerRoad->scale = 10.0f / modelInfo.maxExtent;
+	ss << "TRUESCALE " << curMesh->scale * modelInfo.maxExtent << endl;
+	ss << "DIFFUSECOLOUR " << stringifyVec4(curMesh->diffuseColour) << endl;
+
+	ss << "AMBIENTDIFFUSE " << curMesh->ambientToDiffuseRatio << endl;
+	ss << "SPECULAR-HLCOLOUR " << stringifyVec3(curMesh->specularHighlightColour) << endl;
+	ss << "SHININESS " << curMesh->specularShininess << endl;
+	
+
+	ss << "WIREFRAME " << curMesh->isWireframe << endl;
+	ss << "USE-NONUNIFORM " << curMesh->bUseNonUniformScaling << endl;
+	ss << "NONUNIFORM-SCALING " << stringifyVec3(curMesh->nonUniformScale) << endl;
+
+	ss << "ORIENTATION " << stringifyVec3(curMesh->orientation) << endl;
+
+	ss << "DONTLIGHT " << curMesh->bDontLightObject << endl;
+	ss << "ISVISIBLE " << curMesh->bIsVisible << endl;
+	ss << "COLOURSOURCE " << curMesh->colourSource << endl;
+	ss << "USECOLOUR-ALPHAVALUE " << curMesh->bUseColourAlphaValue << endl;
+	ss << "ISSKYBOX " << curMesh->bIsSkyBoxObject << endl;
+
+	for (int x = 0; x < curMesh->MAXNUMBEROFTEXTURES; x++) {
+		ss << "TEXTURENAME " << (curMesh->textureNames[x] == "" ? "NOTEXTURE" : curMesh->textureNames[x]) << endl;
+	}
+	for (int x = 0; x < curMesh->MAXNUMBEROFTEXTURES; x++) {
+		ss << "TEXTUREMIX " << curMesh->textureMixRatios[x] << endl;
+	}
+
+	ss << "VERTEXSOURCEMIXING " << curMesh->bEnableVertexSourceMixing << " " << curMesh->fVCS_FromVertex_Mix << " " << curMesh->fVCS_FromMesh_Mix << " " << curMesh->fVCS_FromTexture_Mix;
+
+	return ss.str();
+}
+
+void SaveMeshInfoToFile () {
+	using namespace std;
+	string fileName = "MeshInfo.txt";
+	std::ofstream myFile;
+	myFile.open(fileName);
+	if (!myFile.is_open()) { std::cout << "Error saving mesh info" << std::endl; return; };
+
+	string(*stringifyVec3)(glm::vec3 const&) = [](glm::vec3 const& get) -> string {
+		stringstream ss;
+		ss << get.x << " " << get.y << " " << get.z;
+		return ss.str();
+	};
+	double timer = glfwGetTime();
+	int modelsSaved = 0;
+	for (cMeshObject* curMesh : g_vec_pMeshObjects) {
+		myFile << "MESHSTART INDEPENDANT" << endl;
+		myFile << "FNAME " << (curMesh->friendlyName == "" ? "NONAME" : curMesh->friendlyName) << endl;
+		myFile << "POSITION " << stringifyVec3(curMesh->pos) << endl;
+		myFile << partialMeshSerialize(curMesh) << endl;
+		myFile << "MESHEND" << endl << endl;
+		modelsSaved++;
+
+		for (cMeshObject* child : curMesh->vec_pChildObjects) {
+			myFile << "MESHSTART DEPENDANT " << (curMesh->friendlyName == "" ? "NONAME" : curMesh->friendlyName) << endl;
+			myFile << "FNAME " << (child->friendlyName == "" ? "" + child->uniqueID : child->friendlyName) << endl;
+			glm::vec3 relPos = curMesh->pos - child->pos;
+			myFile << "RELPOSITION " << stringifyVec3(relPos) << endl;
+			myFile << partialMeshSerialize(curMesh) << endl;
+			myFile << "MESHEND" << endl << endl;
+			modelsSaved++;
+		}
+	}
+	myFile.close();
+	cout << "Saved information of " << modelsSaved << " object meshes in " << glfwGetTime() - timer << " seconds ";
+	cout << "to file '" << fileName << "'" << endl;
+}
+
+void LoadMeshInfoToFile () {
+	using namespace std;
+	string fileName = "MeshInfo.txt";
+	ifstream myFile;
+	myFile.open(fileName);
+	if (!myFile.is_open()) { std::cout << "Error saving mesh info" << std::endl; return; };
+
+	glm::vec3(*unloadVec3)(stringstream& ss) = [](stringstream& ss) -> glm::vec3 {
+		float a, b, c; ss >> a >> b >> c; return glm::vec3(a, b, c);
+	};
+	glm::vec4(*unloadVec4)(stringstream& ss) = [](stringstream& ss) -> glm::vec4 {
+		float a, b, c, d; ss >> a >> b >> c >> d; return glm::vec4(a, b, c, d);
+	};
+
+	cMeshObject* curMesh;
+	string tempLine;
+	bool isDependant = false;
+	string dependantName = "";
+	int texNameCounter, texMixCounter;
+	texNameCounter = 0;
+	texMixCounter = 0;
+	while (getline(myFile, tempLine)) {
+		stringstream ss(tempLine);
+		if (tempLine.empty() ||(tempLine.size() >= 2 && tempLine[0] == '/' && tempLine[1] == '/')) continue;
+		//ignore any lines that start with // or are empty
+
+		string id;
+		ss >> id;
+
+		if (id == "MESHSTART") {
+			curMesh = new cMeshObject();
+			string dependant;
+			ss >> dependant;
+			texNameCounter = 0;
+			texMixCounter = 0;
+			if (dependant == "DEPENDANT") {
+				ss >> dependantName;
+				isDependant = true;
+			}
+		}
+		if (id == "FNAME") { ss >> curMesh->friendlyName; }
+		if (id == "POSITION") { curMesh->pos = unloadVec3(ss); }
+		if (id == "RELPOSITION") { curMesh->pos = g_pFindObjectByFriendlyName(dependantName)->pos + unloadVec3(ss); }
+		if (id == "MESHNAME") { ss >> curMesh->meshName; }
+		if (id == "TRUESCALE") {
+			sModelDrawInfo modelInfo;
+			::g_pTheVAOManager->FindDrawInfoByModelName(curMesh->meshName, modelInfo);
+			ss >> curMesh->scale;
+			curMesh->scale /= modelInfo.maxExtent;
+		}
+		if (id == "DIFFUSECOLOUR") { curMesh->diffuseColour = unloadVec4(ss); }
+
+		if (id == "AMBIENTDIFFUSE") { ss >> curMesh->ambientToDiffuseRatio; }
+		if (id == "SPECULAR-HLCOLOUR") { curMesh->specularHighlightColour = unloadVec3(ss); }
+
+		if (id == "WIREFRAME") { ss >> curMesh->isWireframe; }
+		if (id == "USE-NONUNIFORM") { ss >> curMesh->bUseNonUniformScaling; }
+		if (id == "NONUNIFORM-SCALING") { curMesh->nonUniformScale = unloadVec3(ss); }
+
+		if (id == "ORIENTATION") { curMesh->orientation = unloadVec3(ss); }
+
+		if (id == "DONTLIGHT") { ss >> curMesh->bDontLightObject; }
+		if (id == "ISVISIBLE") { ss >> curMesh->bIsVisible; }
+		if (id == "COLOURSOURCE") { int temp; ss >> temp; curMesh->colourSource = (cMeshObject::eColourSource)temp; }
+		if (id == "USECOLOUR-ALPHAVALUE") { ss >> curMesh->bUseColourAlphaValue; }
+		if (id == "ISSKYBOX") { ss >> curMesh->bIsSkyBoxObject; }
+
+		if (id == "TEXTURENAME") {
+			string temp;
+			ss >> temp;
+			curMesh->textureNames[texNameCounter] = temp == "NOTEXTURE" ? "" : temp;
+			texNameCounter++;
+		}
+		if (id == "TEXTUREMIX") { ss >> curMesh->textureMixRatios[texMixCounter]; texMixCounter++; }
+		if (id == "VERTEXSOURCEMIXING") { ss >> curMesh->bEnableVertexSourceMixing >> curMesh->fVCS_FromVertex_Mix >> curMesh->fVCS_FromMesh_Mix >> curMesh->fVCS_FromTexture_Mix; }
+
+		if (id == "MESHEND") {
+			isDependant = false;
+			dependantName = "";
+			::g_vec_pMeshObjects.push_back(curMesh);
+		}
+	}
+}
 
 //std::vector< cMeshObject* > g_vec_pMeshObjects;
 void LoadObjectsIntoScene(void)
@@ -84,8 +255,8 @@ void LoadObjectsIntoScene(void)
 	vecAssNames.push_back("Asteroid_015.ply");
 	vecAssNames.push_back("Asteroid_016.ply");
 
-	const unsigned int NUMBEROFASTEROIDS = 150;
-	for ( unsigned int count = 0; count != 150; count++ )
+	const unsigned int NUMBEROFASTEROIDS = 15;
+	for ( unsigned int count = 0; count != NUMBEROFASTEROIDS; count++ )
 	{// Add an object into the "scene"
 		cMeshObject* pTemp = new cMeshObject(); 
 		// Pick a random asteroid

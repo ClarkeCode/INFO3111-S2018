@@ -105,6 +105,9 @@
     <Filter Include="Texture">
       <UniqueIdentifier>{4636d31f-e267-46ca-a036-0e915c6fd63e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Models">
+      <UniqueIdentifier>{df79a0cd-5380-4c6c-af6f-b0a9910cc2ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="vert01.glsl">
@@ -112,6 +115,27 @@
     </None>
     <None Include="frag01.glsl">
       <Filter>Shaders</Filter>
+    </None>
+    <None Include="AUDI_TT_COUPE_xyz_rgba_n_uv.ply">
+      <Filter>Models</Filter>
+    </None>
+    <None Include="bun_zipper_xyz_rgba_n_uv.ply">
+      <Filter>Models</Filter>
+    </None>
+    <None Include="building_xyz_rgba_n_uv.ply">
+      <Filter>Models</Filter>
+    </None>
+    <None Include="cow_xyz_rgba_n_uv.ply">
+      <Filter>Models</Filter>
+    </None>
+    <None Include="isosphere_smooth_xyz_n_rgba_uv.ply">
+      <Filter>Models</Filter>
+    </None>
+    <None Include="palm-tree_xyz_rgba_n_uv.ply">
+      <Filter>Models</Filter>
+    </None>
+    <None Include="rob-terrain-xyz-rgba-n-uv.ply">
+      <Filter>Models</Filter>
     </None>
   </ItemGroup>
 </Project>

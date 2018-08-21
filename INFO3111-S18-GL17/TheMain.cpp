@@ -644,8 +644,8 @@ int main(void)
 		cMeshObject* pLuke = ::g_pFindObjectByFriendlyName("Luke");
 		cMeshObject* pBugs = ::g_pFindObjectByFriendlyName("Bugs");
 
-		matView = glm::lookAt( cameraEye,		// position (3d space)
-							   pLuke->pos,		// looking at
+		matView = glm::lookAt( g_myCamera.cam_eye_position,//cameraEye,		// position (3d space)
+							   g_myCamera.cam_target_position,//pLuke->pos,		// looking at
 							   upVector );		// Up vector
 
 
@@ -746,8 +746,7 @@ int main(void)
 
 
 
-		unsigned int numberOfObjects = 
-			static_cast<unsigned int>(::g_vec_pMeshObjects.size() );
+		unsigned int numberOfObjects = static_cast<unsigned int>(::g_vec_pMeshObjects.size() );
 
 		for ( unsigned int meshIndex = 0;
 			  meshIndex != numberOfObjects; meshIndex++ )
