@@ -296,15 +296,18 @@ int main(void)
 
 	
 
-	//::g_pLightManager->pGetLightAtIndex(1)->SetAsPoint();
-	//::g_pLightManager->pGetLightAtIndex(1)->position = glm::vec3(2.0f,2.0f,2.0f);
-	//::g_pLightManager->pGetLightAtIndex(1)->diffuse = glm::vec3(1.0f,1.0f,1.0f);
-	//::g_pLightManager->pGetLightAtIndex(1)->attenLinear = 0.324f;
-	//::g_pLightManager->pGetLightAtIndex(1)->attenQuad = 0.0115f;
+	::g_pLightManager->pGetLightAtIndex(1)->SetAsSpot();
+	::g_pLightManager->pGetLightAtIndex(1)->position = glm::vec3(2.0f,2.0f,2.0f);
+	::g_pLightManager->pGetLightAtIndex(1)->diffuse = glm::vec3(1.0f,0.0f,0.0f);
+	::g_pLightManager->pGetLightAtIndex(1)->attenLinear = 0.324f;
+	::g_pLightManager->pGetLightAtIndex(1)->attenQuad = 0.0115f;
 	//::g_pLightManager->pGetLightAtIndex(1)->specular = glm::vec3(1.0f,1.0f,1.0f);
 	//::g_pLightManager->pGetLightAtIndex(1)->specularPower = 1.0f;
 	//::g_pLightManager->pGetLightAtIndex(1)->setAmbientFromDiffuse(0.2f);
-	//::g_pLightManager->pGetLightAtIndex(1)->TurnLightOn();
+	::g_pLightManager->pGetLightAtIndex(1)->direction = glm::vec3(0.0f, -1.0f, 0.0f);
+	::g_pLightManager->pGetLightAtIndex(1)->spotConeAngleInner = 25.0f;
+	::g_pLightManager->pGetLightAtIndex(1)->spotConeAngleOuter = 30.2f;
+	::g_pLightManager->pGetLightAtIndex(1)->TurnLightOn();
 
 	//::g_pLightManager->pGetLightAtIndex(2)->SetAsPoint();
 	//::g_pLightManager->pGetLightAtIndex(2)->position = glm::vec3(2.0f,2.0f,2.0f);
@@ -483,7 +486,7 @@ int main(void)
 #endif //USE_NEWER_LOADER
 
 
-	LoadObjectsIntoScene();
+	//LoadObjectsIntoScene();
 	ClearLoadMesh();
 
 	// Print out the GL version

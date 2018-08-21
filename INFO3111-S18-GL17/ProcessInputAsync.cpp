@@ -103,29 +103,23 @@ void ProcessInputAsync( glm::vec3 &cameraEye, glm::vec3 &cameraTarget, GLFWwindo
 
 
 	// Also move the light around
-	if ( glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS )
-	{
-		pSelectedLight->position.z += cameraSpeed;		
+	if ( glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS ) {
+		pSelectedLight->position.z += cameraSpeed /5;		
 	}
-	if ( glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS )
-	{
-		pSelectedLight->position.z -= cameraSpeed;		
+	if ( glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS ) {
+		pSelectedLight->position.z -= cameraSpeed / 5;
 	}		
-	if ( glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS )
-	{
-		pSelectedLight->position.x -= cameraSpeed;		
+	if ( glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS ) {
+		pSelectedLight->position.x -= cameraSpeed / 5;
 	}	
-	if ( glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS )
-	{
-		pSelectedLight->position.x += cameraSpeed;		
+	if ( glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS ) {
+		pSelectedLight->position.x += cameraSpeed / 5;
 	}		
-	if ( glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS )
-	{
-		pSelectedLight->position.y += cameraSpeed;		
+	if ( glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS ) {
+		pSelectedLight->position.y += cameraSpeed / 5;
 	}		
-	if ( glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS )
-	{
-		pSelectedLight->position.y -= cameraSpeed;		
+	if ( glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS ) {
+		pSelectedLight->position.y -= cameraSpeed / 5;
 	}
 
 	cMeshObject * curMesh = ::g_vec_pMeshObjects[::g_SelectedModelID];
